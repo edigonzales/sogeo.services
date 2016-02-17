@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>QGIS Server: VRT vs. GeoPackage Raster</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>QGIS Server: VRT vs. GeoPackage Raster</h1>
+	</div>
+
+	<p class="date"><em>25 December 2014</em></p>
+
+	<p><div class="paragraph">
+<p>Seit <a href="http://osgeo-org.1560.x6.nabble.com/gdal-dev-GDAL-GeoPackage-raster-support-td5177342.html">kurzem</a> unterstützt GDAL <a href="http://www.gdal.org/drv_geopackage_raster.html">Geopackage Raster</a>, was ziemlich cool ist. Jetzt man kann man z.B. sämtliche Orthofotos des Kantons Solothurn (1993 bis 2014) in eine <a href="http://www.catais.org/geodaten/ch/so/kva/orthofoto/orthofoto.gpkg">85 GB grosse SQLite-Datenbank</a> packen.</p>
+</div>
+<div class="paragraph">
+<p>Und weil mehr oder weniger gilt &laquo;Kann es GDAL, so kann es auch QGIS.&raquo;, soll hier kurz die Performance von QGIS Server anhand eines Orthofoto-WMS verglichen werden. Momentan wird aus vielen einzelnen GeoTIFF-Dateien eine VRT-Datei erstellt und diese in QGIS geladen. Bis zum Massstab 1:20'000. Für kleinere Massstäbe wird ein 5m-Orthofoto verwendet. Ab diesem Massstab sieht man praktisch keinen Unterschied mehr zwischen Originalkacheln (12.5cm) und 5m-Orthofoto. Als Resampling-Methode wird &laquo;average&raquo; mit Faktor 2 verwendet. Insgesamt sind es drei VRT-Dateien sowie drei 5m-Orthofotos (für die Jahre 2012-2014).</p>
+</div>
+<div class="paragraph">
+<p>Zum Vergleich werden zwei Varianten mit Geopackage herangezogen:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Pro Jahr eine Geopackage-Datei (zwischen 5 und 10 GB).</p>
+</li>
+<li>
+<p>Eine einzige Geopackage-Datei mit sämtlichen Orthofotos (inkl. abgeleiteten Produkten, circa 85 GB)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Mit folgenden Befehlen und Parametern wurden die GPKG-Dateien erstellt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+</pre></td>
+  <td class="code"><pre>gdal_translate --config OGR_SQLITE_SYNCHRONOUS OFF -co APPEND_SUBDATASET=YES -co RASTER_TABLE=ch.so.agi.orthofoto.2014.rgb -co TILE_FORMAT=PNG_JPEG -of GPKG /home/stefan/Geodaten/ch/so/kva/orthofoto/2014/rgb/12_5cm/ortho2014rgb.vrt /home/stefan/tmp/orthofoto.gpkg
+gdaladdo --config OGR_SQLITE_SYNCHRONOUS OFF -oo TABLE=ch.so.agi.orthofoto.2014.rgb -r average /home/stefan/tmp/orthofoto.gpkg 2 4 8 16 32 64 128 256</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Das Testsetup war gleich wie bei <a href="http://sogeo.ch/blog/2014/01/29/qgis-server-vs-qgis-server/">anderen QGIS Server Performance Tests</a>.</p>
+</div>
+<div class="paragraph">
+<p>Das Resultat sieht so aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/vrt_vs_gpkg/ortho_vrt_vs_gpkg_bench.png" alt="GeoPackage-VRT-Benchmark">
+</div>
+</div>
+<div class="paragraph">
+<p>Anscheinend ist es völlig egal, ob drei einzelne GPKG-Dateien oder eine sehr grosse GPKG-Datei verwendet wird. Der ganz leichte Geschwindigkeitsvorteil von VRT gegenüber GPKG lässt sich beliebig wiederholen. Interessant ist aber die Tatsache, dass bei den GPKG-Varianten beinahe kein average-Resampling notwendig ist/wäre (Geschwindigkeitsfaktor circa 2.5). Da sehen die gerenderten Bilder auch mit &laquo;nearest neighbour&raquo; ganz ordentlich aus. Ganz im Gegensatz dazu die VRT-Variante, die sichtbar an visueller Qualität verliert ohne average-Resampling.</p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/GeoPackage.html">GeoPackage</a>
+		, <a href="/tags/Raster.html">Raster</a>
+		, <a href="/tags/QGIS.html">QGIS</a>
+		, <a href="/tags/Server.html">Server</a>
+		, <a href="/tags/QGIS-Server.html">QGIS-Server</a>
+		, <a href="/tags/WMS.html">WMS</a>
+		, <a href="/tags/Benchmark.html">Benchmark</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>sogeo.services</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/asciidoctor.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
+    <link href="css/prettify.css" rel="stylesheet">
+    <link href="css/coderay.css" rel="stylesheet">
+    <link href="css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="index.html">Home</a></li>
+			<li><a href="archive.html">Archive</a></li>
+            <li><a href="feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+
+
+<h1></h1>
+  			<h1><a href="blog/2016/02/11/interlis-leicht-gemacht-number-7.html">Interlis leicht gemacht #7</a></h1>
+  			<p class="date">11 February 2016</p>
+  			<p><div class="paragraph">
+<p>Seit <a href="https://github.com/claeis/ili2db/commit/85d167e0c4fd491567cd8e8bab3bd9f8e7a85eed">kurzem</a> gibt es neu auch <a href="http://www.eisenhutinformatik.ch/interlis/ili2gpkg/">ili2gpkg</a>. Damit kann aus einer INTERLIS-Transferdatei schnell und ohne eine PostgreSQL-Datenbank am Laufen zu haben eine GeoPackage-Datei erstellt werden. Diese kann dann in <a href="http://www.qgis.org">QGIS</a> oder ArcGIS visualisert und bearbeitet werden. Der Befehl zum Erstellen des GeoPackages ist praktisch identisch dem Befehl zum Importieren in eine PostGIS-Datenbank:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>java -jar ili2gpkg.jar --import --nameByTopic --modeldir http://models.geo.admin.ch --models DM01AVCH24D --dbfile av_solothurn.gpkg ch_260100.itf</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Im Prinzip stehen die gleichen Optionen wie bei <a href="http://www.eisenhutinformatik.ch/interlis/ili2pg/">ili2pg</a> zur Verfügung. Einige gibt es natürlich nicht, z.B. die DB-Connection-Parameter. Die werden einfach durch den Filenamen-Parameter ersetzt: <code>--dbfile</code>. Natürlich ist man dabei nicht nur auf das Erstellen (= Lesen von INTERLIS) von GeoPackage-Dateien beschränkt. Man kann ebenso aus GeoPackage-Dateien INTERLIS-Transfer-Dateien erstellen. Dazu in einem späteren Beitrag mehr.</p>
+</div>
+<div class="paragraph">
+<p>Eine Anwendungsmöglichkeit unter vielen ist z.B. ein kleiner Webdienst, wo man eine INTERLIS-Transferdatei hochladen kann und als Antwort die GeoPackage-Datei bekommt. Klassischerweise würde man hier ein Java-Servlet schreiben. Fürs Prototyping erstelle ich aber ein <a href="http://docs.groovy-lang.org/latest/html/documentation/servlet-userguide.html">Groovlet</a>. Man kann sich das auf dem Web/Servlet-Container so einrichten, dass alle in einem Ordner liegende <code>*.groovy</code>-Dateien als Servlet resp. eben als Groovlet ausgeführt werden. Zum Rumspielen noch ganz praktisch.</p>
+</div>
+<div class="paragraph">
+<p>Als erstes brauchen wir das Upload-Formular. Dazu reichen ein paar Zeichen Groovy, das uns das benötigte HTML erstellt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+</pre></td>
+  <td class="code"><pre>html.html {
+    head {
+        meta(<span class="key">charset</span>:<span class="string"><span class="delimiter">'</span><span class="content">utf-8</span><span class="delimiter">'</span></span>)
+        meta(<span class="key">name</span>:<span class="string"><span class="delimiter">'</span><span class="content">viewport</span><span class="delimiter">'</span></span>, <span class="key">content</span>:<span class="string"><span class="delimiter">'</span><span class="content">width=device-width, initial-scale=1</span><span class="delimiter">'</span></span>)
+        meta(<span class="string"><span class="delimiter">'</span><span class="content">http-equiv</span><span class="delimiter">'</span></span>:<span class="string"><span class="delimiter">'</span><span class="content">x-ua-compatible</span><span class="delimiter">'</span></span>, <span class="key">content</span>:<span class="string"><span class="delimiter">'</span><span class="content">ie=edge</span><span class="delimiter">'</span></span>)
+
+        title <span class="string"><span class="delimiter">'</span><span class="content">ili2gpkg online converter</span><span class="delimiter">'</span></span>
+        style <span class="string"><span class="delimiter">'''</span><span class="content">
+            label { display: block; padding: 0.2em; }
+        </span><span class="delimiter">'''</span></span>
+    }
+    body {
+        h1 <span class="string"><span class="delimiter">'</span><span class="content">INTERLIS (ITF/XTF) to GeoPackage Converter</span><span class="delimiter">'</span></span>
+        form <span class="key">action</span>: <span class="string"><span class="delimiter">'</span><span class="content">do_ili2gpkg.groovy</span><span class="delimiter">'</span></span>, <span class="key">method</span>: <span class="string"><span class="delimiter">'</span><span class="content">post</span><span class="delimiter">'</span></span>, <span class="key">enctype</span>: <span class="string"><span class="delimiter">'</span><span class="content">multipart/form-data</span><span class="delimiter">'</span></span>, {
+            label <span class="string"><span class="delimiter">'</span><span class="content">Reference frame: </span><span class="delimiter">'</span></span>, {
+                select <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">reference_frame</span><span class="delimiter">'</span></span>, {
+                    option <span class="string"><span class="delimiter">'</span><span class="content">LV03</span><span class="delimiter">'</span></span>
+                    option <span class="string"><span class="delimiter">'</span><span class="content">LV95</span><span class="delimiter">'</span></span>
+                }
+            }
+            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--strokeArcs</span><span class="delimiter">&quot;</span></span>, {
+                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">checked</span>: <span class="string"><span class="delimiter">'</span><span class="content">checked</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">strokeArcs</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">strokeArcs</span><span class="delimiter">'</span></span>
+            }
+            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--skipPolygonBuilding</span><span class="delimiter">&quot;</span></span>, {
+                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">skipPolygonBuilding</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">skipPolygonBuilding</span><span class="delimiter">'</span></span>
+            }
+            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--nameByTopic</span><span class="delimiter">&quot;</span></span>, {
+                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">checked</span>: <span class="string"><span class="delimiter">'</span><span class="content">checked</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">nameByTopic</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">nameByTopic</span><span class="delimiter">'</span></span>
+            }
+            label <span class="string"><span class="delimiter">'</span><span class="content">File: </span><span class="delimiter">'</span></span>, {
+                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">file</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">file</span><span class="delimiter">'</span></span>
+            }
+            input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">submit</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">submit</span><span class="delimiter">'</span></span>, <span class="key">value</span>: <span class="string"><span class="delimiter">'</span><span class="content">Send to server</span><span class="delimiter">'</span></span>
+        }
+    }
+}</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Das sind ganz schön nach 90er-Jahre aus, aber es fehlt schliesslich auch jegliches Styling:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p7/ili2gpkg_html_form.png" alt="ili2gpkg upload formular">
+</div>
+</div>
+<div class="paragraph">
+<p>Von den unzähligen Programmoptionen lassen wir nur vier zu, die der Anwender via Webformular auswählen kann:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>--defaultSrsCode</code>: Entweder LV03 oder LV95.</p>
+</li>
+<li>
+<p><code>--skipPolygonBuilding</code>: Falls gewünscht, wird die Flächenbildung für Polygone nicht gemacht und es bleiben &laquo;Spaghetti&raquo;-Daten. Dies kann sehr praktisch für die Verifikation von Datenlieferungen sein. Bei der Flächenbildung <a href="http://www.sogeo.services/blog/2015/10/03/interlis-leicht-gemacht-number-5.html">bereinigt</a> ili2gpkg zulässige Overlaps, um OGC-konforme Geometrien zu erhalten. Um jedoch wirklich die Original-Geometrien zu erhalten und diese bei Grenzfällen besser beurteilen zu können, lohnt es sich manchmal nur die Linien zu betrachten.</p>
+</li>
+<li>
+<p><code>--strokeArcs</code>: Kreisbogen werden segmentiert.</p>
+</li>
+<li>
+<p><code>--nameByTopic</code>: Die Tabellen in der GeoPackage-Datenbank werden nach dem Muster <code>Topicname_Classname</code> benannt.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Wie man dem Groovy-Skript resp. der HTML-Datei entnehmen kann, ist <code>do_ili2gpkg.groovy</code> das Groovy-Skript, das beim Senden aufgerufen wird. Dieses übernimmt die eigentliche Umwandlung INTERLIS &#8594; GeoPackage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+37
+38
+39
+<strong>40</strong>
+41
+42
+43
+44
+45
+46
+47
+48
+49
+<strong>50</strong>
+51
+52
+53
+54
+55
+56
+57
+58
+59
+<strong>60</strong>
+61
+62
+63
+64
+65
+66
+67
+68
+69
+<strong>70</strong>
+71
+72
+73
+74
+75
+76
+77
+78
+79
+<strong>80</strong>
+81
+82
+83
+84
+85
+86
+87
+88
+89
+<strong>90</strong>
+91
+92
+93
+94
+95
+96
+97
+98
+99
+<strong>100</strong>
+101
+102
+103
+104
+105
+106
+107
+108
+109
+<strong>110</strong>
+111
+112
+113
+114
+115
+116
+117
+118
+119
+<strong>120</strong>
+121
+122
+123
+124
+125
+126
+127
+128
+129
+<strong>130</strong>
+131
+132
+133
+134
+135
+136
+137
+138
+139
+<strong>140</strong>
+141
+142
+143
+144
+145
+146
+147
+148
+149
+<strong>150</strong>
+151
+152
+153
+154
+155
+156
+157
+158
+159
+<strong>160</strong>
+161
+162
+163
+164
+165
+166
+167
+168
+169
+<strong>170</strong>
+171
+172
+173
+174
+175
+176
+177
+178
+179
+<strong>180</strong>
+181
+182
+183
+184
+185
+186
+187
+188
+189
+<strong>190</strong>
+191
+</pre></td>
+  <td class="code"><pre><span class="annotation">@Grapes</span>([
+   <span class="annotation">@GrabResolver</span>(name=<span class="string"><span class="delimiter">'</span><span class="content">catais.org</span><span class="delimiter">'</span></span>, root=<span class="string"><span class="delimiter">'</span><span class="content">http://www.catais.org/maven/repository/release/</span><span class="delimiter">'</span></span>, m2Compatible=<span class="string"><span class="delimiter">'</span><span class="content">true</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">commons-fileupload</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">commons-fileupload</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">1.3.1</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">commons-io</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">commons-io</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">2.4</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">org.xerial</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">sqlite-jdbc</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">3.8.11.2</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2c:4.5.21</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2gpkg:3.0.0</span><span class="delimiter">'</span></span>),
+   <span class="comment">//@GrabConfig(systemClassLoader = true)</span>
+])
+
+<span class="keyword">import</span> <span class="include">javax.servlet.http.HttpServletResponse</span>
+<span class="keyword">import</span> <span class="include">javax.servlet.ServletOutputStream</span>
+<span class="keyword">import</span> <span class="include">java.util.logging.Logger</span>
+<span class="keyword">import</span> <span class="include">java.nio.file.Path</span>
+<span class="keyword">import</span> <span class="include">java.nio.file.Files</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.io.IOUtils</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.io.FilenameUtils</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.io.FileUtils</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.FileItem</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.util.Streams</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.servlet.ServletFileUpload</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.disk.DiskFileItemFactory</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.FileUploadException</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2db</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2dbException</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.gui.Config</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.mapping.NameMapping</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.basics.logging.EhiLogger</span>
+
+<span class="predefined-type">Logger</span> logger = <span class="predefined-type">Logger</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">do_ili2gpkg.groovy</span><span class="delimiter">&quot;</span></span>)
+logger.setUseParentHandlers(<span class="predefined-constant">true</span>)
+logger.info (<span class="string"><span class="delimiter">&quot;</span><span class="content">Starts at: </span><span class="delimiter">&quot;</span></span> + <span class="keyword">new</span> <span class="predefined-type">Date</span>())
+
+<span class="keyword">if</span> (ServletFileUpload.isMultipartContent(request)) {
+    ServletFileUpload upload = <span class="keyword">new</span> ServletFileUpload(<span class="keyword">new</span> DiskFileItemFactory())
+    <span class="comment">//upload.setSizeMax(52428800) // 50MB</span>
+    upload.setSizeMax(<span class="integer">2</span>*<span class="integer">5242880</span>) <span class="comment">// 2*5MB</span>
+
+    <span class="predefined-type">List</span>&lt;FileItem&gt; items = <span class="predefined-constant">null</span>
+
+    <span class="keyword">try</span> {
+        items = upload.parseRequest(request);
+    } <span class="keyword">catch</span> (FileUploadException e) {
+        logger.severe e.getMessage()
+        response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage())
+        <span class="keyword">return</span>
+    }
+
+    <span class="keyword">for</span> (item <span class="keyword">in</span> items) {
+        <span class="keyword">if</span> (item.isFormField()) { <span class="comment">// 'normal' form fields</span>
+            <span class="predefined-type">String</span> fieldName = item.getFieldName()
+            <span class="predefined-type">String</span> value = item.getString()
+
+            params[fieldName] = value
+            logger.info fieldName.toString()
+            logger.info value.toString()
+            logger.info item.getClass().toString()
+
+        } <span class="keyword">else</span> { <span class="comment">// files</span>
+            <span class="predefined-type">String</span> fieldName = item.getFieldName()
+            <span class="predefined-type">String</span> fileName = FilenameUtils.getName(item.getName())
+
+            <span class="keyword">if</span> (fileName.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)) {
+                <span class="comment">// return 'bad request' (400) if no file was sent</span>
+                <span class="predefined-type">String</span> errorMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">No file chosen.</span><span class="delimiter">&quot;</span></span>
+                logger.severe errorMessage
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage)
+                <span class="keyword">return</span>
+            }
+
+            <span class="comment">// get the file as input stream</span>
+            <span class="predefined-type">InputStream</span> fileContent = item.getInputStream()
+
+            <span class="comment">// create random temporary directory</span>
+            <span class="predefined-type">String</span> tmpDirPrefix = <span class="string"><span class="delimiter">&quot;</span><span class="content">ili2gpkg_</span><span class="delimiter">&quot;</span></span>;
+            Path tmpDir = Files.createTempDirectory(tmpDirPrefix);
+
+            <span class="comment">// copy input stream into target file</span>
+            <span class="predefined-type">String</span> targetFileName = fileName
+            <span class="predefined-type">File</span> targetFile = <span class="keyword">new</span> <span class="predefined-type">File</span>(tmpDir.toString() + <span class="predefined-type">File</span>.separator + targetFileName)
+
+            <span class="keyword">try</span> {
+                FileUtils.copyInputStreamToFile(fileContent, targetFile)
+                logger.info <span class="string"><span class="delimiter">&quot;</span><span class="content">Uploaded file: </span><span class="delimiter">&quot;</span></span> + targetFile.toString()
+                logger.info <span class="string"><span class="delimiter">&quot;</span><span class="content">Uploaded file size [KB]: </span><span class="delimiter">&quot;</span></span> + (<span class="type">int</span>) (targetFile.length() / <span class="integer">1024</span>)
+            } <span class="keyword">catch</span> (java.io.IOException e) {
+                FileUtils.deleteDirectory(tmpDir.toFile())
+
+                logger.severe e.getMessage()
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
+                <span class="keyword">return</span>
+            }
+
+            <span class="comment">// create configuration for ili2gpkg</span>
+            <span class="keyword">def</span> config = initConfig(params)
+
+            <span class="comment">// Set the name of the geopackage.</span>
+            <span class="comment">// Same name as input file but with *.gpkg extension instead.</span>
+            <span class="predefined-type">String</span> gpkgFileName = FilenameUtils.removeExtension(targetFileName) + <span class="string"><span class="delimiter">&quot;</span><span class="content">.gpkg</span><span class="delimiter">&quot;</span></span>
+            gpkgFullFileName = tmpDir.toString() + <span class="predefined-type">File</span>.separator + gpkgFileName
+            config.setDbfile(gpkgFullFileName)
+            config.setDburl(<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:sqlite:</span><span class="delimiter">&quot;</span></span>+config.getDbfile())
+            config.setXtffile(targetFile.toString())
+
+            <span class="predefined-type">String</span> fileExtension = FilenameUtils.getExtension(targetFileName)
+            <span class="predefined-type">System</span>.out.println(fileExtension)
+            <span class="keyword">if</span> (fileExtension.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">itf</span><span class="delimiter">&quot;</span></span>)) {
+                config.setItfTranferfile(<span class="predefined-constant">true</span>)
+            }
+
+            <span class="comment">// Now create the GeoPackage.</span>
+            <span class="keyword">try</span> {
+                <span class="comment">//EhiLogger.getInstance().setTraceFilter(false)</span>
+                Ili2db.runImport(config, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)
+            } <span class="keyword">catch</span> (Ili2dbException e) {
+                logger.severe e.getMessage()
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
+                <span class="keyword">return</span>
+            }
+
+            <span class="comment">// Send GeoPackage to browser.</span>
+            response.setContentType(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/x-sqlite3</span><span class="delimiter">&quot;</span></span>)
+            response.setHeader(<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Disposition</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">attachment; filename=</span><span class="delimiter">&quot;</span></span> + gpkgFileName);
+            ServletOutputStream os = response.getOutputStream();
+            <span class="predefined-type">FileInputStream</span> fis = <span class="keyword">new</span> <span class="predefined-type">FileInputStream</span>(gpkgFullFileName);
+            <span class="keyword">try</span> {
+                <span class="type">int</span> buffSize = <span class="integer">1024</span>
+                <span class="type">byte</span><span class="type">[]</span> buffer = <span class="keyword">new</span> <span class="type">byte</span>[buffSize]
+                <span class="type">int</span> len
+                <span class="keyword">while</span> ((len = fis.read(buffer)) != -<span class="integer">1</span>) {
+                    os.write(buffer, <span class="integer">0</span>, len)
+                    os.flush()
+                    response.flushBuffer()
+                }
+            } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+                logger.severe e.getMessage()
+            }
+            <span class="keyword">finally</span> {
+                FileUtils.deleteDirectory(tmpDir.toFile())
+            }
+        }
+    }
+}
+
+<span class="keyword">def</span> <span class="function">initConfig</span>(params) {
+    <span class="keyword">def</span> config = <span class="keyword">new</span> Config()
+    config.setModeldir(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://models.geo.admin.ch/;http://models.geo.gl.ch/;http://www.catais.org/models</span><span class="delimiter">&quot;</span></span>)
+    config.setModels(Ili2db.XTF)
+    config.setSqlNull(<span class="string"><span class="delimiter">&quot;</span><span class="content">enable</span><span class="delimiter">&quot;</span></span>);
+    config.setDefaultSrsAuthority(<span class="string"><span class="delimiter">&quot;</span><span class="content">EPSG</span><span class="delimiter">&quot;</span></span>);
+    config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">21781</span><span class="delimiter">&quot;</span></span>);
+    config.setMaxSqlNameLength(<span class="predefined-type">Integer</span>.toString(NameMapping.DEFAULT_NAME_LENGTH));
+    config.setIdGenerator(ch.ehi.ili2db.base.TableBasedIdGen.class.getName());
+    config.setInheritanceTrafo(config.INHERITANCE_TRAFO_SMART1);
+    config.setCatalogueRefTrafo(Config.CATALOGUE_REF_TRAFO_COALESCE);
+    config.setMultiSurfaceTrafo(Config.MULTISURFACE_TRAFO_COALESCE);
+    config.setMultilingualTrafo(Config.MULTILINGUAL_TRAFO_EXPAND);
+
+    config.setGeometryConverter(ch.ehi.ili2gpkg.GpkgColumnConverter.class.getName());
+    config.setDdlGenerator(ch.ehi.sqlgen.generator_impl.jdbc.GeneratorGeoPackage.class.getName());
+    config.setJdbcDriver(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.sqlite.JDBC</span><span class="delimiter">&quot;</span></span>);
+    config.setIdGenerator(ch.ehi.ili2db.base.TableBasedIdGen.class.getName());
+    config.setIli2dbCustomStrategy(ch.ehi.ili2gpkg.GpkgMapping.class.getName());
+    config.setOneGeomPerTable(<span class="predefined-constant">true</span>);
+
+    <span class="keyword">for</span> (param <span class="keyword">in</span> params) {
+        <span class="keyword">def</span> key = param.key
+
+        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">strokeArcs</span><span class="delimiter">&quot;</span></span>)) {
+            config.setStrokeArcs(config.STROKE_ARCS_ENABLE)
+        }
+
+        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">nameByTopic</span><span class="delimiter">&quot;</span></span>)) {
+            config.setNameOptimization(config.NAME_OPTIMIZATION_TOPIC)
+        }
+
+        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">skipPolygonBuilding</span><span class="delimiter">&quot;</span></span>)) {
+            config.setDoItfLineTables(<span class="predefined-constant">true</span>);
+            config.setAreaRef(config.AREA_REF_KEEP);
+        }
+
+        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">reference_frame</span><span class="delimiter">&quot;</span></span>)) {
+            <span class="keyword">if</span> (param.value.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">LV95</span><span class="delimiter">&quot;</span></span>)) {
+                config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">2056</span><span class="delimiter">&quot;</span></span>);
+            }
+        }
+    }
+    <span class="keyword">return</span> config
+}
+
+logger.info (<span class="string"><span class="delimiter">&quot;</span><span class="content">Stops at: </span><span class="delimiter">&quot;</span></span> + <span class="keyword">new</span> <span class="predefined-type">Date</span>())</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 1 - 9</strong>: Die notwendigen Bibliotheken werden mittels <a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">Grape</a> einmalig heruntergeladen. Die <code>*.jar</code>-Dateien landen dann im <code>.groovy/grapes/</code>-Verzeichnis des Apache-Tomcat-Users und nicht etwa im <code>lib</code>-Verzeichnis von Apache-Tomcat selbst. Der Befehl <code>@GrabConfig(systemClassLoader = true)</code> scheint nicht notwendig zu sein, wenn das Skript als Groovlet in Apache Tomcat läuft.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 11 - 28</strong>: Notwendige Imports werden gemacht. Für den File-Upload verwenden wir die Apache-Commons-Bibliotheken. Ab <a href="http://docs.oracle.com/javaee/6/tutorial/doc/glrbb.html">Servlet-Spezifikation 3.0</a> gibt es dafür native Unterstützung. Heruntergebrochen auf ein Groovlet habe ich das aber nicht zum Laufen gebracht. Daher wird hier wieder die old-school-Methode verwendet.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 37</strong>: Die maximale Grösse der Upload-Datei ist auf 10MB beschränkt.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 49 - 58</strong>: &laquo;Normale&raquo; Parameter aus dem HTML-Formular werden in einer <code>Map</code> gespeichert. Sie werden später für die Konfiguration von ili2gpkg verwendet.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 59 - 92</strong>: Die gelieferte Datei wird entgegengenommen und in einem temporären Verzeichnis gespeichert.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 99 - 119</strong>: Hier findet die eigentliche Umwandlung der INTERLIS-Transferdatei in die GeoPackage-Datei statt. Die <code>Config</code>-Klasse wird mit den übermittelten Parameter aus dem HTML-Formular in einer separaten Methode konfiguriert. Ein INTERLIS-Modell oder ein -Repository kann nicht übermittelt werden. Das Modell wird aus der Transferdatei selber ermittelt (Zeile 148) und in den drei hardcodierten Repositories gesucht.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 121 - 140</strong>: Zu guter Letzt wird die GeoPackage-Datei an den Browser zurückgesendet. Der Benutzer muss sie nur noch speichern.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p7/ili2gpkg_save_as.png" alt="ili2gpkg download">
+</div>
+</div>
+<div class="paragraph">
+<p>Das Resultat sieht genauso aus wie wir es von ili2pg gewohnt sind. Nur halt in einer GeoPackage-Datei:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p7/ili2gpkg_sqliteman.png" alt="ili2gpkg sqliteman">
+</div>
+</div>
+<div class="paragraph">
+<p>Anschauen kann man sich das Resultat anschliessend in QGIS:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p7/ili2gpkg_qgis.png" alt="ili2gpkg qgis">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Achtung</strong>: ili2gpkg setzt den <em>Layer-Extent</em> gemäss dem INTERLIS-Modell. Beim CH-Modell der amtlichen Vermessung entspricht das der Bounding-Box der gesamten Schweiz. Wenn man in QGIS &laquo;Zoom to Layer Extent&raquo; wählt, zoomt QGIS auf die gesamte Schweiz. Einerseits verwirrend, andererseits eigentlich korrekt. Aber darüber kann man sich sicher lange unterhalten.</p>
+</div>
+<div class="paragraph">
+<p>In Apache Tomcat sind drei Anpassungen vorzunehmen. Einerseits muss konfiguriert werden, dass alle <code>*.groovy</code>-Dateien eines Verzeichnisses als Groovlet ausgeführt werden. Dies wird in der <code>web.xml</code>-Datei gemacht (im Root-Element):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td>
+  <td class="code"><pre><span class="tag">&lt;servlet&gt;</span>
+    <span class="tag">&lt;servlet-name&gt;</span>Groovy<span class="tag">&lt;/servlet-name&gt;</span>
+    <span class="tag">&lt;servlet-class&gt;</span>groovy.servlet.GroovyServlet<span class="tag">&lt;/servlet-class&gt;</span>
+<span class="tag">&lt;/servlet&gt;</span>
+
+<span class="tag">&lt;servlet-mapping&gt;</span>
+    <span class="tag">&lt;servlet-name&gt;</span>Groovy<span class="tag">&lt;/servlet-name&gt;</span>
+    <span class="tag">&lt;url-pattern&gt;</span>*.groovy<span class="tag">&lt;/url-pattern&gt;</span>
+<span class="tag">&lt;/servlet-mapping&gt;</span></pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Zudem wollen wir dieses Verzeichnis an einem beliebigen Ort im Filesystem haben und nicht unterhalb des Tomcat-Installationsverzeichnisses. Dazu setzen wir einen &laquo;Context Path&raquo; in der Datei <code>server.xml</code> unter <code>&lt;Host&gt;</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+</pre></td>
+  <td class="code"><pre><span class="tag">&lt;Host</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>  <span class="attribute-name">appBase</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">webapps</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">unpackWARs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">autoDeploy</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+  <span class="comment">&lt;!-- SingleSignOn valve, share authentication between web applications
+       Documentation at: /docs/config/valve.html --&gt;</span>
+  <span class="comment">&lt;!--
+  &lt;Valve className=&quot;org.apache.catalina.authenticator.SingleSignOn&quot; /&gt;
+  --&gt;</span>
+
+  <span class="comment">&lt;!-- Access log processes all example.
+       Documentation at: /docs/config/valve.html
+       Note: The pattern used is equivalent to using pattern=&quot;common&quot; --&gt;</span>
+  <span class="tag">&lt;Valve</span> <span class="attribute-name">className</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.apache.catalina.valves.AccessLogValve</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">directory</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">logs</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">prefix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost_access_log</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">suffix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">.txt</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">%h %l %u %t </span><span class="entity">&amp;quot;</span><span class="content">%r</span><span class="entity">&amp;quot;</span> <span class="content">%s %b</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+ <span class="comment">&lt;!-- Groovlets --&gt;</span>
+ <span class="tag">&lt;Context</span> <span class="attribute-name">path</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/groovy/ili2gpkg</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">docBase</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/Projekte/ili2gpkg_service/scripts</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">reloadable</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+
+<span class="tag">&lt;/Host&gt;</span></pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Einzig die Zeilen 17 und 18 stammen von mir, alles Andere sind Default-Einstellungen. Der Eintrag bewirkt jetzt, dass der Request <a href="http://www.example.com/groovy/ili2gpkg/mein_skript.groovy" class="bare">http://www.example.com/groovy/ili2gpkg/mein_skript.groovy</a> im Verzeichnis <code>/home/stefan/Projekte/ili2gpkg_service/scripts/</code> das Groovy-Skript <code>mein_skript.groovy</code> sucht und, sofern vorhanden, ausführt.</p>
+</div>
+<div class="paragraph">
+<p>Als letztes muss noch die <code>groovy-all-x.y.z.jar</code> in das <code>lib</code>-Verzeichnis von Apache Tomcat kopiert werden. Dieses Groovy-&laquo;Sorglos&raquo;-Paket liegt dem <a href="http://groovy-lang.org/download.html">Download</a> bei.</p>
+</div>
+<div class="paragraph">
+<p>Ein Live-Beispiel gibt es <a href="http://www.sogeo.services/groovy/ili2gpkg/ili2gpkg.groovy">hier</a> (mspublic / mspublic).</p>
+</div></p>
+
+			<hr />
+
+  			<h1><a href="blog/2015/11/28/interlis-leicht-gemacht-number-6.html">Interlis leicht gemacht #6</a></h1>
+  			<p class="date">28 November 2015</p>
+  			<p><div class="paragraph">
+<p>Die <a href="http://www.cadastre.ch/internet/kataster/de/home/av.html">Eidgenössische Vermessungsdirektion</a> aggregiert verschiedene Metadaten der amtlichen Vermessung. Dazu zähle ich:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://models.geo.admin.ch/V_D/LowDistortionAreas_LV95_ili2.ili">Spannungsarme Gebiete</a></p>
+</li>
+<li>
+<p><a href="http://models.geo.admin.ch/V_D/AMO_Grafik_LV95_e.ili">Stand der amtlichen Vermessung</a></p>
+</li>
+<li>
+<p><a href="http://models.geo.admin.ch/V_D/AMO_Grafik_LV95_PNF.ili">Stand der Periodischen Nachführung</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die Daten werden von den Kantonen an die V+D geliefert und anschliessend werden sie publiziert:</p>
+</div>
+<div class="paragraph">
+<p><iframe src='https://map.geo.admin.ch/embed.html?topic=ech&lang=de&bgLayer=ch.swisstopo.swissimage&layers_opacity=0.75,0.75,0.75&X=249600.00&Y=628300.00&zoom=2&layers=ch.swisstopo-vd.spannungsarme-gebiete,ch.swisstopo-vd.geometa-periodische_nachfuehrung,ch.swisstopo-vd.geometa-standav&layers_visibility=false,true,false' width='700' height='500' frameborder='0' style='border:0'></iframe></p>
+</div>
+<div class="paragraph">
+<p>Der &laquo;Stand der amtlichen Vermessung&raquo; war der erste Metadatensatz, den die Kantone liefern mussten. Das <a href="http://models.geo.admin.ch/V_D/AMO_Grafik_LV95_e.ili">dazugehörige INTERLIS-Modell</a> ist einfach und besteht aus zwei Tabellen: <code>Actual_Status</code> und <code>Actual_Status_Geometry</code>. Die Herausforderung zu diesem Zeitpunkt war aber: Wie kriege ich meine Daten in eine INTERLIS-Transferdatei? Die Lösung war dann nicht so prickelnd: Ich schrieb einen 1:1-Prozessor, der mir die Transferdatei erstellt. Ein Geknorze sondergleichen.</p>
+</div>
+<div class="paragraph">
+<p>Heute geht das mit <a href="http://www.eisenhutinformatik.ch/interlis/ili2pg/">ili2pg</a> und <a href="http://www.qgis.org">QGIS</a> viel leichter und eleganter:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Schema mit Tabellen in PostgreSQL/Postgis anlegen</p>
+</li>
+<li>
+<p>Daten erfassen</p>
+</li>
+<li>
+<p>Daten exportieren</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Die Schritte (1) und (3) übernimmt ili2pg für uns. Die Daten erfassen müssen wir schon noch selber. Mit <a href="http://www.qgis.org">QGIS</a> macht aber auch diese Arbeit Spass und geht leicht von der Hand. QGIS hat sehr mächtige <a href="http://docs.qgis.org/2.8/en/docs/user_manual/working_with_vector/vector_properties.html#fields-menu">Formularfunktionen</a> und man kann sich damit so etwas wie eine &laquo;Fachschale&raquo; zusammenklicken.</p>
+</div>
+<div class="paragraph">
+<p>Für den Datensatz &laquo;Stand der Periodischen Nachführung&raquo; soll nun der ganze Prozess exemplarisch durchgespielt werden. Zuerst legen wir mit ili2pg die leeren Tabellen in der Datenbank an:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>java -jar ili2pg.jar --schemaimport --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mit den Optionen <code>--defaultSrsAuth EPSG</code> und <code>--defaultSrsCode 2056</code> wird ili2pg mitgeteilt, dass die Geometrie-Tabellen in der Datenbank im Bezugsrahmen LV95 angelegt werden sollen. <code>--createEnumTabs</code> erstellt für Aufzähltypen eine eigene Tabelle. Diese Aufzähltyp-Tabellen sind später wichtig für die Arbeit mit QGIS.</p>
+</div>
+<div class="paragraph">
+<p>Das Resultat sieht relativ unspektakulär aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_pgadmin01.png" alt="ili2pg schemaimport">
+</div>
+</div>
+<div class="paragraph">
+<p>Es gibt zwei Tabellen im Modell resp. in der Datenbank: <code>pnf_pnf</code> und <code>pnf_pnf_geometry</code>. Die erste Tabelle beinhaltet alle Sachattribute, die zweite die Geometrie dazu. Zusätzlich wird in der Datenbank für jeden Aufzähltyp eine Tabelle angelegt. Der Inhalt der Tabelle <code>amo_grafik_lv95_pnf_cantons</code> sieht - wenig überraschend - so aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_pgadmin02.png" alt="Aufzähltypen Kantone">
+</div>
+</div>
+<div class="paragraph">
+<p>Das Gute an ili2pg ist, dass man nachträglich auch ein paar Veränderungen/Verfeinerungen in den Datenbanktabellen vornehmen darf, die dem Datenerfasser das Leben erleichtern:</p>
+</div>
+<div class="paragraph">
+<p>Das Modell gibt vor, dass die Kombination der Attribute <code>canton</code> und <code>id</code> eindeutig sein muss. In der Datenbanktabelle fügen wir  einen UNIQUE-Constraint hinzu:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre><span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ADD</span> <span class="type">CONSTRAINT</span> pnf_pnf_ili_unique <span class="directive">UNIQUE</span> (canton, id);</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Des Weiteren erstellen wir zwei Sequenzen, damit der Primary Key in den Tabellen automatisch nachführt wird:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+</pre></td>
+  <td class="code"><pre><span class="comment">-- sequence for t_id &quot;pnf_pnf&quot;</span>
+<span class="class">CREATE</span> SEQUENCE av_pnf_stand_amo.pnf_t_id_seq;
+<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="directive">DEFAULT</span> nextval(<span class="string"><span class="delimiter">'</span><span class="content">av_pnf_stand_amo.pnf_t_id_seq</span><span class="delimiter">'</span></span>);
+<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>;
+<span class="class">ALTER</span> SEQUENCE av_pnf_stand_amo.pnf_t_id_seq OWNED <span class="keyword">BY</span> av_pnf_stand_amo.pnf_pnf.t_id;
+
+<span class="comment">-- sequence for t_id &quot;pnf_pnf_geometry&quot;</span>
+<span class="class">CREATE</span> SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq;
+<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf_geometry <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="directive">DEFAULT</span> nextval(<span class="string"><span class="delimiter">'</span><span class="content">av_pnf_stand_amo.pnf_geometry_t_id_seq</span><span class="delimiter">'</span></span>);
+<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf_geometry <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>;
+<span class="class">ALTER</span> SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq OWNED <span class="keyword">BY</span> av_pnf_stand_amo.pnf_pnf_geometry.t_id;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Somit wäre Schritt (1) erledigt und wir können die Daten in QGIS erfassen. Für die Datenerfassung in QGIS werden die Tabellen der Aufzähltypen, die eigentlichen Datentabellen sowie ein Datensatz der Gemeindegrenzen benötigt:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis01.png" alt="QGIS Schritt 1">
+</div>
+</div>
+<div class="paragraph">
+<p>Zuallererst muss die <a href="http://blog.vitu.ch/10112013-1201/qgis-relations">Relation</a> zwischen dem Layer <code>pnf_pnf</code> und <code>pnf_pnf_geometry</code> hergestellt werden. Somit weiss QGIS, dass die beiden Tabellen mit einer 1:n-Relation verknüpft sind:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis02.png" alt="QGIS Schritt 2">
+</div>
+</div>
+<div class="paragraph">
+<p>Anschliessend basteln wir uns mit den verschiedenen Editwidgets ein schönes Formular für die effiziente Datenerfassung:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis03.png" alt="QGIS Schritt 3">
+</div>
+</div>
+<div class="paragraph">
+<p>Für die Attribute <code>canton</code>, <code>practice</code> und <code>reference_frame</code> ist das Editwidget vom Typ &laquo;Value Relation&raquo; zu wählen. Als Inputlayer wählen wir die jeweilige Aufzähltyp-Tabelle, z.B. bei <code>cantons</code> ist der Layer <code>amo_grafik_lv95_pnf_cantons</code> zu wählen. Für das Attribut <code>year</code> wählen wir den Typ &laquo;Range&raquo; und wählen den Bereich gemäss INTERLIS-Modell (2000 bis 2100).</p>
+</div>
+<div class="paragraph">
+<p>Anstelle der automatisch generierten Eingabemake, kann man sich mit Drag 'n' Drop seine eigene Maske zusammenstöpseln. Wir verwenden diese Möglichkeit, um die 1:n-Relation in dieser Eingabemaske nicht darzustellen:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis04.png" alt="QGIS Schritt 4">
+</div>
+</div>
+<div class="paragraph">
+<p>Wenn wir anschliessend ein Feature im Layer <code>pnf_pnf</code> erfassen, sieht das Formular wie folgt aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis05.png" alt="QGIS Schritt 5">
+</div>
+</div>
+<div class="paragraph">
+<p>Beim Attribut <code>cantons</code> haben wir den Typ &laquo;Value Relation&raquo; gewählt. Standardmässig erscheint bei diesem Typ eine Combobox. Wählt man jedoch die Option &laquo;Use Completer&raquo; erscheint keine Combobox, sondern es werden mögliche Werte aus der Aufzähltyp-Tabelle live vorgeschlagen. Dank den Editwidget-Typen wie &laquo;Value Relation&raquo; oder &laquo;Range&raquo; können so unnötige Tippfehler bei der Datenerfassung vermieden werden resp. es können gar keine nicht vorhandene Werte eingetippt werden.</p>
+</div>
+<div class="paragraph">
+<p>Eine vollständig ausgefüllte Eingabemaske:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis06.png" alt="QGIS Schritt 6">
+</div>
+</div>
+<div class="paragraph">
+<p>Als nächstes müssen wir zu diesem PNF-Objekt den dazugehörigen Perimeter erfassen. Als Vorarbeit haben wir in QGIS die Relation definiert: Jedes PNF-Objekt kann gemäss INTERLIS-Modell mehrere Perimeter aufweisen. Also eine klassische 1:n-Beziehung. Interessant ist aber die Frage: wie kann ich einen Perimeter (den ich der Tabelle <code>pnf_pnf_geometry</code> erfassen muss) korrekt einem Objekt der Tabelle <code>pnf_pnf</code> zuweisen?</p>
+</div>
+<div class="paragraph">
+<p>Dazu wählen wir für den Layer <code>pnf_pnf_geometry</code> beim Attribut <code>afrom</code> (entspricht dem Fremdschlüssel) den Widgettyp &laquo;Relation Reference&raquo;:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis07.png" alt="QGIS Schritt 7">
+</div>
+</div>
+<div class="paragraph">
+<p>Die Datenerfassung läuft dann wie folgt ab: Wir kopieren eine oder mehrere Gemeindegrenzen aus dem Layer mit den Gemeindengrenzen in den Layer <code>pnf_pnf_geometry</code>. Anschliessend erfassen wir dazu die Daten. In diesem Fall ist das nur der Primary Key <code>t_id</code> (interessiert uns ja nicht, da dieser automatisch vergeben wird) und das &laquo;Beziehungsattribut&raquo; (aka Fremdschlüssel) <code>afrom</code>. Mit einer Combobox kann man das Objekt des Layers <code>pnf_pnf</code> auswählen, dem man die Geometrie zuweisen will.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis08.png" alt="QGIS Schritt 8">
+</div>
+</div>
+<div class="paragraph">
+<p>Blöd nur, dass da bloss der Primary Key steht. Damit kann man meistens nichts anfangen. Viel besser wäre es, wenn man ein anderes Attribut darstellen könnte. Kann man. Ändern kann man das bei den Einstellungen im &laquo;Relation Reference&raquo;-Widget bei &laquo;Display expression&raquo;. Standardmässig steht da <code>COALESCE("t_id", '&lt;NULL&gt;')</code>. Anstelle von <code>t_id</code> schreibt man das gewünschte Attribut hin. In unserem Fall <code>description</code>:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis10.png" alt="QGIS Schritt 10">
+</div>
+</div>
+<div class="paragraph">
+<p>Möglich sind auch Kombinationen der Attribute resp. alles was <a href="http://docs.qgis.org/2.8/en/docs/user_manual/working_with_vector/expression.html">QGIS Expressions</a> hergibt. Die Zuweisung der Geometrie zu einem Objekt ist jetzt viel einfacher:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis09.png" alt="QGIS Schritt 9">
+</div>
+</div>
+<div class="paragraph">
+<p>Die Geometrien möchte ich pro Jahr anders einfärben. Dazu müsste das Attribut <code>year</code> im Layer <code>pnf_pnf_geometry</code> vorhanden sein. Dieses Attribut ist aber im &laquo;Parent&raquo;-Layer <code>pnf_pnf</code> vorhanden. Früher hat man sich dann mit einer View o.ä. geholfen. Das ist nicht mehr nötig. Mit der Kombination aus  <a href="https://docs.qgis.org/2.8/en/docs/user_manual/working_with_vector/field_calculator.html">Feldrechner</a> und QGIS Expressions kann man virtuelle Felder mit Attributwerten aus anderen Layern erstellen. Die dazu benötige Expression: <code>attribute(get_feature('pnf_pnf','t_id',afrom),'year')</code>. Die Syntax ist unter Umständen ein klein wenig gewöhnungsbedürftig:</p>
+</div>
+<div class="paragraph">
+<p>Die erste Funktion <code>get_feature</code> holt sich ein Feature aus einem anderen Layer (hier: <code>pnf_pnf</code>). Der zweite und dritte Funktionsparameter beschreiben die jeweiligen Attribute der beiden Layer über die gejoined werden soll. Achtung: beim layereigenen Attribut sind keine Quotes notwendig. Die zweite Funktion <code>attribute</code> extrahiert aus dem gefundenen &laquo;Fremd&raquo;-Feature ein Attribut. Der Parameter ist der Attributsname.</p>
+</div>
+<div class="paragraph">
+<p>Das Ergebnis dieser Expression in Kombination mit dem Feldrechner ist ein virtuelles Feld im Layer <code>pnf_pnf_geometry</code>, das ich zum Einfärben oder Beschriften verwenden kann:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis11.png" alt="QGIS Schritt 11">
+</div>
+</div>
+<div class="paragraph">
+<p>Sind alle PNF-Objekte und die dazugehörigen Perimeter erfasst, kann mit ili2pg die INTERLIS-Transferdatei erzeugt werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>java -jar ili2pg.jar --export --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF stand_pnf_20151118.itf</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Das Resultat ist eine modellkonforme INTERLIS1-Transferdatei:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_itf01.png" alt="ITF Output">
+</div>
+</div>
+<div class="paragraph">
+<p>Es hat sich dann leider herausgestellt, dass die Lieferung aber pro PNF-Jahr erfolgen muss, dh. in jedem ITF dürfen nur PNF-Objekte resp. -Perimeter eines Jahres vorhanden sein. Und zusätzlich verwirrend: Das Attribut <code>reference_frame</code> beschreibt den Bezugsrahmen der erfassten Geometrien und nicht den Bezugsrahmen in dem die Periodische Nachführung durchgeführt worden ist. Nun gut. Was ich definitiv nicht will, ist pro Jahr ein DB-Schema. Aus diesem Grund erstelle ich ein &laquo;export&raquo;-Schema, das ich mit ein paar simplen SQL-Befehlen für jeweils ein Jahr abfülle und anschliessend mit ili2pg exportiere:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+</pre></td>
+  <td class="code"><pre><span class="class">DELETE</span> <span class="keyword">FROM</span> av_pnf_stand_amo_export.pnf_pnf_geometry;
+<span class="class">DELETE</span> <span class="keyword">FROM</span> av_pnf_stand_amo_export.pnf_pnf;
+
+<span class="class">INSERT</span> <span class="class">INTO</span> av_pnf_stand_amo_export.pnf_pnf (t_id, canton, id, description, practice, reference_frame, <span class="predefined-type">year</span>)
+<span class="class">SELECT</span> t_id, canton, id, description, practice, reference_frame, <span class="predefined-type">year</span>
+<span class="keyword">FROM</span> av_pnf_stand_amo.pnf_pnf
+<span class="keyword">WHERE</span> <span class="predefined-type">year</span> = <span class="integer">2015</span>;
+
+<span class="class">INSERT</span> <span class="class">INTO</span> av_pnf_stand_amo_export.pnf_pnf_geometry (t_id, afrom, perimeter)
+<span class="class">SELECT</span> g.t_id <span class="keyword">as</span> t_id, g.afrom, g.perimeter
+<span class="keyword">FROM</span> av_pnf_stand_amo.pnf_pnf <span class="keyword">as</span> p, av_pnf_stand_amo.pnf_pnf_geometry <span class="keyword">as</span> g
+<span class="keyword">WHERE</span> p.t_id = g.afrom
+<span class="keyword">AND</span> p.year = <span class="integer">2015</span>;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Fazit: Was früher knorzig und mühsam war, geht heute mit den richtigen Werkzeugen ruckzuck und entspannt vonstatten.</p>
+</div></p>
+
+			<hr />
+
+  			<h1><a href="blog/2015/10/18/state-of-wfs.html">State of WFS</a></h1>
+  			<p class="date">18 October 2015</p>
+  			<p><div class="paragraph">
+<p>Oder wie soll man WFS &laquo;richtig&raquo; nutzen? Eines vorweg: ich weiss es nicht. Ein Direktzugriffsverfahren auf Daten mit Filterfunktionen ist toll und sinnvoll. Aber für mich stellen sich einige Fragen in zwei Themenfeldern:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Interaktion zwischen Benutzer und Service</p>
+</li>
+<li>
+<p>Umgang mit grossen Datenmengen</p>
+</li>
+<li>
+<p>Und irgendwie eine Kombination von beidem.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die ganze Thematik mit <a href="http://docs.geoserver.org/stable/en/user/data/app-schema/index.html">Anwendungsschemen</a> und <a href="http://lists.osgeo.org/pipermail/mapserver-dev/2014-June/014087.html">komplexen Feature</a> lassen wir mal beiseite und gehen von good old <a href="https://www.google.ch/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;cad=rja&amp;uact=8&amp;ved=0CCEQFjAAahUKEwi17pPNuMzIAhWLVxoKHUvAC0E&amp;url=http%3A%2F%2Fportal.opengeospatial.org%2Ffiles%2F%3Fartifact_id%3D15201&amp;usg=AFQjCNGwftPpYIra3XPRMDwfqb-BGETqyw&amp;sig2=slYt5wNVI48Niy8Ri6TXnw">OGC SF-0</a> aus. Das heisst <a href="http://docs.geoserver.org/stable/en/user/data/app-schema/complex-features.html#simple-features">eine Tabelle aus der Datenbank wird zu einem WFS-Layer</a>, der mit einem <code>GetFeature</code>-Request heruntergeladen werden kann. Solche WFS-Server gibt es wie Sand am Mehr (<a href="http://geoserver.org/">GeoServer</a>, <a href="http://hub.qgis.org/projects/quantum-gis/wiki/qgis_server_tutorial">QGIS Server</a>, <a href="http://mapserver.org/">MapServer/TinyOWS</a>, <a href="http://www.deegree.org/">deegree</a>).</p>
+</div>
+<div class="paragraph">
+<p>Die Unterstützung in den Desktop-GIS wie z.B. <a href="http://www.qgis.org">QGIS</a> ist auf den ersten Blick nicht allzu übel. Unterstützt wird die Version 1.0.0. Das Einbinden von WFS-Layer ist einfach und ähnlich dem eines Postgis-Layers:</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe src="//www.youtube.com/embed/hgPlv4tUDGE?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+<div class="paragraph">
+<p>Im Video wird gezeigt, wie die Hoheitsgrenzen des Kantons Solothurn in QGIS geladen werden. &laquo;In QGIS geladen&raquo; bedeutet, dass die Vektordaten komplett vom WFS-Server heruntergeladen werden und in QGIS in einem Memory-Layer gespeichert werden. Wird QGIS geschlossen, werden die Daten nirgends auf dem Computer gespeichert und beim Öffnen des QGIS-Projektes werden die Daten vom WFS-Server <em>erneut</em> heruntergeladen.</p>
+</div>
+<div class="paragraph">
+<p>Soweit so gut. Die Hoheitsgrenzen werden zügig geladen. Es sind ja auch nur 110 Polygone. Auch das Nicht-Offline-Speichern und erneute Laden beim Öffnen des QGIS-Projektes hat was: So sind die Daten garantiert immer aktuell resp. entsprechen der Aktualität wie sie der Serviceprovider anbietet.</p>
+</div>
+<div class="paragraph">
+<p>Schauen wir uns die Bodenbedeckung der amtlichen Vermessung an. Das sind im Kanton Solothurn knapp 280'000 Polygone:</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe src="//www.youtube.com/embed/Neerm1dweZo?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+<div class="paragraph">
+<p>Wird der WFS-Layer genau gleich geladen wie die Hoheitsgrenzen wartet der Benutzer 1.5 Minuten auf die Antwort. Das QGIS Fenster ist blockiert und auf dem Server läuft in diesem Zeitraum ein Prozess mit 100% CPU-Auslastung. Wird z.B. QGIS-Server verwendet, läuft neben der eigentlichen Verarbeitung des WFS-Request (als FCGI-Prozess) auch noch Apache mit 20% CPU-Auslastung. Speichert man das QGIS-Projekt und öffnet es wieder, wird dieser Request wiederholt. Der Benutzer wartet also bei jedem Öffnen des Projektes einige Minuten. Mir noch nicht klar warum das Abfragen von einzelnen Features (mit dem Identify Features Tool) so lange dauert. Eventuell wird beim Memory-Layer kein Spatial-Index erzeugt und daher wirkt die Feature-Abfrage so käsig.</p>
+</div>
+<div class="paragraph">
+<p>Mit den Filterfunktionen kann der Problematik der langen Downloadzeit entgegen gewirkt werden. Einerseits kann nach Sachattributen (z.B. Gemeindenummer) gefiltert werden:</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe src="//www.youtube.com/embed/aAcTHfnoKlc?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+<div class="paragraph">
+<p>Man darf aber nicht vergessen, dass man ja nur nach Attributen filtern kann, die auch da sind. Fehlt im WFS-Layer das Attribute <code>bfsnr</code> kann <strong>nicht</strong> nach einer Gemeinde gefiltert werden.</p>
+</div>
+<div class="paragraph">
+<p>Anderseits kann man geografisch filtern:</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe src="//www.youtube.com/embed/XbAWoqFtSVg?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+<div class="paragraph">
+<p>Auch das geht nicht immer: WFS-Layer ohne Geometrien können <strong>nicht</strong> geografisch gefiltert werden. An den Haaren herbeigezogen? Ich denke nicht. Denkbar sind Strassennamen oder ähnliches.</p>
+</div>
+<div class="paragraph">
+<p>QGIS hat beim Hinzufügen von WFS-Layer eine interessante Option, die sich &laquo;Cache Features&raquo; nennt. Leider funktioniert sie mit der aktuellen QGIS-Version (2.10) nicht mehr. Im GUI ist die Option noch vorhanden aber die Funktion wurde im <a href="https://github.com/qgis/QGIS/blob/master/src/providers/wfs/qgswfsprovider.cpp#L126">Quellcode bewusst auskommentiert</a>. Äh..? Irgendwie ist da sowieso der <a href="http://lists.osgeo.org/pipermail/qgis-developer/2015-October/039642.html">Wurm</a> drin. Die Idee hinter &laquo;Cache Features&raquo; ist eben das oben beschriebene Verhalten, dh. <strong>alle</strong> Features des WFS-Layer werden in QGIS &laquo;gecached&raquo;/heruntergeladen. Wählt man jetzt diese Option ab (in QGIS 1.8 funktioniert das noch), werden die Features nicht mehr in QGIS gecached, sondern es werden nur die Features heruntergeladen, die dem aktuellen Kartenausschnitt entsprechen. Der Funktion ist sogar ein Mindestmass an Intelligenz eingepflanzt. So werden die Features nicht erneut geladen, wenn der neue Kartenausschnitt (nach Zoomen) komplett innerhalb des vorangegangenen Kartenausschnittes ist. Auf den ersten Blick ist das genau das Verhalten, das man sich eigentlich wünscht. Die Probleme beginnen aber beim Herauszoomen und am Schluss lädt es bei jedem Verschieben der Karte sehr lange, sehr viele Features herunter:</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe src="//www.youtube.com/embed/op7eWUm6wCI?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+<div class="paragraph">
+<p>Wie man aber auch sieht, funktioniert dieser <em>uncached</em> WFS-Layer bei grossen Massstäben (und dementensprechend wenig Feature, die nachgeladen werden müssen) ziemlich gut. Bei genügend schneller Internetverbindung merkt man das Nachladen praktisch gar nicht.</p>
+</div>
+<div class="paragraph">
+<p>Nach all den Beispielen bleiben bei mir immer noch Fragen in den eingangs erwähnten Themenfeldern:</p>
+</div>
+<div class="paragraph">
+<p>Darf das Herunterladen der Daten länger dauern oder soll der Benutzer die gleiche <em>User Experience</em> wie bei WMS haben? Bei kleinen Datenmengen scheint das ziemlich gut zu funktionieren. Bei grösseren überhaupt nicht mehr. Oder macht es eben nichts, wenn die Daten nicht mehr <em>instant</em> erscheinen, sondern es etliche Sekunden oder Minuten geht bis man wieder weiterarbeiten kann? Darf es Ziel der ganzen Übung sein die Daten einmalig herunterzuladen und dann lokal physisch zu speichern (als Shapefile o.ä.)? Ganz quer ist dieser Gedanke nicht: GML ist ja kein Produktionsformat, sondern ein Datenaustauschformat. Aber dann verliert man die Vorteile eines Direktzugriffsverfahrens.</p>
+</div>
+<div class="paragraph">
+<p>Klar, es gibt <a href="http://www.opengeospatial.org/standards/filter">Filter</a>. Darf man aber erwarten, dass der Benutzer <em>immer</em> vorgängig die richtigen Filter kennt und auch einstellt? Zudem kann nur nach etwas gefiltert werden, was auch in den Daten vorhanden ist (&laquo;Ich will Daten der Gemeinde XY, kann aber keine Gemeindenummer beim Filter auswählen.&laquo;). Einmal Filter nicht gesetzt und schon dauert ein Download sehr lange und generiert Last.</p>
+</div>
+<div class="paragraph">
+<p>Last: Die grossen WFS-Requests erzeugen eine hohe Last auf dem Server. Ich bin zwar keine Server-Admin-Guru aber ich glaube nicht, dass man von externen und unter Umständen unbekannten Leuten den Server unbewusst (Filter vergessen?) so einfach unter Volllast gesetzt bekommen will. Für GeoServer gibt es ein <a href="http://docs.geoserver.org/stable/en/user/extensions/controlflow/index.html">Control Flow Modul</a>, das die OWS-Requests detailliert kontrollieren kann. Bei QGIS-Server (FCGI-Process) kann/man/will man das wahrscheinlich teilweise direkt in den FCGI-Einstellungen regeln. Häufig gibt es auch die Möglichkeit auf der Serverseite die maximale Anzahl der Features zu limitieren, die auf eine Anfrage eines Klienten zurückgeschickt werden. Bis zur WFS-Version 2.0.0 wurde diese Anzahl dem Klienten nicht bekannt gegeben. Der Klient wusste also nicht, ob er alle angeforderten Features bekommen hat oder ob der Server die maximale Anzahl der auszuliefernden Features bereits erreicht hat. In WFS 2.0.0 wird diese Anzahl als <code>CountDefault</code> im <code>GetCapabilities</code>-Dokument stehen. In Kombinination mit <a href="http://gis.stackexchange.com/questions/86755/how-to-use-paging-in-a-wfs-query">Paging</a> <a href="https://trac.osgeo.org/mapserver/ticket/2799">wären</a> so zumindest sehr grosse Downloads möglich mit der Sicherheit wirklich auch alle Features zu bekommen.</p>
+</div>
+<div class="paragraph">
+<p>Ist WFS also nur etwas für kleine Datenmengen? Oder aber hat jemand Antworten auf die Frage: Wie soll man WFS &laquo;richtig&raquo; nutzen?</p>
+</div></p>
+
+			<hr />
+
+  			<h1><a href="blog/2015/10/04/bezugsrahmenwechsel-st-fineltra-in-action.html">Bezugsrahmenwechsel: ST_Fineltra in Action</a></h1>
+  			<p class="date">04 October 2015</p>
+  			<p><div class="paragraph">
+<p>Sandro Santilli hat eine <a href="https://github.com/strk/fineltra)">erste Version</a> der <a href="http://sogeo.ch/blog/2015/09/17/bezugsrahmenwechsel-postgis-to-the-rescue/">ST_Fineltra Funktion</a> für PostGIS zum Testen freigegeben. Um die Funktion verwenden zu können, sind zwei Schritte notwendig:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Installieren der neuen Funktion</p>
+</li>
+<li>
+<p>Importieren der Dreiecksvermaschung in die Datenbank</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Das Installieren der Funktion funktioniert unter Ubuntu 14.04 problemlos. Hat man sowieso bereits die üblichen "GIS-Tools" (PostgreSQL/Postgis, gdal/ogr etc.) installiert, fehlt anscheinend nur das dev-Paket von <em>liblwgeom</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo apt-get install liblwgeom-dev</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Anschliessend kann gemäss der Installationsanleitung im <a href="https://github.com/strk/fineltra/blob/master/README.md">README</a> vorgegangen werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+</pre></td>
+  <td class="code"><pre>git clone https://github.com/strk/fineltra.git
+cd fineltra
+./autogen.sh
+./configure
+make
+sudo make install</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die Funktion ist eine PostgreSQL-Extension und kann für die gewünschte Datenbank aktiviert werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE EXTENSION fineltra;&quot;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Der zweite Schritt ist der Import der Dreiecksvermaschung. Eine Spatialite-Datei mit einer Tabelle mit sämtlichen Dreiecken in beiden Bezugsrahmen gibts <a href="https://www.dropbox.com/s/63lm992uypbol3m/chenyx06.sqlite?dl=0">hier</a>. Vor Jahren habe ich diese aus den Shapedateien von Swisstopo erstellt. Der Import in die Datenbank ist ein einfacher ogr2ogr-Befehl. Leider scheint das mit einer Version kleiner 2.0 nicht wirklich gut zu funktionieren, weil die Tabelle zwei Geometriespalten aufweist. Bei mir werden nur die Sachattribute importiert. Mit ogr2ogr &gt;= 2.0 reicht aber folgender Befehl:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>ogr2ogr -f &quot;PostgreSQL&quot; PG:&quot;dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'&quot; chenyx06.sqlite chenyx06 -lco SCHEMA=av_chenyx06 -nln chenyx06_triangles</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die Tabelle mit den Dreiecken <strong>muss</strong> beide Bezugsrahmen beinhalten. Es ist <strong>nicht</strong> möglich die Funktion <code>ST_Fineltra</code> mit Dreiecksgeometrien aus verschiedenen Tabelle zu bedienen.</p>
+</div>
+<div class="paragraph">
+<p>Das Schema <code>av_chenyx06</code> muss bereits existieren. Ansonsten muss es manuell angelegt werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE SCHEMA av_chenyx06 AUTHORIZATION stefan;&quot;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Es ist unbedingt darauf zu achten, dass die Geometrietabellen einen Geometrieindex aufweisen. Bei mir werden diese beim Import mit ogr2ogr automatisch erzeugt. Falls dies nicht der Fall ist:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE INDEX ON av_chenyx06.chenyx06_triangles USING GiST (the_geom_lv03);&quot;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hat das geklappt, kann es ans Testen gehen. Die Syntax ist sowohl im <a href="https://github.com/strk/fineltra/blob/master/README.md">README</a> wie auch im <a href="http://sogeo.ch/blog/2015/09/17/bezugsrahmenwechsel-postgis-to-the-rescue/">vorangegangen Beitrag</a> erläutert.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/pgadmin_600_200.png" alt="st_fineltra bsp 1">
+</div>
+</div>
+<div class="paragraph">
+<p>Ok, das ist jetzt noch keine Wissenschaft. Aber es scheint zu funktionieren. Die erste Frage muss aber sein: &laquo;Stimmt die Transformation überhaupt?&raquo; Um dies zu beantworten, vergleichen wir die Resultate aus zwei unabhängigen Transformationen. Einmal transformieren wir einen Testdatensatz mit der neuen <code>ST_Fineltra</code>-Funktion und einmal mit einem <a href="http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/software/products/m2m/lv03tolv95.html">offiziellen Transformationsdienst</a> der Swisstopo.</p>
+</div>
+<div class="paragraph">
+<p>Diesen Vergleich können wir auch innerhalb der Datenbank machen. Dazu verwenden wir die <a href="https://github.com/pramsey/pgsql-http">PostgreSQL-Extension <code>http</code></a>. Mit dieser Extension wird PostgreSQL zu einem HTTP-Client. Bevor man das jetzt produktiv wirklich nutzen will, sollte man unbedingt das <a href="https://github.com/pramsey/pgsql-http/blob/master/README.md#why-this-is-a-bad-idea">Kapitel "Why This is a Bad Idea"</a> im README lesen.</p>
+</div>
+<div class="paragraph">
+<p>Die Installation ist simpel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+</pre></td>
+  <td class="code"><pre>git clone https://github.com/pramsey/pgsql-http.git
+cd pgsql-http
+make
+sudo make install</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Und anschliessend:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE EXTENSION http;&quot;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ein Testaufruf zeigt folgendes:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/http_lv03tolv95.png" alt="http test 1">
+</div>
+</div>
+<div class="paragraph">
+<p>Mit den <a href="http://www.postgresql.org/docs/9.3/static/functions-json.html">JSON-Funktionen</a> von PostgreSQL kann man einfach auf die einzelnen Rückgabewerte zugreifen. Als Testdatensatz wählen wir die Fixpunkte aus der amtlichen Vermessung. Weil jetzt für jeden Fixpunkt ein HTTP-GET-Request gemacht wird, dauert das ein Weilchen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+</pre></td>
+  <td class="code"><pre>WITH fineltra <span class="keyword">AS</span> (
+  <span class="class">SELECT</span> nummer, nbident,
+    ST_X(wkb_geometry) <span class="keyword">as</span> x_lv03, ST_Y(wkb_geometry) <span class="keyword">as</span> y_lv03,
+    ST_X((ST_Fineltra(wkb_geometry, <span class="string"><span class="delimiter">'</span><span class="content">av_chenyx06.chenyx06_triangles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv95</span><span class="delimiter">'</span></span>))) <span class="keyword">as</span> x_lv95_pg,
+    ST_Y((ST_Fineltra(wkb_geometry, <span class="string"><span class="delimiter">'</span><span class="content">av_chenyx06.chenyx06_triangles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv95</span><span class="delimiter">'</span></span>))) <span class="keyword">as</span> y_lv95_pg
+  <span class="keyword">FROM</span> av_avdpool_test.fixpunktekategorie__lfp
+  <span class="comment">--WHERE fid = 3515717</span>
+  LIMIT <span class="integer">100</span>
+),
+swisstopo <span class="keyword">AS</span> (
+  <span class="class">SELECT</span> nummer, nbident, x_lv95_pg, y_lv95_pg,
+   <span class="predefined">cast</span>(content::json-&gt;&gt;<span class="string"><span class="delimiter">'</span><span class="content">easting</span><span class="delimiter">'</span></span> <span class="keyword">as</span> <span class="predefined-type">double</span> precision) <span class="keyword">as</span> x_lv95_lt,
+   <span class="predefined">cast</span>(content::json-&gt;&gt;<span class="string"><span class="delimiter">'</span><span class="content">northing</span><span class="delimiter">'</span></span> <span class="keyword">as</span> <span class="predefined-type">double</span> precision) <span class="keyword">as</span> y_lv95_lt
+  <span class="keyword">FROM</span> fineltra <span class="keyword">as</span> f, http_get(<span class="string"><span class="delimiter">'</span><span class="content">http://geodesy.geo.admin.ch/reframe/lv03tolv95?easting=</span><span class="delimiter">'</span></span> || f.x_lv03 || <span class="string"><span class="delimiter">'</span><span class="content">&amp;northing=</span><span class="delimiter">'</span></span> || f.y_lv03 || <span class="string"><span class="delimiter">'</span><span class="content">&amp;format=json</span><span class="delimiter">'</span></span>)
+)
+<span class="class">SELECT</span> nummer, nbident, (x_lv95_pg - x_lv95_lt)*<span class="integer">1000</span> <span class="keyword">as</span> x_diff_mm, (y_lv95_pg - y_lv95_lt)*<span class="integer">1000</span> <span class="keyword">as</span> y_diff_mm
+<span class="keyword">FROM</span> swisstopo;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Das Resultat sieht vielversprechend aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/http_lv03tolv95_diff.png" alt="swisstopo vs. st_fineltra">
+</div>
+</div>
+<div class="paragraph">
+<p>Die Differenzen bewegen sich also in einem völlig irrelevanten Bereich. Um sicher zu sein, müssen auch noch weitere Geometrietypen (Linien und Polygone) überprüft werden.</p>
+</div>
+<div class="paragraph">
+<p>Zu guter Letzt soll die Performanz getestet werden. Dazu werden alle Tabellen der amtlichen Vermessung des Kantons Solothurn in einem MOpublic-ähnlichen Datenmodell in die Datenbank importiert. Eine GeoPackage-Datei des gesamten Kantons kann <a href="http://www.catais.org/geodaten/ch/so/agi/av/mopublic/gpkg/lv03/d/kanton.gpkg">hier</a> heruntergeladen und mit folgendem ogr2ogr-Befehl in die Datenbank importiert werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>ogr2ogr -f &quot;PostgreSQL&quot; PG:&quot;dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'&quot; -lco SCHEMA=av_avdpool_test kanton.gpkg</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In das Schema <code>av_avdpool_test</code> wurden 33 Tabellen importiert. Alle im Bezugrahmen LV03:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/pgadmin_mopublic_lv03_yellow.png" alt="mopublic lv03">
+</div>
+</div>
+<div class="paragraph">
+<p>In einem Groovy-Skript reicht jetzt eigentlich eine einzige For-Schleife. Aus der View <code>geometry_columns</code> werden alle zu transformierenden Tabellen identifiziert und diese transformiert:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+37
+38
+39
+<strong>40</strong>
+41
+42
+43
+44
+45
+46
+47
+48
+49
+<strong>50</strong>
+51
+52
+53
+54
+55
+56
+</pre></td>
+  <td class="code"><pre><span class="annotation">@Grapes</span>([
+   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">org.postgresql:postgresql:9.4-1201-jdbc41</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@GrabConfig</span>(systemClassLoader = <span class="predefined-constant">true</span>)
+])
+
+<span class="keyword">import</span> <span class="include">groovy.sql.*</span>
+
+<span class="keyword">def</span> dbhost = <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbport = <span class="string"><span class="delimiter">&quot;</span><span class="content">5432</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbdatabase = <span class="string"><span class="delimiter">&quot;</span><span class="content">xanadu2</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbusr = <span class="string"><span class="delimiter">&quot;</span><span class="content">stefan</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbpwd = <span class="string"><span class="delimiter">&quot;</span><span class="content">ziegler12</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbschema = <span class="string"><span class="delimiter">&quot;</span><span class="content">av_avdpool_test</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">def</span> dburl = <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://</span><span class="inline"><span class="inline-delimiter">${</span>dbhost<span class="inline-delimiter">}</span></span><span class="content">:</span><span class="inline"><span class="inline-delimiter">${</span>dbport<span class="inline-delimiter">}</span></span><span class="content">/</span><span class="inline"><span class="inline-delimiter">${</span>dbdatabase<span class="inline-delimiter">}</span></span><span class="content">?user=</span><span class="inline"><span class="inline-delimiter">${</span>dbusr<span class="inline-delimiter">}</span></span><span class="content">&amp;password=</span><span class="inline"><span class="inline-delimiter">${</span>dbpwd<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">def</span> query = <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type </span><span class="delimiter">&quot;</span></span> +
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> FROM geometry_columns </span><span class="delimiter">&quot;</span></span> +
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> WHERE f_table_schema = '</span><span class="inline"><span class="inline-delimiter">$</span>dbschema</span><span class="content">'</span><span class="delimiter">&quot;</span></span> +
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> AND srid = 21781;</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">def</span> sql = Sql.newInstance(dburl)
+
+<span class="keyword">def</span> startTime = <span class="predefined-type">Calendar</span>.instance.time
+<span class="keyword">def</span> endTime
+println <span class="string"><span class="delimiter">&quot;</span><span class="content">Start: </span><span class="inline"><span class="inline-delimiter">${</span>startTime<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="delimiter">&quot;</span></span>
+
+sql.withTransaction {
+  sql.eachRow(query) {row -&gt;
+    <span class="keyword">def</span> tableName = row.f_table_name
+    <span class="keyword">def</span> geomColumn = row.f_geometry_column
+
+    <span class="keyword">def</span> geomType = row.type
+    <span class="keyword">if</span> (row.coord_dimension == <span class="integer">3</span>) {
+      geomType += <span class="string"><span class="delimiter">'</span><span class="content">Z</span><span class="delimiter">'</span></span>
+    }
+
+    <span class="keyword">def</span> alterQuery = <span class="string"><span class="delimiter">&quot;</span><span class="content">ALTER TABLE </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(tableName)<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span> +
+      <span class="string"><span class="delimiter">&quot;</span><span class="content"> ALTER COLUMN </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomColumn)<span class="inline-delimiter">}</span></span><span class="content"> TYPE geometry(</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomType)<span class="inline-delimiter">}</span></span><span class="content">,2056)</span><span class="delimiter">&quot;</span></span> +
+      <span class="string"><span class="delimiter">&quot;</span><span class="content"> USING ST_Fineltra(</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomColumn)<span class="inline-delimiter">}</span></span><span class="content">, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95');</span><span class="delimiter">&quot;</span></span>
+
+    println <span class="string"><span class="delimiter">&quot;</span><span class="content">--- </span><span class="inline"><span class="inline-delimiter">$</span>dbschema</span><span class="content">.</span><span class="inline"><span class="inline-delimiter">$</span>tableName</span><span class="content"> ---</span><span class="delimiter">&quot;</span></span>
+    sql.execute(alterQuery)
+
+    endTime = <span class="predefined-type">Calendar</span>.instance.time
+    println <span class="string"><span class="delimiter">&quot;</span><span class="content">Elapsed time: </span><span class="inline"><span class="inline-delimiter">${</span>(endTime.time - startTime.time)<span class="inline-delimiter">}</span></span><span class="content"> ms</span><span class="delimiter">&quot;</span></span>
+
+  }
+}
+
+endTime = <span class="predefined-type">Calendar</span>.instance.time
+println <span class="string"><span class="delimiter">&quot;</span><span class="content">End: </span><span class="inline"><span class="inline-delimiter">${</span>endTime<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="delimiter">&quot;</span></span>
+println <span class="string"><span class="delimiter">&quot;</span><span class="content">Total elapsed time: </span><span class="inline"><span class="inline-delimiter">${</span>(endTime.time - startTime.time)<span class="inline-delimiter">}</span></span><span class="content"> ms</span><span class="delimiter">&quot;</span></span>
+
+sql.connection.close()
+sql.close()</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die Transformation einer Datenbanktabelle ist die Query in den Zeilen 38 - 40. Dies ist der einfachst mögliche Fall. Gibt es aber <code>Rules</code> und/oder <code>Triggers</code> etc. in der Tabelle, müssen diese wahrscheinlich vorher ausgeschaltet und nach der Transformation eingeschaltet werden. Das genaue Vorgehen muss geprüft werden.</p>
+</div>
+<div class="paragraph">
+<p>Die gleichen 33 Tabellen liegen nun im Bezugsrahmen LV95 vor:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/pgadmin_mopublic_lv95_yellow.png" alt="mopublic lv03 nach transformation">
+</div>
+</div>
+<div class="paragraph">
+<p>Die Geschwindigkeit ist verblüffend: Für sämtliche Tabellen braucht das Skript bloss circa 140 Sekunden. Die Transformation der  Bodenbedeckung mit circa 280'000 Polygonen dauert nur 25 Sekunden (Ubuntu 14.04 in einer VirtualBox auf einem 2jährigen iMac mit SSD).</p>
+</div></p>
+
+			<hr />
+
+
+	<p>Older posts are available in the <a href="archive.html">archive</a>.</p>
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+	<script src="js/prettify.js"></script>
+  </body>
+</html>

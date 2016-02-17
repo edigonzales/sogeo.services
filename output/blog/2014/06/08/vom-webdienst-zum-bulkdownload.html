@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Vom Webdienst zum Bulkdownload</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Vom Webdienst zum Bulkdownload</h1>
+	</div>
+
+	<p class="date"><em>08 June 2014</em></p>
+
+	<p><div class="paragraph">
+<p>Chris Herwig <a href="https://www.mapbox.com/blog/trouble-with-geoportals/">erkennt</a> drei Hauptgruppen von Open Government Daten Benutzer:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Gelegenheitsuser</p>
+</li>
+<li>
+<p>Benutzer, die mittels einer API Zugriff auf die Daten wünschen.</p>
+</li>
+<li>
+<p>&laquo;Bulk&raquo;-Datenuser: Diese User wollen grosse Datenmengen (und auch komplette Datensätze) herunterladen.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Ein möglicher technischer Umsetzungsansatz ist das Verbinden von Gruppe 2 und 3. Der Webdienst von Gruppe 2 wird verwendet, um die vorgefertigten Datensätze für Gruppe 3 herzustellen.</p>
+</div>
+<div class="paragraph">
+<p>Anlass für das Rumspielen war ebenfalls das neue Geodatenformat <a href="http://sourcepole.ch/assets/2013/6/13/fossgis13_geopackage.pdf"><em>Geopackage</em></a>, das seit <a href="http://trac.osgeo.org/gdal/wiki/Release/1.11.0-News">Version 1.11</a> in GDAL/OGR unterstützt wird. Da QGIS ebenfalls GDAL/OGR einsetzt, wird das Datenformat auch in QGIS unterstützt.</p>
+</div>
+<div class="paragraph">
+<p>Als Webdienst wird der <a href="http://www.catais.org/wfs/mopublic?SERVICE=WFS&amp;REQUEST=GetCapabilities">MOpublic-WFS</a> verwendet. Das Herstellen der einzelnen Datensätze/Geopackages übernimmt ein kleines Pythonskript:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+37
+38
+39
+<strong>40</strong>
+41
+42
+43
+44
+45
+46
+47
+48
+49
+<strong>50</strong>
+51
+52
+53
+54
+55
+56
+57
+58
+59
+<strong>60</strong>
+61
+62
+63
+64
+65
+66
+67
+68
+69
+</pre></td>
+  <td class="code"><pre><span class="comment">#!/usr/bin/env python</span>
+<span class="comment"># -*- coding: UTF-8 -*-</span>
+
+<span class="keyword">import</span> <span class="include">os</span>
+<span class="keyword">import</span> <span class="include">osgeo.gdal</span>
+<span class="keyword">from</span> <span class="include">osgeo</span> <span class="keyword">import</span> <span class="include">ogr</span>
+
+
+<span class="comment"># VARS</span>
+GPKG_DIR = <span class="string"><span class="delimiter">&quot;</span><span class="content">/opt/Geodaten/ch/so/kva/av/mopublic/gpkg/lv03/d/</span><span class="delimiter">&quot;</span></span>
+
+<span class="comment"># Enable exceptions</span>
+ogr.UseExceptions()
+
+<span class="comment"># Get all the layer names</span>
+layer_list = []
+driver = ogr.GetDriverByName(<span class="string"><span class="delimiter">'</span><span class="content">WFS</span><span class="delimiter">'</span></span>)
+ds_mopublic = driver.Open(<span class="string"><span class="delimiter">&quot;</span><span class="content">WFS:http://www.catais.org/wfs/mopublic?</span><span class="delimiter">&quot;</span></span>)
+
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="integer">0</span>, ds_mopublic.GetLayerCount()):
+    layer = ds_mopublic.GetLayerByIndex(i)
+    layer_list.append(layer.GetName())
+
+ds_mopublic.Destroy()
+
+<span class="comment"># Export new deliveries</span>
+ds_lieferungen = driver.Open(<span class="string"><span class="delimiter">&quot;</span><span class="content">WFS:http://www.catais.org/wfs/av_lieferungen?</span><span class="delimiter">&quot;</span></span>)
+layer_lieferungen = ds_lieferungen.GetLayerByName(<span class="string"><span class="delimiter">'</span><span class="content">lieferungen_heute</span><span class="delimiter">'</span></span>)
+
+<span class="keyword">for</span> feature <span class="keyword">in</span> layer_lieferungen:
+    gem_bfs = feature.GetField(<span class="string"><span class="delimiter">'</span><span class="content">gem_bfs</span><span class="delimiter">'</span></span>)
+
+    out = os.path.join(GPKG_DIR, <span class="predefined">str</span>(gem_bfs) + <span class="string"><span class="delimiter">&quot;</span><span class="content">.gpkg</span><span class="delimiter">&quot;</span></span>)
+    out_driver = ogr.GetDriverByName(<span class="string"><span class="delimiter">&quot;</span><span class="content">GPKG</span><span class="delimiter">&quot;</span></span>)
+
+    <span class="keyword">if</span> os.path.exists(out):
+        out_driver.DeleteDataSource(out)
+
+    out_datasource = out_driver.CreateDataSource(out)
+
+    filter = <span class="string"><span class="delimiter">&quot;</span><span class="content">&amp;FILTER=%3Cogc:Filter%20xmlns:ogc=%22http://www.opengis.net/ogc%22%3E%0A%20%3Cogc:PropertyIsEqualTo%3E%0A%20%20%3Cogc:PropertyName%3Ebfsnr%3C/ogc:PropertyName%3E%0A%20%20%3Cogc:Literal%3E</span><span class="delimiter">&quot;</span></span> + <span class="predefined">str</span>(gem_bfs) + <span class="string"><span class="delimiter">&quot;</span><span class="content">%3C/ogc:Literal%3E%0A%20%3C/ogc:PropertyIsEqualTo%3E%0A%3C/ogc:Filter%3E%0A</span><span class="delimiter">&quot;</span></span>
+
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="predefined">len</span>(layer_list)):
+        wfs_string = <span class="string"><span class="delimiter">&quot;</span><span class="content">WFS:http://www.catais.org/wfs/mopublic?TYPENAME</span><span class="delimiter">&quot;</span></span> + layer_list[i] + <span class="predefined">filter</span>
+        ds_mopublic = driver.Open(wfs_string)
+        layer_mopublic = ds_mopublic.GetLayerByName(layer_list[i])
+        out_layer = out_datasource.CopyLayer(layer_mopublic, layer_list[i])
+
+        ds_mopublic.Destroy()
+
+ds_lieferungen.Destroy()
+
+
+<span class="comment"># Export whole canton</span>
+ds_mopublic = driver.Open(<span class="string"><span class="delimiter">&quot;</span><span class="content">WFS:http://www.catais.org/wfs/mopublic?</span><span class="delimiter">&quot;</span></span>)
+
+out = os.path.join(GPKG_DIR,  <span class="string"><span class="delimiter">&quot;</span><span class="content">kanton.gpkg</span><span class="delimiter">&quot;</span></span>)
+out_driver = ogr.GetDriverByName(<span class="string"><span class="delimiter">&quot;</span><span class="content">GPKG</span><span class="delimiter">&quot;</span></span>)
+
+<span class="keyword">if</span> os.path.exists(out):
+    out_driver.DeleteDataSource(out)
+
+out_datasource = out_driver.CreateDataSource(out)
+
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(<span class="predefined">len</span>(layer_list)):
+    layer_mopublic = ds_mopublic.GetLayerByName(layer_list[i])
+    out_layer = out_datasource.CopyLayer(layer_mopublic, layer_list[i])
+
+ds_mopublic.Destroy()</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 16 - 24</strong>: Es werden zuerst alle Layernamen des WFS in eine Liste geschrieben. Diese Layer werden später gemeindeweise angefordert und als GeoPackage gespeichert.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 27 - 28</strong>: Ein weiterer WFS liefert die neuen Datenlieferungen (Gemeinden, die heute Nacht geliefert wurden).</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 30 - 49</strong>: Die Layer werden nun gemeindeweise angefordert und pro Gemeinde in eine GeoPackage-Datei gespeichert.</p>
+</div>
+<div class="paragraph">
+<p>OGR hat eine Methode <code>layer.SetAttributeFilter("gem_bfs = 2549")</code>, die Datensätze nach Attribute filtern kann. Dies funktioniert beim OGR-WFS-Treiber entweder auf der Serverseite (bevorzugt) oder auf der Klientenseite. Da QGIS-Server (hier als WFS-Server eingesetzt) in der GetCapabilities-Antwort die &laquo;LogicalOperators&raquo; <a href="http://osgeo-org.1560.x6.nabble.com/gdal-dev-WFS-driver-and-filtering-td5144594.html">nicht auflistet</a>, sie aber versteht, verwendet OGR nur das klientenseitige Filtern. Das hat zur Folge, dass zuerst immer sämtliche Daten vom Server geholt werden müssen. Um dies zu verhindern, kann der Filter direkt in der URL angegeben werden (Zeile 41 und 44/45).</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 55 - 69</strong>: Nach dem gemeindeweisen Erstellen der GeoPackages wird ein GeoPackage für den ganzen Kanton Solothurn erstellt.</p>
+</div>
+<div class="paragraph">
+<p><em>Funktionierts?</em></p>
+</div>
+<div class="paragraph">
+<p>Das Skript lokal ausgeführt braucht circa 1.5 Stunden für das Erstellen sämtlicher 109 Gemeinden. Das Skript auf dem gleichen Server ausgeführt, auf dem der WFS läuft, dauert länger (circa 2.5 Stunden). Der lokale Rechner hat im Gegensatz zum Server eine SSD. Eventuell kann das ein Flaschenhals sein. Interessanterweise macht die kürzere Downloadzeit das nicht wett.</p>
+</div>
+<div class="paragraph">
+<p>Laden, Zoomen und Pannen funktioniert in QGIS 2.3 (kompiliert mit GDAL/OGR 2.0.0dev) tadellos und sehr schnell. Einzig das Scrollen in der Attributtabelle ist einiges zäher und käsiger als mit Postgis.</p>
+</div>
+<div class="paragraph">
+<p>Die Daten können <a href="http://www.catais.org/geodaten/ch/so/kva/av/mopublic/gpkg/lv03/d/">hier</a> heruntergeladen werden.</p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/Downloaddienst.html">Downloaddienst</a>
+		, <a href="/tags/Webdienst.html">Webdienst</a>
+		, <a href="/tags/Bulkdownload.html">Bulkdownload</a>
+		, <a href="/tags/WFS.html">WFS</a>
+		, <a href="/tags/OGR.html">OGR</a>
+		, <a href="/tags/GeoPackage.html">GeoPackage</a>
+		, <a href="/tags/QGIS.html">QGIS</a>
+		, <a href="/tags/Amtliche-Vermessung.html">Amtliche-Vermessung</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

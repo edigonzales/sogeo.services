@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Interlis leicht gemacht #6</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Interlis leicht gemacht #6</h1>
+	</div>
+
+	<p class="date"><em>28 November 2015</em></p>
+
+	<p><div class="paragraph">
+<p>Die <a href="http://www.cadastre.ch/internet/kataster/de/home/av.html">Eidgenössische Vermessungsdirektion</a> aggregiert verschiedene Metadaten der amtlichen Vermessung. Dazu zähle ich:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://models.geo.admin.ch/V_D/LowDistortionAreas_LV95_ili2.ili">Spannungsarme Gebiete</a></p>
+</li>
+<li>
+<p><a href="http://models.geo.admin.ch/V_D/AMO_Grafik_LV95_e.ili">Stand der amtlichen Vermessung</a></p>
+</li>
+<li>
+<p><a href="http://models.geo.admin.ch/V_D/AMO_Grafik_LV95_PNF.ili">Stand der Periodischen Nachführung</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Die Daten werden von den Kantonen an die V+D geliefert und anschliessend werden sie publiziert:</p>
+</div>
+<div class="paragraph">
+<p><iframe src='https://map.geo.admin.ch/embed.html?topic=ech&lang=de&bgLayer=ch.swisstopo.swissimage&layers_opacity=0.75,0.75,0.75&X=249600.00&Y=628300.00&zoom=2&layers=ch.swisstopo-vd.spannungsarme-gebiete,ch.swisstopo-vd.geometa-periodische_nachfuehrung,ch.swisstopo-vd.geometa-standav&layers_visibility=false,true,false' width='700' height='500' frameborder='0' style='border:0'></iframe></p>
+</div>
+<div class="paragraph">
+<p>Der &laquo;Stand der amtlichen Vermessung&raquo; war der erste Metadatensatz, den die Kantone liefern mussten. Das <a href="http://models.geo.admin.ch/V_D/AMO_Grafik_LV95_e.ili">dazugehörige INTERLIS-Modell</a> ist einfach und besteht aus zwei Tabellen: <code>Actual_Status</code> und <code>Actual_Status_Geometry</code>. Die Herausforderung zu diesem Zeitpunkt war aber: Wie kriege ich meine Daten in eine INTERLIS-Transferdatei? Die Lösung war dann nicht so prickelnd: Ich schrieb einen 1:1-Prozessor, der mir die Transferdatei erstellt. Ein Geknorze sondergleichen.</p>
+</div>
+<div class="paragraph">
+<p>Heute geht das mit <a href="http://www.eisenhutinformatik.ch/interlis/ili2pg/">ili2pg</a> und <a href="http://www.qgis.org">QGIS</a> viel leichter und eleganter:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Schema mit Tabellen in PostgreSQL/Postgis anlegen</p>
+</li>
+<li>
+<p>Daten erfassen</p>
+</li>
+<li>
+<p>Daten exportieren</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Die Schritte (1) und (3) übernimmt ili2pg für uns. Die Daten erfassen müssen wir schon noch selber. Mit <a href="http://www.qgis.org">QGIS</a> macht aber auch diese Arbeit Spass und geht leicht von der Hand. QGIS hat sehr mächtige <a href="http://docs.qgis.org/2.8/en/docs/user_manual/working_with_vector/vector_properties.html#fields-menu">Formularfunktionen</a> und man kann sich damit so etwas wie eine &laquo;Fachschale&raquo; zusammenklicken.</p>
+</div>
+<div class="paragraph">
+<p>Für den Datensatz &laquo;Stand der Periodischen Nachführung&raquo; soll nun der ganze Prozess exemplarisch durchgespielt werden. Zuerst legen wir mit ili2pg die leeren Tabellen in der Datenbank an:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>java -jar ili2pg.jar --schemaimport --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mit den Optionen <code>--defaultSrsAuth EPSG</code> und <code>--defaultSrsCode 2056</code> wird ili2pg mitgeteilt, dass die Geometrie-Tabellen in der Datenbank im Bezugsrahmen LV95 angelegt werden sollen. <code>--createEnumTabs</code> erstellt für Aufzähltypen eine eigene Tabelle. Diese Aufzähltyp-Tabellen sind später wichtig für die Arbeit mit QGIS.</p>
+</div>
+<div class="paragraph">
+<p>Das Resultat sieht relativ unspektakulär aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_pgadmin01.png" alt="ili2pg schemaimport">
+</div>
+</div>
+<div class="paragraph">
+<p>Es gibt zwei Tabellen im Modell resp. in der Datenbank: <code>pnf_pnf</code> und <code>pnf_pnf_geometry</code>. Die erste Tabelle beinhaltet alle Sachattribute, die zweite die Geometrie dazu. Zusätzlich wird in der Datenbank für jeden Aufzähltyp eine Tabelle angelegt. Der Inhalt der Tabelle <code>amo_grafik_lv95_pnf_cantons</code> sieht - wenig überraschend - so aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_pgadmin02.png" alt="Aufzähltypen Kantone">
+</div>
+</div>
+<div class="paragraph">
+<p>Das Gute an ili2pg ist, dass man nachträglich auch ein paar Veränderungen/Verfeinerungen in den Datenbanktabellen vornehmen darf, die dem Datenerfasser das Leben erleichtern:</p>
+</div>
+<div class="paragraph">
+<p>Das Modell gibt vor, dass die Kombination der Attribute <code>canton</code> und <code>id</code> eindeutig sein muss. In der Datenbanktabelle fügen wir  einen UNIQUE-Constraint hinzu:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre><span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ADD</span> <span class="type">CONSTRAINT</span> pnf_pnf_ili_unique <span class="directive">UNIQUE</span> (canton, id);</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Des Weiteren erstellen wir zwei Sequenzen, damit der Primary Key in den Tabellen automatisch nachführt wird:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+</pre></td>
+  <td class="code"><pre><span class="comment">-- sequence for t_id &quot;pnf_pnf&quot;</span>
+<span class="class">CREATE</span> SEQUENCE av_pnf_stand_amo.pnf_t_id_seq;
+<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="directive">DEFAULT</span> nextval(<span class="string"><span class="delimiter">'</span><span class="content">av_pnf_stand_amo.pnf_t_id_seq</span><span class="delimiter">'</span></span>);
+<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>;
+<span class="class">ALTER</span> SEQUENCE av_pnf_stand_amo.pnf_t_id_seq OWNED <span class="keyword">BY</span> av_pnf_stand_amo.pnf_pnf.t_id;
+
+<span class="comment">-- sequence for t_id &quot;pnf_pnf_geometry&quot;</span>
+<span class="class">CREATE</span> SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq;
+<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf_geometry <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="directive">DEFAULT</span> nextval(<span class="string"><span class="delimiter">'</span><span class="content">av_pnf_stand_amo.pnf_geometry_t_id_seq</span><span class="delimiter">'</span></span>);
+<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf_geometry <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>;
+<span class="class">ALTER</span> SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq OWNED <span class="keyword">BY</span> av_pnf_stand_amo.pnf_pnf_geometry.t_id;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Somit wäre Schritt (1) erledigt und wir können die Daten in QGIS erfassen. Für die Datenerfassung in QGIS werden die Tabellen der Aufzähltypen, die eigentlichen Datentabellen sowie ein Datensatz der Gemeindegrenzen benötigt:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis01.png" alt="QGIS Schritt 1">
+</div>
+</div>
+<div class="paragraph">
+<p>Zuallererst muss die <a href="http://blog.vitu.ch/10112013-1201/qgis-relations">Relation</a> zwischen dem Layer <code>pnf_pnf</code> und <code>pnf_pnf_geometry</code> hergestellt werden. Somit weiss QGIS, dass die beiden Tabellen mit einer 1:n-Relation verknüpft sind:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis02.png" alt="QGIS Schritt 2">
+</div>
+</div>
+<div class="paragraph">
+<p>Anschliessend basteln wir uns mit den verschiedenen Editwidgets ein schönes Formular für die effiziente Datenerfassung:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis03.png" alt="QGIS Schritt 3">
+</div>
+</div>
+<div class="paragraph">
+<p>Für die Attribute <code>canton</code>, <code>practice</code> und <code>reference_frame</code> ist das Editwidget vom Typ &laquo;Value Relation&raquo; zu wählen. Als Inputlayer wählen wir die jeweilige Aufzähltyp-Tabelle, z.B. bei <code>cantons</code> ist der Layer <code>amo_grafik_lv95_pnf_cantons</code> zu wählen. Für das Attribut <code>year</code> wählen wir den Typ &laquo;Range&raquo; und wählen den Bereich gemäss INTERLIS-Modell (2000 bis 2100).</p>
+</div>
+<div class="paragraph">
+<p>Anstelle der automatisch generierten Eingabemake, kann man sich mit Drag 'n' Drop seine eigene Maske zusammenstöpseln. Wir verwenden diese Möglichkeit, um die 1:n-Relation in dieser Eingabemaske nicht darzustellen:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis04.png" alt="QGIS Schritt 4">
+</div>
+</div>
+<div class="paragraph">
+<p>Wenn wir anschliessend ein Feature im Layer <code>pnf_pnf</code> erfassen, sieht das Formular wie folgt aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis05.png" alt="QGIS Schritt 5">
+</div>
+</div>
+<div class="paragraph">
+<p>Beim Attribut <code>cantons</code> haben wir den Typ &laquo;Value Relation&raquo; gewählt. Standardmässig erscheint bei diesem Typ eine Combobox. Wählt man jedoch die Option &laquo;Use Completer&raquo; erscheint keine Combobox, sondern es werden mögliche Werte aus der Aufzähltyp-Tabelle live vorgeschlagen. Dank den Editwidget-Typen wie &laquo;Value Relation&raquo; oder &laquo;Range&raquo; können so unnötige Tippfehler bei der Datenerfassung vermieden werden resp. es können gar keine nicht vorhandene Werte eingetippt werden.</p>
+</div>
+<div class="paragraph">
+<p>Eine vollständig ausgefüllte Eingabemaske:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis06.png" alt="QGIS Schritt 6">
+</div>
+</div>
+<div class="paragraph">
+<p>Als nächstes müssen wir zu diesem PNF-Objekt den dazugehörigen Perimeter erfassen. Als Vorarbeit haben wir in QGIS die Relation definiert: Jedes PNF-Objekt kann gemäss INTERLIS-Modell mehrere Perimeter aufweisen. Also eine klassische 1:n-Beziehung. Interessant ist aber die Frage: wie kann ich einen Perimeter (den ich der Tabelle <code>pnf_pnf_geometry</code> erfassen muss) korrekt einem Objekt der Tabelle <code>pnf_pnf</code> zuweisen?</p>
+</div>
+<div class="paragraph">
+<p>Dazu wählen wir für den Layer <code>pnf_pnf_geometry</code> beim Attribut <code>afrom</code> (entspricht dem Fremdschlüssel) den Widgettyp &laquo;Relation Reference&raquo;:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis07.png" alt="QGIS Schritt 7">
+</div>
+</div>
+<div class="paragraph">
+<p>Die Datenerfassung läuft dann wie folgt ab: Wir kopieren eine oder mehrere Gemeindegrenzen aus dem Layer mit den Gemeindengrenzen in den Layer <code>pnf_pnf_geometry</code>. Anschliessend erfassen wir dazu die Daten. In diesem Fall ist das nur der Primary Key <code>t_id</code> (interessiert uns ja nicht, da dieser automatisch vergeben wird) und das &laquo;Beziehungsattribut&raquo; (aka Fremdschlüssel) <code>afrom</code>. Mit einer Combobox kann man das Objekt des Layers <code>pnf_pnf</code> auswählen, dem man die Geometrie zuweisen will.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis08.png" alt="QGIS Schritt 8">
+</div>
+</div>
+<div class="paragraph">
+<p>Blöd nur, dass da bloss der Primary Key steht. Damit kann man meistens nichts anfangen. Viel besser wäre es, wenn man ein anderes Attribut darstellen könnte. Kann man. Ändern kann man das bei den Einstellungen im &laquo;Relation Reference&raquo;-Widget bei &laquo;Display expression&raquo;. Standardmässig steht da <code>COALESCE("t_id", '&lt;NULL&gt;')</code>. Anstelle von <code>t_id</code> schreibt man das gewünschte Attribut hin. In unserem Fall <code>description</code>:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis10.png" alt="QGIS Schritt 10">
+</div>
+</div>
+<div class="paragraph">
+<p>Möglich sind auch Kombinationen der Attribute resp. alles was <a href="http://docs.qgis.org/2.8/en/docs/user_manual/working_with_vector/expression.html">QGIS Expressions</a> hergibt. Die Zuweisung der Geometrie zu einem Objekt ist jetzt viel einfacher:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis09.png" alt="QGIS Schritt 9">
+</div>
+</div>
+<div class="paragraph">
+<p>Die Geometrien möchte ich pro Jahr anders einfärben. Dazu müsste das Attribut <code>year</code> im Layer <code>pnf_pnf_geometry</code> vorhanden sein. Dieses Attribut ist aber im &laquo;Parent&raquo;-Layer <code>pnf_pnf</code> vorhanden. Früher hat man sich dann mit einer View o.ä. geholfen. Das ist nicht mehr nötig. Mit der Kombination aus  <a href="https://docs.qgis.org/2.8/en/docs/user_manual/working_with_vector/field_calculator.html">Feldrechner</a> und QGIS Expressions kann man virtuelle Felder mit Attributwerten aus anderen Layern erstellen. Die dazu benötige Expression: <code>attribute(get_feature('pnf_pnf','t_id',afrom),'year')</code>. Die Syntax ist unter Umständen ein klein wenig gewöhnungsbedürftig:</p>
+</div>
+<div class="paragraph">
+<p>Die erste Funktion <code>get_feature</code> holt sich ein Feature aus einem anderen Layer (hier: <code>pnf_pnf</code>). Der zweite und dritte Funktionsparameter beschreiben die jeweiligen Attribute der beiden Layer über die gejoined werden soll. Achtung: beim layereigenen Attribut sind keine Quotes notwendig. Die zweite Funktion <code>attribute</code> extrahiert aus dem gefundenen &laquo;Fremd&raquo;-Feature ein Attribut. Der Parameter ist der Attributsname.</p>
+</div>
+<div class="paragraph">
+<p>Das Ergebnis dieser Expression in Kombination mit dem Feldrechner ist ein virtuelles Feld im Layer <code>pnf_pnf_geometry</code>, das ich zum Einfärben oder Beschriften verwenden kann:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_qgis11.png" alt="QGIS Schritt 11">
+</div>
+</div>
+<div class="paragraph">
+<p>Sind alle PNF-Objekte und die dazugehörigen Perimeter erfasst, kann mit ili2pg die INTERLIS-Transferdatei erzeugt werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>java -jar ili2pg.jar --export --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF stand_pnf_20151118.itf</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Das Resultat ist eine modellkonforme INTERLIS1-Transferdatei:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p6/interlis_p6_itf01.png" alt="ITF Output">
+</div>
+</div>
+<div class="paragraph">
+<p>Es hat sich dann leider herausgestellt, dass die Lieferung aber pro PNF-Jahr erfolgen muss, dh. in jedem ITF dürfen nur PNF-Objekte resp. -Perimeter eines Jahres vorhanden sein. Und zusätzlich verwirrend: Das Attribut <code>reference_frame</code> beschreibt den Bezugsrahmen der erfassten Geometrien und nicht den Bezugsrahmen in dem die Periodische Nachführung durchgeführt worden ist. Nun gut. Was ich definitiv nicht will, ist pro Jahr ein DB-Schema. Aus diesem Grund erstelle ich ein &laquo;export&raquo;-Schema, das ich mit ein paar simplen SQL-Befehlen für jeweils ein Jahr abfülle und anschliessend mit ili2pg exportiere:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+</pre></td>
+  <td class="code"><pre><span class="class">DELETE</span> <span class="keyword">FROM</span> av_pnf_stand_amo_export.pnf_pnf_geometry;
+<span class="class">DELETE</span> <span class="keyword">FROM</span> av_pnf_stand_amo_export.pnf_pnf;
+
+<span class="class">INSERT</span> <span class="class">INTO</span> av_pnf_stand_amo_export.pnf_pnf (t_id, canton, id, description, practice, reference_frame, <span class="predefined-type">year</span>)
+<span class="class">SELECT</span> t_id, canton, id, description, practice, reference_frame, <span class="predefined-type">year</span>
+<span class="keyword">FROM</span> av_pnf_stand_amo.pnf_pnf
+<span class="keyword">WHERE</span> <span class="predefined-type">year</span> = <span class="integer">2015</span>;
+
+<span class="class">INSERT</span> <span class="class">INTO</span> av_pnf_stand_amo_export.pnf_pnf_geometry (t_id, afrom, perimeter)
+<span class="class">SELECT</span> g.t_id <span class="keyword">as</span> t_id, g.afrom, g.perimeter
+<span class="keyword">FROM</span> av_pnf_stand_amo.pnf_pnf <span class="keyword">as</span> p, av_pnf_stand_amo.pnf_pnf_geometry <span class="keyword">as</span> g
+<span class="keyword">WHERE</span> p.t_id = g.afrom
+<span class="keyword">AND</span> p.year = <span class="integer">2015</span>;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Fazit: Was früher knorzig und mühsam war, geht heute mit den richtigen Werkzeugen ruckzuck und entspannt vonstatten.</p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/INTERLIS.html">INTERLIS</a>
+		, <a href="/tags/ili2pg.html">ili2pg</a>
+		, <a href="/tags/Java.html">Java</a>
+		, <a href="/tags/QGIS.html">QGIS</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Fun with GeoKettle Episode 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Fun with GeoKettle Episode 2</h1>
+	</div>
+
+	<p class="date"><em>29 November 2014</em></p>
+
+	<p><div class="paragraph">
+<p>Eigentlich geht es hier eher um <a href="http://postgis.net/docs/RT_reference.html">PostGIS Raster</a> als um <a href="http://geokettle.org/">GeoKettle</a>. GeoKettle wird jedoch am Schluss noch für einen kleinen Arbeitsschritt verwendet. Darum sei der Titel erlaubt.</p>
+</div>
+<div class="paragraph">
+<p>Der Kanton Solothurn hat dieses Jahr eine <a href="http://www.catais.org/geodaten/ch/so/kva/hoehen/2014/">LiDAR-Befliegung</a> über sein ganzes Kantonsgebiet durchführen lassen. Neben den Rohdaten wurden abgeleitete Produkte (z.B. DTM, DOM etc.) hergestellt. Als <strong>eine</strong> Plausibilitätskontrolle sollen die Fixpunkte der amtlichen Vermessung mit dem 50cm-DTM verglichen werden. Möglichkeiten wie man das machen kann, gibts viele. Ich habe mich für PostGIS Raster entschieden, um ein wenig Praxis darin zu bekommen.</p>
+</div>
+<div class="paragraph">
+<p>Zuerst muss das DTM mit dem Befehl <a href="http://postgis.net/docs/using_raster_dataman.html#RT_Raster_Loader">raster2pgsql</a> in PostGIS importiert werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>raster2pgsql -d -s 21781 -I -C -M -F -r /opt/Geodaten/ch/so/kva/hoehen/2014/dtm/*.tif -t 100x100 av_lidar_2014.dtm | psql -d rosebud2</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mit diesem Befehl werden sämtliche GeoTiff-Dateien im Verzeichnis <code>/opt/Geodaten/ch/so/kva/hoehen/2014/dtm/</code> in die Tabelle <code>dtm</code> im Schema <code>av_lidar_2014</code> importiert.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>-d</code>: Vorhandene Tabelle wird gelöscht und neu angelegt.</p>
+</li>
+<li>
+<p><code>-s 21781</code>: Den Daten wird das Koordinatensystem EPSG:21781 zugewiesen.</p>
+</li>
+<li>
+<p><code>-I</code>: Es wird ein Index für die Tabelle erzeugt.</p>
+</li>
+<li>
+<p><code>-C</code>: Verschiedene Constraints werden hinzugefügt.</p>
+</li>
+<li>
+<p><code>-M</code>: Nach dem Import wird ein <code>vacuum analyze</code> ausgeführt.</p>
+</li>
+<li>
+<p><code>-F</code>: Es wird eine Spalte mit dem Dateinamen in der Tabelle hinzugefügt.</p>
+</li>
+<li>
+<p><code>-r</code>: Weiterer Constraint.</p>
+</li>
+<li>
+<p><code>-t</code>: Die Grösse der Kacheln in welche die Ausgangsdaten geschnitten und in der Datenbank gespeichert werden. Die Grösse der Kacheln ist entscheidend für die <a href="http://duncanjg.wordpress.com/2013/09/21/effect-of-tile-size-and-data-storage-on-postgis-raster-query-times/">Ausführungsdauer</a> der Abfragen, die später gemacht werden. Für unseren Anwendungsfall ist es sinnvoll die Kachelgrösse eher klein zu wählen.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Das dauert je nach Datenmenge ein paar Minuten und braucht ordentlich Speicherplatz in der Datenbank (DTM und DOM, je 1066 km2):</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/fun_with_geokettle_ep2/postgres_size_rosebud2-month.png" alt="DB size">
+</div>
+</div>
+<div class="paragraph">
+<p>Das wirklich Schöne an Postgis Raster ist, dass man völlig unkompliziert Vektor- und Rasterdaten gleichzeitig/gemeinsam abfragen kann. Uns interessiert die Höhe aus dem DTM an der Stelle wo ein Fixpunkt der amtlichen Vermessung vorhanden ist:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td>
+  <td class="code"><pre><span class="class">SELECT</span> p.ogc_fid, p.nummer, p.kategorie, p.geometrie, ST_X(p.geometrie) <span class="keyword">as</span> x, ST_Y(p.geometrie) <span class="keyword">as</span> y,
+   p.hoehe <span class="keyword">as</span> h_lfp, ST_Value(r.rast, p.geometrie) <span class="keyword">as</span> h_dtm,
+   (ST_Value(r.rast, p.geometrie) - p.hoehe) <span class="keyword">as</span> diff, p.bfsnr
+<span class="keyword">FROM</span> av_avwmsde_t.cppt <span class="keyword">as</span> p, av_lidar_2014.dtm <span class="keyword">as</span> r
+<span class="keyword">WHERE</span> ST_Intersects(r.rast, p.geometrie)
+<span class="keyword">AND</span> p.hoehe <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>
+<span class="keyword">AND</span> p.kategorie <span class="keyword">IN</span> (<span class="string"><span class="delimiter">'</span><span class="content">LFP1</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">LFP2</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">LFP3</span><span class="delimiter">'</span></span>);</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die ganze Magie besteht aus zwei Funktionen:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ST_Value(r.rast, p.geometrie)</code>: Diese Funktion liefert für eine Koordinate (p.geometrie) den Zellenwert des Rasters (r.rast) zurück.</p>
+</li>
+<li>
+<p><code>ST_Intersects(r.rast, p.geometrie)</code>: Funktioniert grundsätzlich gleich wie das Vektorpendant.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Alles andere ist Beigemüse.</p>
+</div>
+<div class="paragraph">
+<p>Das Resultat wird als Shapedatei und als Exceldatei abgespeichert. Dafür verwenden wir GeoKettle. Die GeoKettle-Transformation sieht dann völlig unspektakulär so aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/fun_with_geokettle_ep2/geokettle_diff_dtm_av.png" alt="GeoKettle Job">
+</div>
+</div>
+<div class="paragraph">
+<p>Und das Resultat? Unter Berücksichtigung der Randbedingungen (50cm-DTM, Fixpunkt teilweise unter Schacht etc.) stimmen die resultierenden Differenzen positiv:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/fun_with_geokettle_ep2/diff_dtm_lfp_v2.png" alt="Differenz Höhe LFP">
+</div>
+</div>
+<div class="paragraph">
+<p>Klar gibt es grössere Differenzen (Fixpunkt auf Gebäude oder Kunstbaute, Kirchenspitze etc.). Diese sind aber praktisch alle erklärbar (und wären auch vorgängig filterbar). Ebenso konnten einige wenige Höhenfehler in den Daten der amtlichen Vermessung gefunden werden.</p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/GeoKettle.html">GeoKettle</a>
+		, <a href="/tags/ETL.html">ETL</a>
+		, <a href="/tags/PDI.html">PDI</a>
+		, <a href="/tags/Kettle.html">Kettle</a>
+		, <a href="/tags/LiDAR.html">LiDAR</a>
+		, <a href="/tags/DTM.html">DTM</a>
+		, <a href="/tags/PostGIS.html">PostGIS</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

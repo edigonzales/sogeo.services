@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Bezugsrahmenwechsel: ST_Fineltra in Action</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Bezugsrahmenwechsel: ST_Fineltra in Action</h1>
+	</div>
+
+	<p class="date"><em>04 October 2015</em></p>
+
+	<p><div class="paragraph">
+<p>Sandro Santilli hat eine <a href="https://github.com/strk/fineltra)">erste Version</a> der <a href="http://sogeo.ch/blog/2015/09/17/bezugsrahmenwechsel-postgis-to-the-rescue/">ST_Fineltra Funktion</a> für PostGIS zum Testen freigegeben. Um die Funktion verwenden zu können, sind zwei Schritte notwendig:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Installieren der neuen Funktion</p>
+</li>
+<li>
+<p>Importieren der Dreiecksvermaschung in die Datenbank</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Das Installieren der Funktion funktioniert unter Ubuntu 14.04 problemlos. Hat man sowieso bereits die üblichen "GIS-Tools" (PostgreSQL/Postgis, gdal/ogr etc.) installiert, fehlt anscheinend nur das dev-Paket von <em>liblwgeom</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo apt-get install liblwgeom-dev</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Anschliessend kann gemäss der Installationsanleitung im <a href="https://github.com/strk/fineltra/blob/master/README.md">README</a> vorgegangen werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+</pre></td>
+  <td class="code"><pre>git clone https://github.com/strk/fineltra.git
+cd fineltra
+./autogen.sh
+./configure
+make
+sudo make install</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die Funktion ist eine PostgreSQL-Extension und kann für die gewünschte Datenbank aktiviert werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE EXTENSION fineltra;&quot;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Der zweite Schritt ist der Import der Dreiecksvermaschung. Eine Spatialite-Datei mit einer Tabelle mit sämtlichen Dreiecken in beiden Bezugsrahmen gibts <a href="https://www.dropbox.com/s/63lm992uypbol3m/chenyx06.sqlite?dl=0">hier</a>. Vor Jahren habe ich diese aus den Shapedateien von Swisstopo erstellt. Der Import in die Datenbank ist ein einfacher ogr2ogr-Befehl. Leider scheint das mit einer Version kleiner 2.0 nicht wirklich gut zu funktionieren, weil die Tabelle zwei Geometriespalten aufweist. Bei mir werden nur die Sachattribute importiert. Mit ogr2ogr &gt;= 2.0 reicht aber folgender Befehl:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>ogr2ogr -f &quot;PostgreSQL&quot; PG:&quot;dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'&quot; chenyx06.sqlite chenyx06 -lco SCHEMA=av_chenyx06 -nln chenyx06_triangles</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die Tabelle mit den Dreiecken <strong>muss</strong> beide Bezugsrahmen beinhalten. Es ist <strong>nicht</strong> möglich die Funktion <code>ST_Fineltra</code> mit Dreiecksgeometrien aus verschiedenen Tabelle zu bedienen.</p>
+</div>
+<div class="paragraph">
+<p>Das Schema <code>av_chenyx06</code> muss bereits existieren. Ansonsten muss es manuell angelegt werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE SCHEMA av_chenyx06 AUTHORIZATION stefan;&quot;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Es ist unbedingt darauf zu achten, dass die Geometrietabellen einen Geometrieindex aufweisen. Bei mir werden diese beim Import mit ogr2ogr automatisch erzeugt. Falls dies nicht der Fall ist:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE INDEX ON av_chenyx06.chenyx06_triangles USING GiST (the_geom_lv03);&quot;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hat das geklappt, kann es ans Testen gehen. Die Syntax ist sowohl im <a href="https://github.com/strk/fineltra/blob/master/README.md">README</a> wie auch im <a href="http://sogeo.ch/blog/2015/09/17/bezugsrahmenwechsel-postgis-to-the-rescue/">vorangegangen Beitrag</a> erläutert.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/pgadmin_600_200.png" alt="st_fineltra bsp 1">
+</div>
+</div>
+<div class="paragraph">
+<p>Ok, das ist jetzt noch keine Wissenschaft. Aber es scheint zu funktionieren. Die erste Frage muss aber sein: &laquo;Stimmt die Transformation überhaupt?&raquo; Um dies zu beantworten, vergleichen wir die Resultate aus zwei unabhängigen Transformationen. Einmal transformieren wir einen Testdatensatz mit der neuen <code>ST_Fineltra</code>-Funktion und einmal mit einem <a href="http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/software/products/m2m/lv03tolv95.html">offiziellen Transformationsdienst</a> der Swisstopo.</p>
+</div>
+<div class="paragraph">
+<p>Diesen Vergleich können wir auch innerhalb der Datenbank machen. Dazu verwenden wir die <a href="https://github.com/pramsey/pgsql-http">PostgreSQL-Extension <code>http</code></a>. Mit dieser Extension wird PostgreSQL zu einem HTTP-Client. Bevor man das jetzt produktiv wirklich nutzen will, sollte man unbedingt das <a href="https://github.com/pramsey/pgsql-http/blob/master/README.md#why-this-is-a-bad-idea">Kapitel "Why This is a Bad Idea"</a> im README lesen.</p>
+</div>
+<div class="paragraph">
+<p>Die Installation ist simpel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+</pre></td>
+  <td class="code"><pre>git clone https://github.com/pramsey/pgsql-http.git
+cd pgsql-http
+make
+sudo make install</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Und anschliessend:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE EXTENSION http;&quot;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ein Testaufruf zeigt folgendes:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/http_lv03tolv95.png" alt="http test 1">
+</div>
+</div>
+<div class="paragraph">
+<p>Mit den <a href="http://www.postgresql.org/docs/9.3/static/functions-json.html">JSON-Funktionen</a> von PostgreSQL kann man einfach auf die einzelnen Rückgabewerte zugreifen. Als Testdatensatz wählen wir die Fixpunkte aus der amtlichen Vermessung. Weil jetzt für jeden Fixpunkt ein HTTP-GET-Request gemacht wird, dauert das ein Weilchen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+</pre></td>
+  <td class="code"><pre>WITH fineltra <span class="keyword">AS</span> (
+  <span class="class">SELECT</span> nummer, nbident,
+    ST_X(wkb_geometry) <span class="keyword">as</span> x_lv03, ST_Y(wkb_geometry) <span class="keyword">as</span> y_lv03,
+    ST_X((ST_Fineltra(wkb_geometry, <span class="string"><span class="delimiter">'</span><span class="content">av_chenyx06.chenyx06_triangles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv95</span><span class="delimiter">'</span></span>))) <span class="keyword">as</span> x_lv95_pg,
+    ST_Y((ST_Fineltra(wkb_geometry, <span class="string"><span class="delimiter">'</span><span class="content">av_chenyx06.chenyx06_triangles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv95</span><span class="delimiter">'</span></span>))) <span class="keyword">as</span> y_lv95_pg
+  <span class="keyword">FROM</span> av_avdpool_test.fixpunktekategorie__lfp
+  <span class="comment">--WHERE fid = 3515717</span>
+  LIMIT <span class="integer">100</span>
+),
+swisstopo <span class="keyword">AS</span> (
+  <span class="class">SELECT</span> nummer, nbident, x_lv95_pg, y_lv95_pg,
+   <span class="predefined">cast</span>(content::json-&gt;&gt;<span class="string"><span class="delimiter">'</span><span class="content">easting</span><span class="delimiter">'</span></span> <span class="keyword">as</span> <span class="predefined-type">double</span> precision) <span class="keyword">as</span> x_lv95_lt,
+   <span class="predefined">cast</span>(content::json-&gt;&gt;<span class="string"><span class="delimiter">'</span><span class="content">northing</span><span class="delimiter">'</span></span> <span class="keyword">as</span> <span class="predefined-type">double</span> precision) <span class="keyword">as</span> y_lv95_lt
+  <span class="keyword">FROM</span> fineltra <span class="keyword">as</span> f, http_get(<span class="string"><span class="delimiter">'</span><span class="content">http://geodesy.geo.admin.ch/reframe/lv03tolv95?easting=</span><span class="delimiter">'</span></span> || f.x_lv03 || <span class="string"><span class="delimiter">'</span><span class="content">&amp;northing=</span><span class="delimiter">'</span></span> || f.y_lv03 || <span class="string"><span class="delimiter">'</span><span class="content">&amp;format=json</span><span class="delimiter">'</span></span>)
+)
+<span class="class">SELECT</span> nummer, nbident, (x_lv95_pg - x_lv95_lt)*<span class="integer">1000</span> <span class="keyword">as</span> x_diff_mm, (y_lv95_pg - y_lv95_lt)*<span class="integer">1000</span> <span class="keyword">as</span> y_diff_mm
+<span class="keyword">FROM</span> swisstopo;</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Das Resultat sieht vielversprechend aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/http_lv03tolv95_diff.png" alt="swisstopo vs. st_fineltra">
+</div>
+</div>
+<div class="paragraph">
+<p>Die Differenzen bewegen sich also in einem völlig irrelevanten Bereich. Um sicher zu sein, müssen auch noch weitere Geometrietypen (Linien und Polygone) überprüft werden.</p>
+</div>
+<div class="paragraph">
+<p>Zu guter Letzt soll die Performanz getestet werden. Dazu werden alle Tabellen der amtlichen Vermessung des Kantons Solothurn in einem MOpublic-ähnlichen Datenmodell in die Datenbank importiert. Eine GeoPackage-Datei des gesamten Kantons kann <a href="http://www.catais.org/geodaten/ch/so/agi/av/mopublic/gpkg/lv03/d/kanton.gpkg">hier</a> heruntergeladen und mit folgendem ogr2ogr-Befehl in die Datenbank importiert werden:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>ogr2ogr -f &quot;PostgreSQL&quot; PG:&quot;dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'&quot; -lco SCHEMA=av_avdpool_test kanton.gpkg</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In das Schema <code>av_avdpool_test</code> wurden 33 Tabellen importiert. Alle im Bezugrahmen LV03:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/pgadmin_mopublic_lv03_yellow.png" alt="mopublic lv03">
+</div>
+</div>
+<div class="paragraph">
+<p>In einem Groovy-Skript reicht jetzt eigentlich eine einzige For-Schleife. Aus der View <code>geometry_columns</code> werden alle zu transformierenden Tabellen identifiziert und diese transformiert:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+37
+38
+39
+<strong>40</strong>
+41
+42
+43
+44
+45
+46
+47
+48
+49
+<strong>50</strong>
+51
+52
+53
+54
+55
+56
+</pre></td>
+  <td class="code"><pre><span class="annotation">@Grapes</span>([
+   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">org.postgresql:postgresql:9.4-1201-jdbc41</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@GrabConfig</span>(systemClassLoader = <span class="predefined-constant">true</span>)
+])
+
+<span class="keyword">import</span> <span class="include">groovy.sql.*</span>
+
+<span class="keyword">def</span> dbhost = <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbport = <span class="string"><span class="delimiter">&quot;</span><span class="content">5432</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbdatabase = <span class="string"><span class="delimiter">&quot;</span><span class="content">xanadu2</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbusr = <span class="string"><span class="delimiter">&quot;</span><span class="content">stefan</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbpwd = <span class="string"><span class="delimiter">&quot;</span><span class="content">ziegler12</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbschema = <span class="string"><span class="delimiter">&quot;</span><span class="content">av_avdpool_test</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">def</span> dburl = <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://</span><span class="inline"><span class="inline-delimiter">${</span>dbhost<span class="inline-delimiter">}</span></span><span class="content">:</span><span class="inline"><span class="inline-delimiter">${</span>dbport<span class="inline-delimiter">}</span></span><span class="content">/</span><span class="inline"><span class="inline-delimiter">${</span>dbdatabase<span class="inline-delimiter">}</span></span><span class="content">?user=</span><span class="inline"><span class="inline-delimiter">${</span>dbusr<span class="inline-delimiter">}</span></span><span class="content">&amp;password=</span><span class="inline"><span class="inline-delimiter">${</span>dbpwd<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">def</span> query = <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type </span><span class="delimiter">&quot;</span></span> +
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> FROM geometry_columns </span><span class="delimiter">&quot;</span></span> +
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> WHERE f_table_schema = '</span><span class="inline"><span class="inline-delimiter">$</span>dbschema</span><span class="content">'</span><span class="delimiter">&quot;</span></span> +
+  <span class="string"><span class="delimiter">&quot;</span><span class="content"> AND srid = 21781;</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">def</span> sql = Sql.newInstance(dburl)
+
+<span class="keyword">def</span> startTime = <span class="predefined-type">Calendar</span>.instance.time
+<span class="keyword">def</span> endTime
+println <span class="string"><span class="delimiter">&quot;</span><span class="content">Start: </span><span class="inline"><span class="inline-delimiter">${</span>startTime<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="delimiter">&quot;</span></span>
+
+sql.withTransaction {
+  sql.eachRow(query) {row -&gt;
+    <span class="keyword">def</span> tableName = row.f_table_name
+    <span class="keyword">def</span> geomColumn = row.f_geometry_column
+
+    <span class="keyword">def</span> geomType = row.type
+    <span class="keyword">if</span> (row.coord_dimension == <span class="integer">3</span>) {
+      geomType += <span class="string"><span class="delimiter">'</span><span class="content">Z</span><span class="delimiter">'</span></span>
+    }
+
+    <span class="keyword">def</span> alterQuery = <span class="string"><span class="delimiter">&quot;</span><span class="content">ALTER TABLE </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(tableName)<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span> +
+      <span class="string"><span class="delimiter">&quot;</span><span class="content"> ALTER COLUMN </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomColumn)<span class="inline-delimiter">}</span></span><span class="content"> TYPE geometry(</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomType)<span class="inline-delimiter">}</span></span><span class="content">,2056)</span><span class="delimiter">&quot;</span></span> +
+      <span class="string"><span class="delimiter">&quot;</span><span class="content"> USING ST_Fineltra(</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomColumn)<span class="inline-delimiter">}</span></span><span class="content">, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95');</span><span class="delimiter">&quot;</span></span>
+
+    println <span class="string"><span class="delimiter">&quot;</span><span class="content">--- </span><span class="inline"><span class="inline-delimiter">$</span>dbschema</span><span class="content">.</span><span class="inline"><span class="inline-delimiter">$</span>tableName</span><span class="content"> ---</span><span class="delimiter">&quot;</span></span>
+    sql.execute(alterQuery)
+
+    endTime = <span class="predefined-type">Calendar</span>.instance.time
+    println <span class="string"><span class="delimiter">&quot;</span><span class="content">Elapsed time: </span><span class="inline"><span class="inline-delimiter">${</span>(endTime.time - startTime.time)<span class="inline-delimiter">}</span></span><span class="content"> ms</span><span class="delimiter">&quot;</span></span>
+
+  }
+}
+
+endTime = <span class="predefined-type">Calendar</span>.instance.time
+println <span class="string"><span class="delimiter">&quot;</span><span class="content">End: </span><span class="inline"><span class="inline-delimiter">${</span>endTime<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="delimiter">&quot;</span></span>
+println <span class="string"><span class="delimiter">&quot;</span><span class="content">Total elapsed time: </span><span class="inline"><span class="inline-delimiter">${</span>(endTime.time - startTime.time)<span class="inline-delimiter">}</span></span><span class="content"> ms</span><span class="delimiter">&quot;</span></span>
+
+sql.connection.close()
+sql.close()</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Die Transformation einer Datenbanktabelle ist die Query in den Zeilen 38 - 40. Dies ist der einfachst mögliche Fall. Gibt es aber <code>Rules</code> und/oder <code>Triggers</code> etc. in der Tabelle, müssen diese wahrscheinlich vorher ausgeschaltet und nach der Transformation eingeschaltet werden. Das genaue Vorgehen muss geprüft werden.</p>
+</div>
+<div class="paragraph">
+<p>Die gleichen 33 Tabellen liegen nun im Bezugsrahmen LV95 vor:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/brw_st_fineltra_in_action/pgadmin_mopublic_lv95_yellow.png" alt="mopublic lv03 nach transformation">
+</div>
+</div>
+<div class="paragraph">
+<p>Die Geschwindigkeit ist verblüffend: Für sämtliche Tabellen braucht das Skript bloss circa 140 Sekunden. Die Transformation der  Bodenbedeckung mit circa 280'000 Polygonen dauert nur 25 Sekunden (Ubuntu 14.04 in einer VirtualBox auf einem 2jährigen iMac mit SSD).</p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/PostGIS.html">PostGIS</a>
+		, <a href="/tags/Bezugsrahmenwechsel.html">Bezugsrahmenwechsel</a>
+		, <a href="/tags/LV95.html">LV95</a>
+		, <a href="/tags/Fineltra.html">Fineltra</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Smoothe Höhenkurven</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Smoothe Höhenkurven</h1>
+	</div>
+
+	<p class="date"><em>03 January 2014</em></p>
+
+	<p><div class="paragraph">
+<p>Mit <a href="http://www.gdal.org/gdal_contour.html">gdal_contour</a> steht ein Programm zur Verfügung, das aus einem digitalen Terrainmodell Höhenkurven berechnet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>gdal_contour -a elev dtm110733.tif contour.shp -i 10.0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mit diesem Befehl werden Höhenkurven mit einer Äquidistanz von 10 Metern erzeugt und in der Shapedatei  <code>contour.shp</code> gespeichert. Zusätzlich wird die Höhe in das Attribut <code>elev</code> geschrieben.</p>
+</div>
+<div class="paragraph">
+<p>Ohne jegliches Zutun wirken die Höhenkurven aber unruhig und es sind viele &laquo;Kleinst&raquo;-Höhenkurven vorhanden:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/smoothe-hoehenkurven/contour_5000.png" alt="Höhenkurven mit gdal_contour">
+</div>
+</div>
+<div class="paragraph">
+<p>Ein schöneres Kartenbild ergibt sich durch vorgängiges Prozessieren des digitalen Terrainmodells. Mit einem Shell-Skript wird das Terrainmodell zehn Mal mit einer bestimmten Resamplingmethode umprojiziert. Das Umprojizieren ist in diesem Fall aber belanglos, da a) nichts umprojiziert wird und b) nur das Verschmieren der Rasterwerte durch das Resampling interessiert:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="ruby"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+</pre></td>
+  <td class="code"><pre><span class="doctype">#!/bin/bash</span>
+
+cp <span class="global-variable">$1</span> tmp_<span class="global-variable">$1</span>
+
+<span class="keyword">for</span> i <span class="keyword">in</span> {<span class="integer">1</span>..<span class="integer">10</span>}
+<span class="keyword">do</span>
+  gdalwarp -co <span class="constant">COMPRESS</span>=<span class="constant">PACKBITS</span> -overwrite -r cubicspline tmp_<span class="global-variable">$1</span> smooth_<span class="global-variable">$1</span>
+  cp smooth_<span class="global-variable">$1</span> tmp_<span class="global-variable">$1</span>
+done
+
+rm contour_smooth.*
+gdal_contour -a elev smooth_<span class="global-variable">$1</span> contour_smooth.shp -i <span class="float">10.0</span>
+
+ogr2ogr -overwrite -dialect <span class="constant">SQLITE</span> contour_smooth_reduced.shp contour_smooth.shp -sql <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT * FROM  contour_smooth WHERE ST_Length(GEOMETRY) &gt; 100</span><span class="delimiter">&quot;</span></span></pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Das 10-fache Resampling findet in der for-Schleife statt. Anschliessend werden die Höhenkurven erzeugt. Der letzte Befehl löscht alle Höhenkurven, deren Länge kleiner 100 Meter ist. Dieser Befehl funktioniert erst mit gdal &ge; 1.10.</p>
+</div>
+<div class="paragraph">
+<p>Et voilà:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/smoothe-hoehenkurven/contour_smooth_reduced_5000.png" alt="Smoothe Höhenkurven">
+</div>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/GDAL.html">GDAL</a>
+		, <a href="/tags/OGR.html">OGR</a>
+		, <a href="/tags/bash.html">bash</a>
+		, <a href="/tags/Höhenkurven.html">Höhenkurven</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Interlis leicht gemacht #5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Interlis leicht gemacht #5</h1>
+	</div>
+
+	<p class="date"><em>03 October 2015</em></p>
+
+	<p><div class="paragraph">
+<p>Overlaps in INTERLIS. Eine leidige Geschichte. Im <a href="http://www.interlis.ch/interlis2/docs23/ili2-refman_2006-04-13_d.pdf">Referenzhandbuch</a> ist auf den Seiten 49 und 50 beschrieben was erlaubt ist. Fairerweise muss man erwähnen, dass das Verbieten von Overlaps im INTERLIS-Modell das Problem aber trotzdem nicht lösen würde. Möglich blieben Overlaps (aka Self-Intersections) aus rein numerischen Gründen. Hier die erläuternde Skizze aus dem Handbuch ((c) by KOGIS, CH-3084-Wabern, <a href="http://www.kogis.ch">www.kogis.ch</a>):</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p5/ili_handbuch_overlaps.png" alt="INTERLIS Overlaps Referenzhandbuch">
+</div>
+</div>
+<div class="paragraph">
+<p>Das Problem mit Overlaps ist, dass Geometrien mit solchen im OGC Simple Feature Universum <a href="http://www.postgis.net/docs/ST_IsValid.html">nicht gültig</a> sind und beim Prozessieren für nicht zuverlässige Resultate sorgen oder auch zu gar keinen.</p>
+</div>
+<div class="paragraph">
+<p>Solche Overlaps sind unter anderem häufig in der amtlichen Vermessung bei Einlenkern anzutreffen:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p5/einlenker_gbplan.png" alt="Einlenker mit Overlap Overview">
+</div>
+</div>
+<div class="paragraph">
+<p>Soweit sieht das ganz gut aus. Um das Ganze übersichtlicher zu gestalten, lassen wir alles weg, was nicht Liegenchaften sind und markieren die Stützpunkte. Die grünen Quadrate kennzeichnen die Linienstützpunkte <code>LIPT</code> und die blauen Kreise die Bogenstützpunkte <code>ARCP</code>:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p5/einlenker_intersection_circle.png" alt="Einlenker mit Overlap Overview - no frills">
+</div>
+</div>
+<div class="paragraph">
+<p>Sieht eigentlich immer noch gut aus. Zoomt man jetzt aber beim rechten Einlenker (roter Kreis) stark rein, wird die Self-Intersection sichtbar. Eine der beiden Linien ist rot eingefärbt, um das Kreuzen (= Self-Intersection = Overlap) der Linien besser sichtbar zu machen:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p5/einlenker_intersection_zoom.png" alt="Einlenker mit Overlap Zoom">
+</div>
+</div>
+<div class="paragraph">
+<p>Wie ging man bis anhin mit diesem Problem um? Eine Variante ist die einzelnen Linienstücke während des INTERLIS-Importes neu zu verknoten. Dort wo sich die Linien kreuzen wird ein neuer Stützpunkt gerechnet und anschliessend wird polygoniert. Dabei entsteht ein klitzekleines Polygon. Für den Umgang mit diesem Polygon gibts wiederum ein paar Varianten:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Es wird gelöscht. Unschön, da jetzt eine Lücke im Datensatz entsteht (bei Areas).</p>
+</li>
+<li>
+<p>Es wird dem &laquo;Ursprungs&raquo;-Polygon zugewiesen. Unschön, da jetzt ein Multipolygon entsteht resp. entstehen muss. Das INTERLIS-Datenmodell sieht aber unter Umständen keine Multipolygone vor (Constraints in der Datenbank lassen grüssen).</p>
+</li>
+<li>
+<p>Es wird dem Nachbarpolygon mit der längsten gemeinsamen Kanten zugewiesen. Unschön, da jetzt der Endpunkt des &laquo;Ursprungs&raquo;-Polygons nicht mehr am &laquo;Ursprungs&raquo;-Endpunkt zu liegen kommt. In der amtlichen Vermessung würde das bedeuten, dass auf diesem Stützpunkt des Polygons kein Grenzpunkt liegt obwohl doch eigentlich einer da sein sollte.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In der neusten Version von <a href="http://www.eisenhutinformatik.ch/interlis/ili2pg/">ili2pg</a> wurde eine bessere Variante implementiert. Um die Topologie (wenn man das so nennen darf) resp. die Nachbarschaftsbeziehungen zwischen den Polygonen besser einzuhalten wird auf dem Kreisbogen in genügend grossem Abstand (abhängig vom erlaubten OVERLAP-Wert im INTERLIS-Datenmodell) von der tangential zulaufenden Gerade ein neuer Stützpunkt gerechnet. Von diesem neuen Stützpunkt wird anschliessend ein kleines Geradenstück bis zum Endpunkt gezogen. Vielleicht sagt ein Bild mehr als 1'000 komplizierte Worte:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p5/einlenker_ili2pg_zoom.png" alt="Einlenker bereinigt zoom">
+</div>
+</div>
+<div class="paragraph">
+<p>Rausgezoomt wird die neue Situation nochmals deutlicher sichtbar:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p5/einlenker_ili2pg.png" alt="Einlenker bereinigt Overview">
+</div>
+</div>
+<div class="paragraph">
+<p>Teil dieses Weiterentwicklungspaketes von ili2pg war ebenfalls die Unterstützung der Flächenbildung unter Beibehaltung der Kreisbogengeometrien. Diese werden neu nicht mehr segmentiert, sondern das Resultat eines INTERLIS1-Importes in die Postgis-Datenbank sind Geometrien vom Typ <code>COMPOUNDCURVE</code> und <code>CURVEPOLYGON</code>. Mit dem Programmparameter <code>--strokeArcs</code> können Kreisbogen weiterhin segmentiert werden.</p>
+</div>
+<div class="paragraph">
+<p>Diese Weiterentwicklungen wurden finanziell unterstützt durch die Kantone <a href="http://www.be.ch/agi">Bern</a>, <a href="http://geo.gl.ch/">Glarus</a> und <a href="http://www.agi.so.ch">Solothurn</a> und durch die Firma <a href="http://www.eisenhutinformatik.ch/">Eisenhut Informatik AG</a> ausgeführt. Besten Dank!</p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/INTERLIS.html">INTERLIS</a>
+		, <a href="/tags/ili2pg.html">ili2pg</a>
+		, <a href="/tags/Java.html">Java</a>
+		, <a href="/tags/QGIS.html">QGIS</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

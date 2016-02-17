@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Fun with GeoKettle Episode 1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Fun with GeoKettle Episode 1</h1>
+	</div>
+
+	<p class="date"><em>09 February 2014</em></p>
+
+	<p><div class="paragraph">
+<p>Der <a href="http://www.swisstopo.admin.ch/internet/swisstopo/de/home/topics/survey/lv95/lv03-lv95.html">Bezugsrahmenwechsel</a> steht <a href="http://www.admin.ch/opc/de/classified-compilation/20071088/index.html#a53">vor der Tür</a> und viele Geodaten müssen früher oder später transformiert werden. Swisstopo bietet einen <a href="http://www.swisstopo.admin.ch/internet/swisstopo/de/home/apps/calc/reframe.html">Webdienst</a> und ein <a href="http://www.swisstopo.admin.ch/internet/swisstopo/de/home/products/software/products/reframe_fme.html">FME-Plugin</a> für diese Transformation an.</p>
+</div>
+<div class="paragraph">
+<p>Für das ETL-Tool <a href="http://www.spatialytics.org/projects/geokettle/">GeoKettle</a> habe ich ein Plugin geschrieben, das diese Transformation für Vektordaten als &laquo;Transform-Step&raquo; anbietet. Das Plugin kann auf Github heruntergeladen werden: <a href="https://github.com/edigonzales/geokettle_freeframe_plugin/releases">FreeFrame.zip</a>. Die Zip-Datei muss entpackt und in den Ordner <code>plugins/steps</code> von GeoKettle kopiert werden. Hat die Installation geklappt, erscheint unter Design - Transform ein neuer Step: &laquo;FreeFrame Plugin&raquo; Eine (marginal) ausführlichere Installationsanleitung findet sich <a href="https://github.com/edigonzales/geokettle_freeframe_plugin">hier</a>. Zum Ausprobieren habe ich ein <a href="http://www.catais.org/tmp/geokettle-2.5.zip">Sorglos-Paket</a> zusammengestellt, das aus GeoKettle und dem Plugin selbst besteht. Es wird <strong>nicht</strong> mit jeder neuen Plugin-Version aktualisiert.</p>
+</div>
+<div class="paragraph">
+<p>Die Anwendung ist einfach: Der Transformationsschritt kann innerhalb GeoKettle zu einem beliebigen Zeitpunkt angewendet werden, z.B. vor dem Export einer Datenbanktabelle in eine Shapedatei:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/fun_with_geokettle_ep1/postgis2shape.png" alt="Postgis 2 Shape">
+</div>
+</div>
+<div class="paragraph">
+<p>Viel einstellen muss/kann man nicht:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/fun_with_geokettle_ep1/einstellungen.png" alt="Plugin Einstellungen">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Apply transformation on</code>: Die gewünschte Geometriespalte, die transformiert werden soll.</p>
+</li>
+<li>
+<p><code>Source reference frame</code>: Quell-Referenzrahmen (LV03 oder LV95)</p>
+</li>
+<li>
+<p><code>Target reference frame</code>: Ziel-Referenzrahmen (LV03 oder LV95)</p>
+</li>
+<li>
+<p><code>Triangular transformation network</code>: Dreiecksvermaschungsdatensatz (CHENyx06)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Das Plugin prüft <strong>nicht</strong>, ob die Geometrien im richtigen Koordinatensystem vorliegen. Wählt man also z.B. als Quell-Referenzrahmen &laquo;LV03&raquo; aus und die Input-Geometrien sind in einem anderen Koordinatensystem (also <strong>nicht</strong> EPSG:21781) erhält man keine befriedigenden und sinnvollen Resultate. Für vorgängige Koordinatentransformationen kann der &laquo;SRS Transformation&raquo;-Schritt verwendet werden.</p>
+</div>
+<div class="paragraph">
+<p>Liegen die zu transformierenden Koordinaten nicht innerhalb der Dreiecksvermaschung wird keine Transformation durchgeführt und die Koordinaten werden unverändert weitergeleitet.</p>
+</div>
+<div class="paragraph">
+<p>Stimmt die Transformation auch? Als kleine <a href="https://raw2.github.com/edigonzales/geokettle_freeframe_plugin/master/data/verification/vergleich_swisstopo_geokettle.ktr">GeoKettle-Übung</a> habe ich Punktkoordinaten verglichen, die ich mit dem swissopo-Dienst und mit GeoKettle transformiert habe:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/fun_with_geokettle_ep1/swisstopo_vs_geokettle.png" alt="Vergleich swisstopo vs. GeoKettle">
+</div>
+</div>
+<div class="paragraph">
+<p>Die <a href="https://github.com/edigonzales/geokettle_freeframe_plugin/blob/master/data/verification/vergleich_swisstopo_geokettle.xls?raw=true">Resultate</a> zeigen, dass es ausser Kleinstdifferenzen aus (wahrscheinlich?) nummerischen Gründen keine Unterschiede gibt.</p>
+</div>
+<div class="paragraph">
+<p>Der Transformationsschritt ist vernünftig schnell: Für das Exportieren der gesamten Bodenbedeckung des Kantons Solothurn (circa 270'000 Polygone) aus einer PostgreSQL/Postgis-Datenbank in eine Shape-Datei benötigt GeoKettle <strong>ohne</strong> Transformation circa 40 Sekunden; <strong>mit</strong> Transformation werden knapp 100 Sekunden benötigt. Das Transformieren der gleichen Datenbanktabelle inkl. Speichern  in einer neuen Datenbanktabelle benötigt circa 130 Sekunden. Für den Test wurde ein Hetzner-Server (Intel i7-3770, HDD im Software-Raid 1, Ubuntu 10.04) verwendet.</p>
+</div>
+<div class="paragraph">
+<p>Was bringt die Zukunft:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Einbinden von kantonalen Dreiecksvermaschungen, z.B. <a href="http://www.lv95.bve.be.ch/lv95_bve/de/index/navi/index/haeufig_gestelltefragen/glossar.html#anker-anchor-10">BEENyx15</a>.</p>
+</li>
+<li>
+<p>Automatische Detektierung der Geometriespalte(n). So wird es möglich sein alle Tabellen einer Datenbank oder eines Datenbankschemas in einem Rutsch zu transformieren.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Der Quellcode des Plugins befindet sich auf <a href="https://github.com/edigonzales/geokettle_freeframe_plugin">Github</a>.</p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/GeoKettle.html">GeoKettle</a>
+		, <a href="/tags/ETL.html">ETL</a>
+		, <a href="/tags/PDI.html">PDI</a>
+		, <a href="/tags/Kettle.html">Kettle</a>
+		, <a href="/tags/Bezugsrahmenwechsel.html">Bezugsrahmenwechsel</a>
+		, <a href="/tags/LV95.html">LV95</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

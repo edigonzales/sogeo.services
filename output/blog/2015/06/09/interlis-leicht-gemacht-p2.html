@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Interlis leicht gemacht #2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Interlis leicht gemacht #2</h1>
+	</div>
+
+	<p class="date"><em>09 June 2015</em></p>
+
+	<p><div class="paragraph">
+<p>Im <a href="http://sogeo.ch/blog/2015/05/09/interlis-leicht-gemacht-number-1/">letzten Beitrag</a> habe ich gezeigt, wie man einfach und effizient mit einem Kommandozeilenbefehl und dem Java-Tool <a href="http://www.eisenhutinformatik.ch/interlis/ili2pg/">ili2pg</a> aus INTERLIS-Modellen eine Datenbankstruktur anlegen kann.</p>
+</div>
+<div class="paragraph">
+<p>Das Schöne an Java und an ili2pg ist, dass man diese Funktionalität jetzt auch in eigenen Java-Code und dementsprechend in einen eigenen Importprozess einbinden kann. Eventuell müssen ja vorgängig Daten bearbeiten werden oder nach dem Import müssen weitere Prozessierungen vorgenommen werden.</p>
+</div>
+<div class="paragraph">
+<p>Wie das geht? Ganz einfach: Einzig die drei Jar-Dateien <code>ili2c.jar</code>, <code>ili2pg.jar</code> und <code>postgresql-9.1-901.jdbc4.jar</code> müssen im Klassenpfad sein. Mit einer IDE seiner/ihrer Wahl kein Problem. Das kann man sich sogar zusammenklicken.</p>
+</div>
+<div class="paragraph">
+<p>Ein minimales Java-Programm zum Importieren einer ITF-Datei sieht wie folgt aus:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+37
+38
+39
+<strong>40</strong>
+41
+42
+43
+44
+45
+46
+</pre></td>
+  <td class="code"><pre><span class="keyword">package</span> <span class="namespace">org.catais.interlis</span>;
+
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2db</span>;
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2dbException</span>;
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.gui.Config</span>;
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2pg.converter.PostgisGeometryConverter</span>;
+<span class="keyword">import</span> <span class="include">ch.ehi.sqlgen.generator_impl.jdbc.GeneratorPostgresql</span>;
+
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Ili2pgTest</span> {
+
+        <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+
+        Config config = <span class="keyword">new</span> Config();
+        config.setDbdatabase(<span class="string"><span class="delimiter">&quot;</span><span class="content">xanadu2</span><span class="delimiter">&quot;</span></span>);
+        config.setDbhost(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>);
+        config.setDbport(<span class="string"><span class="delimiter">&quot;</span><span class="content">5432</span><span class="delimiter">&quot;</span></span>);
+        config.setDbusr(<span class="string"><span class="delimiter">&quot;</span><span class="content">stefan</span><span class="delimiter">&quot;</span></span>);
+        config.setDbpwd(<span class="string"><span class="delimiter">&quot;</span><span class="content">ziegler12</span><span class="delimiter">&quot;</span></span>);
+        config.setDbschema(<span class="string"><span class="delimiter">&quot;</span><span class="content">test5</span><span class="delimiter">&quot;</span></span>);
+        config.setModels(<span class="string"><span class="delimiter">&quot;</span><span class="content">DM01AVCH24LV95D</span><span class="delimiter">&quot;</span></span>);
+        config.setModeldir(<span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/Downloads/</span><span class="delimiter">&quot;</span></span>);
+
+        config.setGeometryConverter(PostgisGeometryConverter.class.getName());
+        config.setDdlGenerator(GeneratorPostgresql.class.getName());
+        config.setJdbcDriver(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.postgresql.Driver</span><span class="delimiter">&quot;</span></span>);
+
+        config.setNameOptimization(<span class="string"><span class="delimiter">&quot;</span><span class="content">topic</span><span class="delimiter">&quot;</span></span>);
+        config.setMaxSqlNameLength(<span class="string"><span class="delimiter">&quot;</span><span class="content">60</span><span class="delimiter">&quot;</span></span>);
+
+        config.setDefaultSrsAuthority(<span class="string"><span class="delimiter">&quot;</span><span class="content">EPSG</span><span class="delimiter">&quot;</span></span>);
+        config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">2056</span><span class="delimiter">&quot;</span></span>);
+
+        config.setXtffile(<span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/Downloads/ch_lv95_254900.itf</span><span class="delimiter">&quot;</span></span>);
+
+        <span class="predefined-type">String</span> dburl = <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://</span><span class="delimiter">&quot;</span></span> + config.getDbhost() + <span class="string"><span class="delimiter">&quot;</span><span class="content">:</span><span class="delimiter">&quot;</span></span> + config.getDbport() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span> + config.getDbdatabase();
+        config.setDburl(dburl);
+
+        <span class="keyword">try</span> {
+            Ili2db ili2pg = <span class="keyword">new</span> Ili2db();
+            ili2pg.runImport(config, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>);
+        } <span class="keyword">catch</span> (Ili2dbException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Man benötigt lediglich zwei Klassen: eine Konfigurationsklasse <code>Config</code> und die eigentliche Importklasse <code>Ili2db</code>. Mittels der Konfigurationsklasse steuert man verschiedene Parameter <em>und</em> in welchen Datenbanktyp importiert werden soll. Dies ist nötig, um gewisse Unterschiede zwischen den Datenbanktypen abzufangen resp. anders zu behandeln.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 1 - 22</strong>: Diese Zeilen sollten eigentlich selbsterklärend sein.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 24 - 26</strong>: Hier wird der Konfigurationsklasse mitgeteilt, dass es sich bei der Datenbank um PostgreSQL/Postgis handelt. Dies hat Auswirkungen auf die Konvertierung der Geometrie und auf das Erstellen der SQL-Befehle.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 28 - 29</strong>: Mit der Methode <code>setNameOptimization("topic")</code> werden die Datenbanktabellennamen zusammengesetzt aus Topic- und Klassennamen (verbunden mit einem Untertrich): <code>topic_class</code>. Mit der Methode <code>setMaxSqlNameLength("60")</code> wird die maximale Länge der SQL-Namen auf 60 Zeichen gesetzt. Das Setzen der maximalen Länge ist wichtig, da der Prozess sonst abbricht.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 31 - 32</strong>: Wird was anderes als LV03 (EPSG:21781) importiert, muss das hier mittels EPSG-Code definiert werden.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 34</strong>: Hier wird die zu importierende Interlis-Datei angegeben.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 36 - 37</strong>: <del>Warum das manuelle Zusammensetzen der Datenbankurl noch nötig ist, ist mir nicht ganz klar. Eigentlich kennt die Konfigurationsklasse bereits alle angaben, die dazu benötig werden.</del></p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 40 - 41</strong>: Zu guter Letzt kann die Importklasse instanziiert werden und der Importprozess kann gestartet werden.</p>
+</div>
+<div class="paragraph">
+<p>Falls keine Fehlermeldungen in der Konsole erscheinen, sollten die Daten erfolgreich importiert worden sein:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p2/pgadmin3.png" alt="pgadmin3">
+</div>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/INTERLIS.html">INTERLIS</a>
+		, <a href="/tags/ili2pg.html">ili2pg</a>
+		, <a href="/tags/Java.html">Java</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

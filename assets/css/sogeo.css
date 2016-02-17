@@ -1,0 +1,174 @@
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+h1 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 32px;
+}
+
+h1 a {
+    color:#000000;
+    text-decoration: none;
+    -webkit-transition: 0.3s ease-in-out;
+    -moz-transition: 0.3s ease-in-out;
+    -ms-transition: 0.3s ease-in-out;
+    -o-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
+}
+
+h1 a:hover {
+    color:#0181eb;
+    text-decoration: none;
+}
+
+.date {
+  font-size: 18px;
+  color: #aaa;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+.paragraph {
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+p.author {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+p {
+    margin-top: 25px;
+    margin-bottom: 0px;
+}
+
+li p {
+    margin-top: 25px;
+    margin-bottom: 0px;
+}
+
+ul {
+    line-height: 1.8;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+ol {
+    line-height: 1.8;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+dl {
+    line-height: 1.8;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.navbar-default {
+    background-color: #fff;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
+}
+
+.navbar-default .navbar-brand {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+#footer {
+    border-top-width: 0px;
+    border-top-style: solid;
+    border-top-color: rgb(231, 231, 231);
+    background-color: #fff;
+}
+
+.container {
+  font-size: 18px;
+  max-width: 800px;
+}
+
+.container p.credit {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+}
+
+.content img {
+  border-radius: 0.3em;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  border: 0.5em solid #FFF;
+}
+
+.imageblock {
+    margin-top: 25px;
+    margin-bottom: 0px;
+}
+
+
+pre {
+  /*background-color: rgb(252,252,252);*/
+  background-color: rgb(255,255,255);
+}
+
+.literalblock > .content pre, .listingblock > .content pre {
+    font-size: 0.9em;
+}
+
+.listingblock {
+    margin-top: 25px;
+    margin-bottom: 0px;
+}
+
+code {
+  font-family: "Hack", monospace;
+}
+
+.code pre {
+  border-width: 0px;
+  font-family: "Hack", monospace;
+}
+
+
+.line-numbers pre {
+  border-width: 0px;
+  color: #ccc;
+}
+
+pre.CodeRay.highlight {
+  padding: 9.5px;
+  border-width: 0px;
+  border-radius: 4px;
+  /*background-color: rgb(252,252,252);*/
+  background-color: rgb(255,255,255);
+  max-width: 2000px;
+}
+
+
+.CodeRay pre {
+  margin: 0px;
+  padding-left: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+table.CodeRay {
+  border-width: 0px;
+  background-color: #f5f5f5;
+}
+
+table.CodeRay td {
+  padding: 0px;
+}
+
+.CodeRay {
+  margin-bottom: 0px;
+}

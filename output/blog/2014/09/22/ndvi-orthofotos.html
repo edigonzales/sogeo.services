@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>NDVI Orthofotos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>NDVI Orthofotos</h1>
+	</div>
+
+	<p class="date"><em>22 September 2014</em></p>
+
+	<p><div class="paragraph">
+<p>Der Kanton Solothurn lässt jedes Jahr ein Drittel seiner Fläche neu befliegen und lässt daraus neue <a href="http://www.sogis.ch/daten">Orthofotos</a> erstellen. Als Endprodukt werden GeoTIFF mit den vier Kanälen <em>Rot</em>, <em>Grün</em>, <em>Blau</em> und <em>nahes Infrarot</em> ausgeliefert. Daraus werden anschliessend zwei abgeleitete Produkte erstellt: ein RGB-Orthofoto und ein FCIR-Orthofoto. "FCIR" steht für "false-colour infrared" und besteht aus den Kanälen <em>nahes Infrarot</em>, <em>Rot</em> und <em>Grün</em> und sieht dann in etwa so aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/ndvi_orthofotos/fcir.jpg" alt="FCIR Beispiel">
+</div>
+</div>
+<div class="paragraph">
+<p>Hilfreich kann diese Kombination zum Beispiel für Umweltanalysen sein. Unser Fokus lag jedoch in der besseren Identifizierbarkeit von Abgrenzungen zwischen Objekten unterschiedlicher Bodenbeschaffenheit (z.B. Wasser - nicht Wasser oder Strasse - Acker/Wiese).</p>
+</div>
+<div class="paragraph">
+<p>Auf dem <a href="https://www.mapbox.com/blog/">Mapbox-Blog</a> sind verschiedene, interessante Beiträge was man mit Satellitenbildern und Orthofotos und den verschiedenen Kanälen anstellen kann. So auch ein <a href="https://www.mapbox.com/blog/processing-rapideye-imagery/">Beitrag</a> zu <a href="http://en.wikipedia.org/wiki/Normalized_Difference_Vegetation_Index">NDVI</a>. Sieht cool aus, will ich auch. Netterweise stehen auch gleich die GDAL- und ImageMagick-Befehle im Blog. Daraus lässt sich leicht für unsere Daten ein Skript erstellen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre></td>
+  <td class="code"><pre>#!/bin/bash
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/gdal/gdal-dev/lib
+export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.6/dist-packages/GDAL-2.0.0-py2.6-linux-x86_64.egg
+
+for FILE in /opt/Geodaten/ch/so/kva/orthofoto/2014/cir/12_5cm/*.tif
+do
+  BASENAME=$(basename $FILE .tif)
+  OUTFILE=/home/stefan/Geodaten/NDVI_2014/${BASENAME}.tif
+  OUTFILE_PREP=/home/stefan/Geodaten/NDVI_2014/${BASENAME}_prep.tif
+  OUTFILE_TMP=/home/stefan/Geodaten/NDVI_2014/${BASENAME}_tmp.tif
+
+  echo &quot;Processing: ${BASENAME}.tif&quot;
+
+  cp $FILE $OUTFILE
+  listgeo -tfw $OUTFILE
+  rm $OUTFILE
+
+  convert $FILE $OUTFILE_PREP
+
+  convert -monitor $OUTFILE_PREP -fx '(u.r - u.g) / (u.r + u.g + 0.001)' $OUTFILE_TMP
+
+  /usr/local/gdal/gdal-dev/bin/gdal_edit.py -a_srs EPSG:21781 $OUTFILE_TMP
+  /usr/local/gdal/gdal-dev/bin/gdal_translate -co TILED=YES -co COMPRESS=LZW $OUTFILE_TMP $OUTFILE
+  /usr/local/gdal/gdal-dev/bin/gdaladdo -r cubic --config COMPRESS_OVERVIEW LZW $OUTFILE 2 4 8 16 32 64 128
+
+  rm $OUTFILE_PREP
+  rm $OUTFILE_TMP
+done</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 3 - 4</strong>: Sind nicht relevant. Die Zeilen werden gebraucht, um dem Skript mitzuteilen, dass eine bestimmte GDAL-Version verwendet werden soll.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 6</strong>: Hier beginnt die for-Schleife, die jede einzelne Orthofoto-Kachel verarbeitet. Da schlussendlich nur die Kanäle <em>Rot</em> und <em>nahes Infrarot</em> interessieren, kann das FCIR-Orthofoto für die Berechnung verwendet werden.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 8 - 11</strong>: Parameter für die verschiedenen (temporären) Dateien.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 15 - 17</strong>: Quick 'n' Dirty wird hier ein World-File erstellt. Da mit den ImageMagick-Befehlen die Georeferenzierung verloren geht, muss diese zum Schluss wiederhergestellt werden. Dafür brauchts das World-File.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 19</strong>: Der später verwendetete <code>-fx</code> Operator funktioniert am besten mit Dateien, die von ImageMagick selbst erstellt wurden. Aus diesem Grund wird das GeoTIFF mit dem <code>convert</code> Befehl kopiert.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile  21</strong>: Hier passiert die Magie: Mit dem <code>-fx</code> <a href="http://www.imagemagick.org/script/fx.php">Operator</a> wird der NDVI-Wert für jedes Pixel berechnet. Falls sowohl der <em>nahe Infrarot</em> (<code>u.r</code>) und <em>rote</em> (<code>u.g</code>) Kanal einen Pixelwert von 0 aufweisen, ist der Nenner ebenfalls 0 und damit der Bruch nicht mehr definiert. Aus diesem Grund wird ein kleiner Wert beim Nenner hinzuaddiert. Dies dürfte auf das Resultat keinen Einfluss haben. Schöner wäre es natürlich wenn man das ganze mit einem if-else-Konstrukt behandeln würde.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 23 - 25</strong>: Anschliessend wird die Georeferenzierung wiederhergestellt und die internen Overviews gerechnet.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 27 - 29</strong>: Zu guter Letzt werden noch die temporären Dateien, die nicht mehr benötigt werden, gelöscht.</p>
+</div>
+<div class="paragraph">
+<p>Die ganze Berechnung dauert für circa 450 1km2 Kacheln (8000 x 8000 Pixel) rund 10 Stunden. Der Flaschenhals ist der <code>-fx</code> Operator obwohl dieser sämtliche Kerne des Prozessors verwendet:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/ndvi_orthofotos/ndvi_htop.png" alt="htop cpu">
+</div>
+</div>
+<div class="paragraph">
+<p>Das Resultat dieser CPU-Orgie sieht dann wie folgt aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/ndvi_orthofotos/ndvi_01.jpg" alt="NDVI Resultat">
+</div>
+</div>
+<div class="paragraph">
+<p>Soweit so gut. Nicht wirklich spektakulär aber in etwa das was man aufgrund des Beispiels im  <a href="https://www.mapbox.com/blog/processing-rapideye-imagery/">Mapbox-Blog</a> erwarten durfte. Augenfällig ist aber die klare Unterscheidung zwischen Strassen (keine Vegetation) und der landwirtschaftlich genutzten Flächen oder des Waldes. Für gewisse Fragestellungen (z.B. Periodische Nachführung, Erfassung von Waldstrassen) in der amtlichen Vermessung kann man sich das jetzt zunutze machen. Unter gewissen Umständen ist im normalen RGB-Orthofoto und FCIR-Orthofoto kein Strassenverlauf mehr zu erkennen. Auf dem NDVI-Bild ist ein Verlauf aber immer noch (mehr oder weniger gut) sichtbar:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/ndvi_orthofotos/rgb_02.jpg" alt="RGB Bsp. 2">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/ndvi_orthofotos/ndvi_02.jpg" alt="NDVI Bsp. 2">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/ndvi_orthofotos/rgb_03.jpg" alt="RGB Bsp. 3">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/ndvi_orthofotos/ndvi_03.jpg" alt="NDVI Bsp. 3">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/ndvi_orthofotos/rgb_04.jpg" alt="RGB Bsp. 4">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/ndvi_orthofotos/ndvi_04.jpg" alt="NDVI Bsp. 4">
+</div>
+</div>
+<div class="paragraph">
+<p><del>Die Beispiele zum Vergleichen gibts <a href="http://s.geo.admin.ch/5fc9390e46">hier</a>, <a href ="http://s.geo.admin.ch/5fc93ad569">hier</a> und <a href="http://s.geo.admin.ch/5fc93bb5bb">hier</a>.</del></p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/NDVI.html">NDVI</a>
+		, <a href="/tags/Orthophoto.html">Orthophoto</a>
+		, <a href="/tags/Orthofoto.html">Orthofoto</a>
+		, <a href="/tags/Raster.html">Raster</a>
+		, <a href="/tags/GDAL.html">GDAL</a>
+		, <a href="/tags/convert.html">convert</a>
+		, <a href="/tags/ImageMagick.html">ImageMagick</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

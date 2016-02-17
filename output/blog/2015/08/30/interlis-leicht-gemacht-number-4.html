@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Interlis leicht gemacht #4</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Interlis leicht gemacht #4</h1>
+	</div>
+
+	<p class="date"><em>30 August 2015</em></p>
+
+	<p><div class="paragraph">
+<p>Wir sind momentan dabei im Kanton Solothurn die <a href="http://models.geo.admin.ch/BJ/KS3-20060703.ili">AVGBS</a> einzuführen. In einem Pilotprojekt sollen verschiedene Geschäftsfälle durchgespielt werden. Dafür müssen in der amtlichen Vermessung die Grundstücke das Attribut &laquo;EGRIS_EGRID&raquo; führen. Im Grundbuch wird der EGRID bereits geführt. Eine Liste aller Grundstücke (inkl. EGRID) kann vom Grundbuch als CSV-Datei exportiert werden. Die Frage lautet also nun: Wie kommen die EGRID aus dem Grundbuch in die amtliche Vermessung beim Nachführungsgeometer?</p>
+</div>
+<div class="paragraph">
+<p>Eine Variante ist das manuelle Abfüllen des EGRID im AV-Erfassungssystem. Bei fast 2000 Grundstücken in der Pilotgemeinde macht das wenig Spass, ist fehleranfällig und wird ewig dauern. Mmmmh, es geht hier doch um AVGBS. Warum erstellen wir nicht eine AVGBS-Datei, die der Nachführungsgeometer in seinem System einlesen kann? Gesagt, getan. Mit einem kleinen <a href="http://www.groovy-lang.org/">Groovy</a>-Skript und <a href="http://www.eisenhutinformatik.ch/interlis/ili2pg/">ili2pg</a> wird das TOPIC <code>Eigentumsverhaeltnis</code> mit der CLASS <code>Grundstueck</code> erstellt, abgefüllt und anschliessend in einer INTERLIS-Datei dem Nachführungsgeometer zur Verfügung gestellt. Dieser kann die INTERLIS-Datei einlesen und der EGRID wird den Grundstücken in seinem System zugewiesen.</p>
+</div>
+<div class="paragraph">
+<p>Der komplette Prozess kann in vier Schritte unterteilt werden:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Erstellen der INTERLIS-Modellstruktur in der Datenbank</p>
+</li>
+<li>
+<p>Importieren der CSV-Datei mit den EGRID in die Datenbank</p>
+</li>
+<li>
+<p>Abfüllen der in Schritt (1) erstellten Tabellen mit den benötigten Informationen</p>
+</li>
+<li>
+<p>Exportieren der INTERLIS-Datei</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+37
+38
+39
+<strong>40</strong>
+41
+42
+43
+44
+45
+46
+47
+48
+49
+<strong>50</strong>
+51
+52
+53
+54
+55
+56
+57
+58
+59
+<strong>60</strong>
+61
+62
+63
+64
+65
+66
+67
+68
+69
+<strong>70</strong>
+71
+72
+73
+74
+75
+76
+77
+78
+79
+<strong>80</strong>
+81
+82
+83
+84
+85
+86
+87
+88
+89
+<strong>90</strong>
+91
+92
+93
+94
+95
+96
+97
+98
+99
+<strong>100</strong>
+101
+102
+103
+104
+105
+106
+107
+108
+109
+<strong>110</strong>
+111
+112
+113
+114
+115
+116
+117
+118
+119
+<strong>120</strong>
+121
+122
+123
+124
+125
+126
+127
+128
+129
+<strong>130</strong>
+131
+132
+133
+134
+135
+136
+137
+138
+139
+<strong>140</strong>
+141
+142
+</pre></td>
+  <td class="code"><pre><span class="annotation">@Grapes</span>([
+   <span class="annotation">@GrabResolver</span>(name=<span class="string"><span class="delimiter">'</span><span class="content">catais.org</span><span class="delimiter">'</span></span>, root=<span class="string"><span class="delimiter">'</span><span class="content">http://www.catais.org/maven/repository/release/</span><span class="delimiter">'</span></span>, m2Compatible=<span class="string"><span class="delimiter">'</span><span class="content">true</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">org.postgresql:postgresql:9.4-1201-jdbc41</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2c:4.5.12</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2pg:2.1.4</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@GrabConfig</span>(systemClassLoader = <span class="predefined-constant">true</span>)
+])
+
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2db</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2dbException</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.gui.Config</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2pg.converter.PostgisGeometryConverter</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.sqlgen.generator_impl.jdbc.GeneratorPostgresql</span>
+<span class="keyword">import</span> <span class="include">groovy.sql.*</span>
+
+<span class="keyword">def</span> csv = <span class="string"><span class="delimiter">&quot;</span><span class="content">/Users/stefan/tmp/gb_egridexport150730_2407.csv</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> numberOfCsvRows = <span class="integer">3717</span>
+<span class="keyword">def</span> municipality = <span class="string"><span class="delimiter">&quot;</span><span class="content">oensingen</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> fosnr = <span class="integer">2407</span>
+
+<span class="keyword">def</span> dbhost = <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbport = <span class="string"><span class="delimiter">&quot;</span><span class="content">5432</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbdatabase = <span class="string"><span class="delimiter">&quot;</span><span class="content">xanadu2</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbusr = <span class="string"><span class="delimiter">&quot;</span><span class="content">stefan</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbpwd = <span class="string"><span class="delimiter">&quot;</span><span class="content">ziegler12</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> dbschema = <span class="string"><span class="delimiter">&quot;</span><span class="content">av_egrid</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> modelName = <span class="string"><span class="delimiter">&quot;</span><span class="content">GB2AV</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">def</span> dburl = <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://</span><span class="inline"><span class="inline-delimiter">${</span>dbhost<span class="inline-delimiter">}</span></span><span class="content">:</span><span class="inline"><span class="inline-delimiter">${</span>dbport<span class="inline-delimiter">}</span></span><span class="content">/</span><span class="inline"><span class="inline-delimiter">${</span>dbdatabase<span class="inline-delimiter">}</span></span><span class="content">?user=</span><span class="inline"><span class="inline-delimiter">${</span>dbusr<span class="inline-delimiter">}</span></span><span class="content">&amp;password=</span><span class="inline"><span class="inline-delimiter">${</span>dbpwd<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+
+<span class="comment">/*
+* 1. Create empty database tables with ili2db.
+*/</span>
+<span class="keyword">def</span> query = <span class="string"><span class="delimiter">&quot;</span><span class="content">DROP SCHEMA IF EXISTS </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content"> CASCADE;</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> sql = Sql.newInstance(dburl)
+sql.execute(query)
+
+<span class="keyword">def</span> config = <span class="keyword">new</span> Config()
+config.setDbhost(dbhost)
+config.setDbdatabase(dbdatabase)
+config.setDbport(dbport)
+config.setDbusr(dbusr)
+config.setDbpwd(dbpwd)
+config.setDbschema(dbschema)
+config.setDburl(dburl)
+
+config.setModels(modelName);
+config.setModeldir(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://models.geo.admin.ch/</span><span class="delimiter">&quot;</span></span>);
+
+config.setGeometryConverter(PostgisGeometryConverter.class.getName())
+config.setDdlGenerator(GeneratorPostgresql.class.getName())
+config.setJdbcDriver(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.postgresql.Driver</span><span class="delimiter">&quot;</span></span>)
+
+config.setNameOptimization(<span class="string"><span class="delimiter">&quot;</span><span class="content">topic</span><span class="delimiter">&quot;</span></span>)
+config.setMaxSqlNameLength(<span class="string"><span class="delimiter">&quot;</span><span class="content">60</span><span class="delimiter">&quot;</span></span>)
+config.setSqlNull(<span class="string"><span class="delimiter">&quot;</span><span class="content">enable</span><span class="delimiter">&quot;</span></span>);
+
+config.setDefaultSrsAuthority(<span class="string"><span class="delimiter">&quot;</span><span class="content">EPSG</span><span class="delimiter">&quot;</span></span>)
+config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">21781</span><span class="delimiter">&quot;</span></span>)
+
+Ili2db.runSchemaImport(config, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)
+
+<span class="comment">/*
+* 2. Create foreign table from CSV.
+*/</span>
+query = <span class="string"><span class="delimiter">&quot;&quot;&quot;</span><span class="char">\
+</span><span class="content">DROP FOREIGN TABLE IF EXISTS </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(municipality)<span class="inline-delimiter">}</span></span><span class="content">;
+
+CREATE FOREIGN TABLE </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(municipality)<span class="inline-delimiter">}</span></span><span class="content">  (
+ bfsnr integer,
+ kreisnr integer,
+ grundstuecknummer varchar,
+ grundstuecknummerzusatz varchar,
+ grundstuecknummer3 varchar,
+ grundstuecknummer4 varchar,
+ egrid varchar(14)
+) SERVER file_fdw_server
+OPTIONS (format 'csv', header 'true',
+         filename '</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(csv)<span class="inline-delimiter">}</span></span><span class="content">',
+         delimiter ',', null '');
+</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+sql.execute(query)
+
+<span class="comment">// Check number of rows in foreign table.</span>
+query = <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT count(*) FROM </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(municipality)<span class="inline-delimiter">}</span></span><span class="content">;</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">assert</span> sql.firstRow(query).count == numberOfCsvRows
+
+<span class="comment">/*
+* 3. Assign EGRID values to cadastral data and insert data into ili2db tables.
+*/</span>
+query = <span class="string"><span class="delimiter">&quot;&quot;&quot;</span><span class="char">\
+</span><span class="content">DELETE FROM </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.eigentumsverhaeltnis_grundstueck;
+DELETE FROM </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.gb2av_grundstuecknummer;
+
+WITH av AS (
+ SELECT g.ogc_fid as av_id, g.nbident, g.nummer as av_nummer, l.flaechenmass, l.geometrie, l.gem_bfs, l.lieferdatum
+ FROM av_avdpool_ch.liegenschaften_grundstueck as g, av_avdpool_ch.liegenschaften_liegenschaft as l
+ WHERE g.gem_bfs = </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(fosnr)<span class="inline-delimiter">}</span></span><span class="content">
+ AND l.gem_bfs = </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(fosnr)<span class="inline-delimiter">}</span></span><span class="content">
+ AND g.tid = l.liegenschaft_von
+),
+gb AS (
+ SELECT row_number() OVER () as gb_id, bfsnr, grundstuecknummer as gb_nummer, egrid
+ FROM </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(municipality)<span class="inline-delimiter">}</span></span><span class="content">
+ WHERE grundstuecknummerzusatz IS NULL
+),
+eigentumsverhaeltnis_grundstueck AS (
+ INSERT INTO </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.eigentumsverhaeltnis_grundstueck (t_id, art)
+ SELECT gb_id, 0::integer as art
+ FROM av, gb
+ WHERE av.av_nummer = gb.gb_nummer
+)
+INSERT INTO </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.gb2av_grundstuecknummer(t_id, t_seq, egrid, nummer, gb2aveigntmsvrhltnis_grundstueck_nummer)
+SELECT (gb_id+1000000) as t_id, 0::integer as t_seq, gb.egrid, gb.gb_nummer, gb_id
+FROM av, gb
+WHERE av.av_nummer = gb.gb_nummer;
+</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+sql.execute(query)
+
+<span class="comment">// Check if we were able to assign an EGRID to all Liegenschaften from cadastral</span>
+<span class="comment">// survyeing. If this is true the number of objects in all three tables is equal.</span>
+query = <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT count(*) FROM av_avdpool_ch.liegenschaften_liegenschaft WHERE gem_bfs = </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(fosnr)<span class="inline-delimiter">}</span></span><span class="content">;</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> numberOfLiegenschaften = sql.firstRow(query).count
+
+query = <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT count(*) FROM </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.eigentumsverhaeltnis_grundstueck;</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> numberOfEigentumsverhaeltnisGrundstueck = sql.firstRow(query).count
+
+query = <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT count(*) FROM </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.gb2av_grundstuecknummer;</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">def</span> numberOfGrundstuecknummer = sql.firstRow(query).count
+
+<span class="keyword">assert</span> numberOfLiegenschaften == numberOfEigentumsverhaeltnisGrundstueck
+<span class="keyword">assert</span> numberOfLiegenschaften == numberOfGrundstuecknummer
+
+<span class="comment">// Close database connection.</span>
+sql.connection.close()
+sql.close()
+
+<span class="comment">/*
+* 4. Export data to an INTERLIS/XTF file.
+*/</span>
+config.setXtffile(<span class="string"><span class="delimiter">&quot;</span><span class="content">/Users/stefan/tmp/egrid_</span><span class="inline"><span class="inline-delimiter">${</span>municipality<span class="inline-delimiter">}</span></span><span class="content">.xtf</span><span class="delimiter">&quot;</span></span>)
+Ili2db.runExport(config, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 34 - 61</strong>: Im ersten Schritt wird das Schema, in dem die INTERLIS-Modellstruktur angelegt wird, gelöscht (falls es existiert). Anschliessend werden mit ili2pg die leeren Tabellen in der Datenbank angelegt. Mehr Informationen zu den Konfigurationsparametern gibts <a href="http://sogeo.ch/blog/2015/06/09/interlis-leicht-gemacht-p2/">hier</a>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 66 - 86</strong>: Die Daten aus der CSV-Datei müssen in die Datenbank importiert werden, um anschliessend Abfragen durchführen zu können. Ein eleganter Weg die Daten zu importieren, ist die Verwendung eines <a href="http://www.postgresql.org/docs/9.4/static/file-fdw.html">Foreign Data Wrappers</a> für Textdateien. Die Kenntnis über die Struktur (also die Spalten der CSV-Datei und das verwendete Trennzeichen) reicht, um mit einem <code>CREATE FOREIGN TABLE</code> die Daten zu "importieren". Mit <code>assert</code> wird geprüft, ob auch wirklich alles importiert wurde.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 91 - 136</strong>: Anschliessend können mit SQL-Befehlen die AV-Daten mit den importierten Grundbuchdaten verknüpft werden und das gewünschte Ergebnis in die passenden Tabellen (aus Schritt 1) gespeichert werden. Verwendet werden <a href="http://www.postgresql.org/docs/9.4/static/queries-with.html">Common Table Expressions</a>. Somit fallen die x-fach verschachtelten Subqueries weg.</p>
+</div>
+<div class="paragraph">
+<p>Aus dem TOPIC <code>Eigentumsverhaeltnis</code> interessiert eigentlich nur die CLASS <code>Grundstueck</code>. Die Klasse verwendet jedoch eine STRUCTURE, die in der relationalen Datenbank in einer weiteren Tabelle abgebildet wird. So müssen Daten in zwei Tabellen geschrieben werden.</p>
+</div>
+<div class="paragraph">
+<p>Auch hier überprüfen wir wieder auf Vollständigkeit: In beiden Tabellen, in die wir Daten geschrieben haben, müssen genau gleich viele Objekte vorhanden sein, wie in der Ausgangstabelle (Liegenschaften der amtlichen Vermessung).</p>
+</div>
+<div class="paragraph">
+<p>Die selbständigen und dauerenden Rechte fehlen in der Abfrage, können aber genau gleich behandelt werden.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 141 - 142</strong>: Zu guter Letzt exportieren wird unsere Arbeit in eine INTERLIS/XTF-Datei.</p>
+</div>
+<div class="paragraph">
+<p>Die Log-Informationen des Exportprozesses sehen schon mal gut aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p4/ili2pg_export_log.png" alt="ili2pg export log">
+</div>
+</div>
+<div class="paragraph">
+<p>Ein kurzer Blick in die INTERLIS/XTF-Datei zeigt das gewünschte Resultat:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p4/egrid_xtf.png" alt="egrid xtf">
+</div>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/INTERLIS.html">INTERLIS</a>
+		, <a href="/tags/ili2pg.html">ili2pg</a>
+		, <a href="/tags/Java.html">Java</a>
+		, <a href="/tags/Groovy.html">Groovy</a>
+		, <a href="/tags/AVGBS.html">AVGBS</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

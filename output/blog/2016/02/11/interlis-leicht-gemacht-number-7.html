@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Interlis leicht gemacht #7</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Interlis leicht gemacht #7</h1>
+	</div>
+
+	<p class="date"><em>11 February 2016</em></p>
+
+	<p><div class="paragraph">
+<p>Seit <a href="https://github.com/claeis/ili2db/commit/85d167e0c4fd491567cd8e8bab3bd9f8e7a85eed">kurzem</a> gibt es neu auch <a href="http://www.eisenhutinformatik.ch/interlis/ili2gpkg/">ili2gpkg</a>. Damit kann aus einer INTERLIS-Transferdatei schnell und ohne eine PostgreSQL-Datenbank am Laufen zu haben eine GeoPackage-Datei erstellt werden. Diese kann dann in <a href="http://www.qgis.org">QGIS</a> oder ArcGIS visualisert und bearbeitet werden. Der Befehl zum Erstellen des GeoPackages ist praktisch identisch dem Befehl zum Importieren in eine PostGIS-Datenbank:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+</pre></td>
+  <td class="code"><pre>java -jar ili2gpkg.jar --import --nameByTopic --modeldir http://models.geo.admin.ch --models DM01AVCH24D --dbfile av_solothurn.gpkg ch_260100.itf</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Im Prinzip stehen die gleichen Optionen wie bei <a href="http://www.eisenhutinformatik.ch/interlis/ili2pg/">ili2pg</a> zur Verfügung. Einige gibt es natürlich nicht, z.B. die DB-Connection-Parameter. Die werden einfach durch den Filenamen-Parameter ersetzt: <code>--dbfile</code>. Natürlich ist man dabei nicht nur auf das Erstellen (= Lesen von INTERLIS) von GeoPackage-Dateien beschränkt. Man kann ebenso aus GeoPackage-Dateien INTERLIS-Transfer-Dateien erstellen. Dazu in einem späteren Beitrag mehr.</p>
+</div>
+<div class="paragraph">
+<p>Eine Anwendungsmöglichkeit unter vielen ist z.B. ein kleiner Webdienst, wo man eine INTERLIS-Transferdatei hochladen kann und als Antwort die GeoPackage-Datei bekommt. Klassischerweise würde man hier ein Java-Servlet schreiben. Fürs Prototyping erstelle ich aber ein <a href="http://docs.groovy-lang.org/latest/html/documentation/servlet-userguide.html">Groovlet</a>. Man kann sich das auf dem Web/Servlet-Container so einrichten, dass alle in einem Ordner liegende <code>*.groovy</code>-Dateien als Servlet resp. eben als Groovlet ausgeführt werden. Zum Rumspielen noch ganz praktisch.</p>
+</div>
+<div class="paragraph">
+<p>Als erstes brauchen wir das Upload-Formular. Dazu reichen ein paar Zeichen Groovy, das uns das benötigte HTML erstellt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+</pre></td>
+  <td class="code"><pre>html.html {
+    head {
+        meta(<span class="key">charset</span>:<span class="string"><span class="delimiter">'</span><span class="content">utf-8</span><span class="delimiter">'</span></span>)
+        meta(<span class="key">name</span>:<span class="string"><span class="delimiter">'</span><span class="content">viewport</span><span class="delimiter">'</span></span>, <span class="key">content</span>:<span class="string"><span class="delimiter">'</span><span class="content">width=device-width, initial-scale=1</span><span class="delimiter">'</span></span>)
+        meta(<span class="string"><span class="delimiter">'</span><span class="content">http-equiv</span><span class="delimiter">'</span></span>:<span class="string"><span class="delimiter">'</span><span class="content">x-ua-compatible</span><span class="delimiter">'</span></span>, <span class="key">content</span>:<span class="string"><span class="delimiter">'</span><span class="content">ie=edge</span><span class="delimiter">'</span></span>)
+
+        title <span class="string"><span class="delimiter">'</span><span class="content">ili2gpkg online converter</span><span class="delimiter">'</span></span>
+        style <span class="string"><span class="delimiter">'''</span><span class="content">
+            label { display: block; padding: 0.2em; }
+        </span><span class="delimiter">'''</span></span>
+    }
+    body {
+        h1 <span class="string"><span class="delimiter">'</span><span class="content">INTERLIS (ITF/XTF) to GeoPackage Converter</span><span class="delimiter">'</span></span>
+        form <span class="key">action</span>: <span class="string"><span class="delimiter">'</span><span class="content">do_ili2gpkg.groovy</span><span class="delimiter">'</span></span>, <span class="key">method</span>: <span class="string"><span class="delimiter">'</span><span class="content">post</span><span class="delimiter">'</span></span>, <span class="key">enctype</span>: <span class="string"><span class="delimiter">'</span><span class="content">multipart/form-data</span><span class="delimiter">'</span></span>, {
+            label <span class="string"><span class="delimiter">'</span><span class="content">Reference frame: </span><span class="delimiter">'</span></span>, {
+                select <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">reference_frame</span><span class="delimiter">'</span></span>, {
+                    option <span class="string"><span class="delimiter">'</span><span class="content">LV03</span><span class="delimiter">'</span></span>
+                    option <span class="string"><span class="delimiter">'</span><span class="content">LV95</span><span class="delimiter">'</span></span>
+                }
+            }
+            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--strokeArcs</span><span class="delimiter">&quot;</span></span>, {
+                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">checked</span>: <span class="string"><span class="delimiter">'</span><span class="content">checked</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">strokeArcs</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">strokeArcs</span><span class="delimiter">'</span></span>
+            }
+            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--skipPolygonBuilding</span><span class="delimiter">&quot;</span></span>, {
+                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">skipPolygonBuilding</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">skipPolygonBuilding</span><span class="delimiter">'</span></span>
+            }
+            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--nameByTopic</span><span class="delimiter">&quot;</span></span>, {
+                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">checked</span>: <span class="string"><span class="delimiter">'</span><span class="content">checked</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">nameByTopic</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">nameByTopic</span><span class="delimiter">'</span></span>
+            }
+            label <span class="string"><span class="delimiter">'</span><span class="content">File: </span><span class="delimiter">'</span></span>, {
+                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">file</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">file</span><span class="delimiter">'</span></span>
+            }
+            input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">submit</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">submit</span><span class="delimiter">'</span></span>, <span class="key">value</span>: <span class="string"><span class="delimiter">'</span><span class="content">Send to server</span><span class="delimiter">'</span></span>
+        }
+    }
+}</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Das sind ganz schön nach 90er-Jahre aus, aber es fehlt schliesslich auch jegliches Styling:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p7/ili2gpkg_html_form.png" alt="ili2gpkg upload formular">
+</div>
+</div>
+<div class="paragraph">
+<p>Von den unzähligen Programmoptionen lassen wir nur vier zu, die der Anwender via Webformular auswählen kann:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>--defaultSrsCode</code>: Entweder LV03 oder LV95.</p>
+</li>
+<li>
+<p><code>--skipPolygonBuilding</code>: Falls gewünscht, wird die Flächenbildung für Polygone nicht gemacht und es bleiben &laquo;Spaghetti&raquo;-Daten. Dies kann sehr praktisch für die Verifikation von Datenlieferungen sein. Bei der Flächenbildung <a href="http://www.sogeo.services/blog/2015/10/03/interlis-leicht-gemacht-number-5.html">bereinigt</a> ili2gpkg zulässige Overlaps, um OGC-konforme Geometrien zu erhalten. Um jedoch wirklich die Original-Geometrien zu erhalten und diese bei Grenzfällen besser beurteilen zu können, lohnt es sich manchmal nur die Linien zu betrachten.</p>
+</li>
+<li>
+<p><code>--strokeArcs</code>: Kreisbogen werden segmentiert.</p>
+</li>
+<li>
+<p><code>--nameByTopic</code>: Die Tabellen in der GeoPackage-Datenbank werden nach dem Muster <code>Topicname_Classname</code> benannt.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Wie man dem Groovy-Skript resp. der HTML-Datei entnehmen kann, ist <code>do_ili2gpkg.groovy</code> das Groovy-Skript, das beim Senden aufgerufen wird. Dieses übernimmt die eigentliche Umwandlung INTERLIS &#8594; GeoPackage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+37
+38
+39
+<strong>40</strong>
+41
+42
+43
+44
+45
+46
+47
+48
+49
+<strong>50</strong>
+51
+52
+53
+54
+55
+56
+57
+58
+59
+<strong>60</strong>
+61
+62
+63
+64
+65
+66
+67
+68
+69
+<strong>70</strong>
+71
+72
+73
+74
+75
+76
+77
+78
+79
+<strong>80</strong>
+81
+82
+83
+84
+85
+86
+87
+88
+89
+<strong>90</strong>
+91
+92
+93
+94
+95
+96
+97
+98
+99
+<strong>100</strong>
+101
+102
+103
+104
+105
+106
+107
+108
+109
+<strong>110</strong>
+111
+112
+113
+114
+115
+116
+117
+118
+119
+<strong>120</strong>
+121
+122
+123
+124
+125
+126
+127
+128
+129
+<strong>130</strong>
+131
+132
+133
+134
+135
+136
+137
+138
+139
+<strong>140</strong>
+141
+142
+143
+144
+145
+146
+147
+148
+149
+<strong>150</strong>
+151
+152
+153
+154
+155
+156
+157
+158
+159
+<strong>160</strong>
+161
+162
+163
+164
+165
+166
+167
+168
+169
+<strong>170</strong>
+171
+172
+173
+174
+175
+176
+177
+178
+179
+<strong>180</strong>
+181
+182
+183
+184
+185
+186
+187
+188
+189
+<strong>190</strong>
+191
+</pre></td>
+  <td class="code"><pre><span class="annotation">@Grapes</span>([
+   <span class="annotation">@GrabResolver</span>(name=<span class="string"><span class="delimiter">'</span><span class="content">catais.org</span><span class="delimiter">'</span></span>, root=<span class="string"><span class="delimiter">'</span><span class="content">http://www.catais.org/maven/repository/release/</span><span class="delimiter">'</span></span>, m2Compatible=<span class="string"><span class="delimiter">'</span><span class="content">true</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">commons-fileupload</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">commons-fileupload</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">1.3.1</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">commons-io</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">commons-io</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">2.4</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">org.xerial</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">sqlite-jdbc</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">3.8.11.2</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2c:4.5.21</span><span class="delimiter">'</span></span>),
+   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2gpkg:3.0.0</span><span class="delimiter">'</span></span>),
+   <span class="comment">//@GrabConfig(systemClassLoader = true)</span>
+])
+
+<span class="keyword">import</span> <span class="include">javax.servlet.http.HttpServletResponse</span>
+<span class="keyword">import</span> <span class="include">javax.servlet.ServletOutputStream</span>
+<span class="keyword">import</span> <span class="include">java.util.logging.Logger</span>
+<span class="keyword">import</span> <span class="include">java.nio.file.Path</span>
+<span class="keyword">import</span> <span class="include">java.nio.file.Files</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.io.IOUtils</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.io.FilenameUtils</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.io.FileUtils</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.FileItem</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.util.Streams</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.servlet.ServletFileUpload</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.disk.DiskFileItemFactory</span>
+<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.FileUploadException</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2db</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2dbException</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.gui.Config</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.mapping.NameMapping</span>
+<span class="keyword">import</span> <span class="include">ch.ehi.basics.logging.EhiLogger</span>
+
+<span class="predefined-type">Logger</span> logger = <span class="predefined-type">Logger</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">do_ili2gpkg.groovy</span><span class="delimiter">&quot;</span></span>)
+logger.setUseParentHandlers(<span class="predefined-constant">true</span>)
+logger.info (<span class="string"><span class="delimiter">&quot;</span><span class="content">Starts at: </span><span class="delimiter">&quot;</span></span> + <span class="keyword">new</span> <span class="predefined-type">Date</span>())
+
+<span class="keyword">if</span> (ServletFileUpload.isMultipartContent(request)) {
+    ServletFileUpload upload = <span class="keyword">new</span> ServletFileUpload(<span class="keyword">new</span> DiskFileItemFactory())
+    <span class="comment">//upload.setSizeMax(52428800) // 50MB</span>
+    upload.setSizeMax(<span class="integer">2</span>*<span class="integer">5242880</span>) <span class="comment">// 2*5MB</span>
+
+    <span class="predefined-type">List</span>&lt;FileItem&gt; items = <span class="predefined-constant">null</span>
+
+    <span class="keyword">try</span> {
+        items = upload.parseRequest(request);
+    } <span class="keyword">catch</span> (FileUploadException e) {
+        logger.severe e.getMessage()
+        response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage())
+        <span class="keyword">return</span>
+    }
+
+    <span class="keyword">for</span> (item <span class="keyword">in</span> items) {
+        <span class="keyword">if</span> (item.isFormField()) { <span class="comment">// 'normal' form fields</span>
+            <span class="predefined-type">String</span> fieldName = item.getFieldName()
+            <span class="predefined-type">String</span> value = item.getString()
+
+            params[fieldName] = value
+            logger.info fieldName.toString()
+            logger.info value.toString()
+            logger.info item.getClass().toString()
+
+        } <span class="keyword">else</span> { <span class="comment">// files</span>
+            <span class="predefined-type">String</span> fieldName = item.getFieldName()
+            <span class="predefined-type">String</span> fileName = FilenameUtils.getName(item.getName())
+
+            <span class="keyword">if</span> (fileName.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)) {
+                <span class="comment">// return 'bad request' (400) if no file was sent</span>
+                <span class="predefined-type">String</span> errorMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">No file chosen.</span><span class="delimiter">&quot;</span></span>
+                logger.severe errorMessage
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage)
+                <span class="keyword">return</span>
+            }
+
+            <span class="comment">// get the file as input stream</span>
+            <span class="predefined-type">InputStream</span> fileContent = item.getInputStream()
+
+            <span class="comment">// create random temporary directory</span>
+            <span class="predefined-type">String</span> tmpDirPrefix = <span class="string"><span class="delimiter">&quot;</span><span class="content">ili2gpkg_</span><span class="delimiter">&quot;</span></span>;
+            Path tmpDir = Files.createTempDirectory(tmpDirPrefix);
+
+            <span class="comment">// copy input stream into target file</span>
+            <span class="predefined-type">String</span> targetFileName = fileName
+            <span class="predefined-type">File</span> targetFile = <span class="keyword">new</span> <span class="predefined-type">File</span>(tmpDir.toString() + <span class="predefined-type">File</span>.separator + targetFileName)
+
+            <span class="keyword">try</span> {
+                FileUtils.copyInputStreamToFile(fileContent, targetFile)
+                logger.info <span class="string"><span class="delimiter">&quot;</span><span class="content">Uploaded file: </span><span class="delimiter">&quot;</span></span> + targetFile.toString()
+                logger.info <span class="string"><span class="delimiter">&quot;</span><span class="content">Uploaded file size [KB]: </span><span class="delimiter">&quot;</span></span> + (<span class="type">int</span>) (targetFile.length() / <span class="integer">1024</span>)
+            } <span class="keyword">catch</span> (java.io.IOException e) {
+                FileUtils.deleteDirectory(tmpDir.toFile())
+
+                logger.severe e.getMessage()
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
+                <span class="keyword">return</span>
+            }
+
+            <span class="comment">// create configuration for ili2gpkg</span>
+            <span class="keyword">def</span> config = initConfig(params)
+
+            <span class="comment">// Set the name of the geopackage.</span>
+            <span class="comment">// Same name as input file but with *.gpkg extension instead.</span>
+            <span class="predefined-type">String</span> gpkgFileName = FilenameUtils.removeExtension(targetFileName) + <span class="string"><span class="delimiter">&quot;</span><span class="content">.gpkg</span><span class="delimiter">&quot;</span></span>
+            gpkgFullFileName = tmpDir.toString() + <span class="predefined-type">File</span>.separator + gpkgFileName
+            config.setDbfile(gpkgFullFileName)
+            config.setDburl(<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:sqlite:</span><span class="delimiter">&quot;</span></span>+config.getDbfile())
+            config.setXtffile(targetFile.toString())
+
+            <span class="predefined-type">String</span> fileExtension = FilenameUtils.getExtension(targetFileName)
+            <span class="predefined-type">System</span>.out.println(fileExtension)
+            <span class="keyword">if</span> (fileExtension.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">itf</span><span class="delimiter">&quot;</span></span>)) {
+                config.setItfTranferfile(<span class="predefined-constant">true</span>)
+            }
+
+            <span class="comment">// Now create the GeoPackage.</span>
+            <span class="keyword">try</span> {
+                <span class="comment">//EhiLogger.getInstance().setTraceFilter(false)</span>
+                Ili2db.runImport(config, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)
+            } <span class="keyword">catch</span> (Ili2dbException e) {
+                logger.severe e.getMessage()
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
+                <span class="keyword">return</span>
+            }
+
+            <span class="comment">// Send GeoPackage to browser.</span>
+            response.setContentType(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/x-sqlite3</span><span class="delimiter">&quot;</span></span>)
+            response.setHeader(<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Disposition</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">attachment; filename=</span><span class="delimiter">&quot;</span></span> + gpkgFileName);
+            ServletOutputStream os = response.getOutputStream();
+            <span class="predefined-type">FileInputStream</span> fis = <span class="keyword">new</span> <span class="predefined-type">FileInputStream</span>(gpkgFullFileName);
+            <span class="keyword">try</span> {
+                <span class="type">int</span> buffSize = <span class="integer">1024</span>
+                <span class="type">byte</span><span class="type">[]</span> buffer = <span class="keyword">new</span> <span class="type">byte</span>[buffSize]
+                <span class="type">int</span> len
+                <span class="keyword">while</span> ((len = fis.read(buffer)) != -<span class="integer">1</span>) {
+                    os.write(buffer, <span class="integer">0</span>, len)
+                    os.flush()
+                    response.flushBuffer()
+                }
+            } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+                logger.severe e.getMessage()
+            }
+            <span class="keyword">finally</span> {
+                FileUtils.deleteDirectory(tmpDir.toFile())
+            }
+        }
+    }
+}
+
+<span class="keyword">def</span> <span class="function">initConfig</span>(params) {
+    <span class="keyword">def</span> config = <span class="keyword">new</span> Config()
+    config.setModeldir(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://models.geo.admin.ch/;http://models.geo.gl.ch/;http://www.catais.org/models</span><span class="delimiter">&quot;</span></span>)
+    config.setModels(Ili2db.XTF)
+    config.setSqlNull(<span class="string"><span class="delimiter">&quot;</span><span class="content">enable</span><span class="delimiter">&quot;</span></span>);
+    config.setDefaultSrsAuthority(<span class="string"><span class="delimiter">&quot;</span><span class="content">EPSG</span><span class="delimiter">&quot;</span></span>);
+    config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">21781</span><span class="delimiter">&quot;</span></span>);
+    config.setMaxSqlNameLength(<span class="predefined-type">Integer</span>.toString(NameMapping.DEFAULT_NAME_LENGTH));
+    config.setIdGenerator(ch.ehi.ili2db.base.TableBasedIdGen.class.getName());
+    config.setInheritanceTrafo(config.INHERITANCE_TRAFO_SMART1);
+    config.setCatalogueRefTrafo(Config.CATALOGUE_REF_TRAFO_COALESCE);
+    config.setMultiSurfaceTrafo(Config.MULTISURFACE_TRAFO_COALESCE);
+    config.setMultilingualTrafo(Config.MULTILINGUAL_TRAFO_EXPAND);
+
+    config.setGeometryConverter(ch.ehi.ili2gpkg.GpkgColumnConverter.class.getName());
+    config.setDdlGenerator(ch.ehi.sqlgen.generator_impl.jdbc.GeneratorGeoPackage.class.getName());
+    config.setJdbcDriver(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.sqlite.JDBC</span><span class="delimiter">&quot;</span></span>);
+    config.setIdGenerator(ch.ehi.ili2db.base.TableBasedIdGen.class.getName());
+    config.setIli2dbCustomStrategy(ch.ehi.ili2gpkg.GpkgMapping.class.getName());
+    config.setOneGeomPerTable(<span class="predefined-constant">true</span>);
+
+    <span class="keyword">for</span> (param <span class="keyword">in</span> params) {
+        <span class="keyword">def</span> key = param.key
+
+        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">strokeArcs</span><span class="delimiter">&quot;</span></span>)) {
+            config.setStrokeArcs(config.STROKE_ARCS_ENABLE)
+        }
+
+        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">nameByTopic</span><span class="delimiter">&quot;</span></span>)) {
+            config.setNameOptimization(config.NAME_OPTIMIZATION_TOPIC)
+        }
+
+        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">skipPolygonBuilding</span><span class="delimiter">&quot;</span></span>)) {
+            config.setDoItfLineTables(<span class="predefined-constant">true</span>);
+            config.setAreaRef(config.AREA_REF_KEEP);
+        }
+
+        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">reference_frame</span><span class="delimiter">&quot;</span></span>)) {
+            <span class="keyword">if</span> (param.value.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">LV95</span><span class="delimiter">&quot;</span></span>)) {
+                config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">2056</span><span class="delimiter">&quot;</span></span>);
+            }
+        }
+    }
+    <span class="keyword">return</span> config
+}
+
+logger.info (<span class="string"><span class="delimiter">&quot;</span><span class="content">Stops at: </span><span class="delimiter">&quot;</span></span> + <span class="keyword">new</span> <span class="predefined-type">Date</span>())</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 1 - 9</strong>: Die notwendigen Bibliotheken werden mittels <a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">Grape</a> einmalig heruntergeladen. Die <code>*.jar</code>-Dateien landen dann im <code>.groovy/grapes/</code>-Verzeichnis des Apache-Tomcat-Users und nicht etwa im <code>lib</code>-Verzeichnis von Apache-Tomcat selbst. Der Befehl <code>@GrabConfig(systemClassLoader = true)</code> scheint nicht notwendig zu sein, wenn das Skript als Groovlet in Apache Tomcat läuft.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 11 - 28</strong>: Notwendige Imports werden gemacht. Für den File-Upload verwenden wir die Apache-Commons-Bibliotheken. Ab <a href="http://docs.oracle.com/javaee/6/tutorial/doc/glrbb.html">Servlet-Spezifikation 3.0</a> gibt es dafür native Unterstützung. Heruntergebrochen auf ein Groovlet habe ich das aber nicht zum Laufen gebracht. Daher wird hier wieder die old-school-Methode verwendet.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 37</strong>: Die maximale Grösse der Upload-Datei ist auf 10MB beschränkt.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 49 - 58</strong>: &laquo;Normale&raquo; Parameter aus dem HTML-Formular werden in einer <code>Map</code> gespeichert. Sie werden später für die Konfiguration von ili2gpkg verwendet.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 59 - 92</strong>: Die gelieferte Datei wird entgegengenommen und in einem temporären Verzeichnis gespeichert.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 99 - 119</strong>: Hier findet die eigentliche Umwandlung der INTERLIS-Transferdatei in die GeoPackage-Datei statt. Die <code>Config</code>-Klasse wird mit den übermittelten Parameter aus dem HTML-Formular in einer separaten Methode konfiguriert. Ein INTERLIS-Modell oder ein -Repository kann nicht übermittelt werden. Das Modell wird aus der Transferdatei selber ermittelt (Zeile 148) und in den drei hardcodierten Repositories gesucht.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 121 - 140</strong>: Zu guter Letzt wird die GeoPackage-Datei an den Browser zurückgesendet. Der Benutzer muss sie nur noch speichern.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p7/ili2gpkg_save_as.png" alt="ili2gpkg download">
+</div>
+</div>
+<div class="paragraph">
+<p>Das Resultat sieht genauso aus wie wir es von ili2pg gewohnt sind. Nur halt in einer GeoPackage-Datei:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p7/ili2gpkg_sqliteman.png" alt="ili2gpkg sqliteman">
+</div>
+</div>
+<div class="paragraph">
+<p>Anschauen kann man sich das Resultat anschliessend in QGIS:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/interlis_leicht_gemacht_p7/ili2gpkg_qgis.png" alt="ili2gpkg qgis">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Achtung</strong>: ili2gpkg setzt den <em>Layer-Extent</em> gemäss dem INTERLIS-Modell. Beim CH-Modell der amtlichen Vermessung entspricht das der Bounding-Box der gesamten Schweiz. Wenn man in QGIS &laquo;Zoom to Layer Extent&raquo; wählt, zoomt QGIS auf die gesamte Schweiz. Einerseits verwirrend, andererseits eigentlich korrekt. Aber darüber kann man sich sicher lange unterhalten.</p>
+</div>
+<div class="paragraph">
+<p>In Apache Tomcat sind drei Anpassungen vorzunehmen. Einerseits muss konfiguriert werden, dass alle <code>*.groovy</code>-Dateien eines Verzeichnisses als Groovlet ausgeführt werden. Dies wird in der <code>web.xml</code>-Datei gemacht (im Root-Element):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td>
+  <td class="code"><pre><span class="tag">&lt;servlet&gt;</span>
+    <span class="tag">&lt;servlet-name&gt;</span>Groovy<span class="tag">&lt;/servlet-name&gt;</span>
+    <span class="tag">&lt;servlet-class&gt;</span>groovy.servlet.GroovyServlet<span class="tag">&lt;/servlet-class&gt;</span>
+<span class="tag">&lt;/servlet&gt;</span>
+
+<span class="tag">&lt;servlet-mapping&gt;</span>
+    <span class="tag">&lt;servlet-name&gt;</span>Groovy<span class="tag">&lt;/servlet-name&gt;</span>
+    <span class="tag">&lt;url-pattern&gt;</span>*.groovy<span class="tag">&lt;/url-pattern&gt;</span>
+<span class="tag">&lt;/servlet-mapping&gt;</span></pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Zudem wollen wir dieses Verzeichnis an einem beliebigen Ort im Filesystem haben und nicht unterhalb des Tomcat-Installationsverzeichnisses. Dazu setzen wir einen &laquo;Context Path&raquo; in der Datei <code>server.xml</code> unter <code>&lt;Host&gt;</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+</pre></td>
+  <td class="code"><pre><span class="tag">&lt;Host</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>  <span class="attribute-name">appBase</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">webapps</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">unpackWARs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">autoDeploy</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+  <span class="comment">&lt;!-- SingleSignOn valve, share authentication between web applications
+       Documentation at: /docs/config/valve.html --&gt;</span>
+  <span class="comment">&lt;!--
+  &lt;Valve className=&quot;org.apache.catalina.authenticator.SingleSignOn&quot; /&gt;
+  --&gt;</span>
+
+  <span class="comment">&lt;!-- Access log processes all example.
+       Documentation at: /docs/config/valve.html
+       Note: The pattern used is equivalent to using pattern=&quot;common&quot; --&gt;</span>
+  <span class="tag">&lt;Valve</span> <span class="attribute-name">className</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.apache.catalina.valves.AccessLogValve</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">directory</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">logs</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">prefix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost_access_log</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">suffix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">.txt</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">%h %l %u %t </span><span class="entity">&amp;quot;</span><span class="content">%r</span><span class="entity">&amp;quot;</span> <span class="content">%s %b</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+ <span class="comment">&lt;!-- Groovlets --&gt;</span>
+ <span class="tag">&lt;Context</span> <span class="attribute-name">path</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/groovy/ili2gpkg</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">docBase</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/Projekte/ili2gpkg_service/scripts</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">reloadable</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+
+<span class="tag">&lt;/Host&gt;</span></pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Einzig die Zeilen 17 und 18 stammen von mir, alles Andere sind Default-Einstellungen. Der Eintrag bewirkt jetzt, dass der Request <a href="http://www.example.com/groovy/ili2gpkg/mein_skript.groovy" class="bare">http://www.example.com/groovy/ili2gpkg/mein_skript.groovy</a> im Verzeichnis <code>/home/stefan/Projekte/ili2gpkg_service/scripts/</code> das Groovy-Skript <code>mein_skript.groovy</code> sucht und, sofern vorhanden, ausführt.</p>
+</div>
+<div class="paragraph">
+<p>Als letztes muss noch die <code>groovy-all-x.y.z.jar</code> in das <code>lib</code>-Verzeichnis von Apache Tomcat kopiert werden. Dieses Groovy-&laquo;Sorglos&raquo;-Paket liegt dem <a href="http://groovy-lang.org/download.html">Download</a> bei.</p>
+</div>
+<div class="paragraph">
+<p>Ein Live-Beispiel gibt es <a href="http://www.sogeo.services/groovy/ili2gpkg/ili2gpkg.groovy">hier</a> (mspublic / mspublic).</p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/INTERLIS.html">INTERLIS</a>
+		, <a href="/tags/ili2gpkg.html">ili2gpkg</a>
+		, <a href="/tags/ili2pg.html">ili2pg</a>
+		, <a href="/tags/Java.html">Java</a>
+		, <a href="/tags/Tomcat.html">Tomcat</a>
+		, <a href="/tags/Servlet.html">Servlet</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

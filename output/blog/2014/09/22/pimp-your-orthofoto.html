@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Pimp your Orthophoto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Pimp your Orthophoto</h1>
+	</div>
+
+	<p class="date"><em>22 September 2014</em></p>
+
+	<p><div class="paragraph">
+<p>Werden Luftbilder zu unterschiedlichen Zeitpunkten geflogen, sind die daraus resultierenden Orthofotos farblich unterschiedlich. Was aber nicht mehr nachzuvollziehen ist, sind Unterschiede wie hier in den FCIR-Orthofotos der Jahre 2012 und 2013:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/pimp_your_orthophotos/pimp_vorher_gross.jpg" alt="FCIR vorher gross">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/pimp_your_orthophotos/pimp_vorher_klein.jpg" alt="FCIR vorher klein">
+</div>
+</div>
+<div class="paragraph">
+<p>Die Orthofotos auf der linken Seite (2012) wurden zwar bei voller Belaubung geflogen jedoch sind die Farbunterschiede zu gross und die Orthofotos auf der rechten Seite (2013) scheinen einen Blaustich zu haben. Was machen?</p>
+</div>
+<div class="paragraph">
+<p>Die Analyse der Bildhistogramme zeigt, dass insbesondere der rote Kanal (resp. das nahe Infrarot) sehr unterschiedlich ist und einen Shift zwischen den beiden Jahren aufweist.</p>
+</div>
+<div class="paragraph">
+<p>Hat man nur ein Bild kann man mit Gimp (o.ä.) dran schrauben bis es passt. Hat man aber 467 Kacheln macht das weniger Spass. Mit <a href="http://www.imagemagick.org/">ImageMagick</a> geht das aber wunderbar:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>convert -channel R -gamma 2 $INPUT $OUTPUT</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mit diesem Befehl wird eine Gammakorrektur im roten Kanal durchgeführt. Mit ein wenig probieren, findet man schnell einen passenden Wert. Das Resultat sieht so aus:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/pimp_your_orthophotos/pimp_nachher_gross.jpg" alt="FCIR nachher gross">
+</div>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/pimp_your_orthophotos/pimp_nachher_klein.jpg" alt="FCIR nachher klein">
+</div>
+</div>
+<div class="paragraph">
+<p>Der Blauschleier ist nicht mehr so extrem wie vorher. Trotzdem könnte man die Farben sicher noch besser anpassen. <del>Den WMS mit den angepassten Orthofotos gibts <a href="http://www.catais.org/wms/orthofoto?REQUEST=GetCapabilities&SERVICE=WMS">hier</a>.</del></p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/Orthophoto.html">Orthophoto</a>
+		, <a href="/tags/Orthofoto.html">Orthofoto</a>
+		, <a href="/tags/Raster.html">Raster</a>
+		, <a href="/tags/convert.html">convert</a>
+		, <a href="/tags/ImageMagick.html">ImageMagick</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>

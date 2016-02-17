@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Karten rendern mit PyQGIS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="generator" content="JBake">
+
+    <!-- Le styles -->
+    <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../css/asciidoctor.css" rel="stylesheet">
+    <link href="../../../../css/base.css" rel="stylesheet">
+    <link href="../../../../css/prettify.css" rel="stylesheet">
+    <link href="../../../../css/coderay.css" rel="stylesheet">
+    <link href="../../../../css/sogeo.css" rel="stylesheet">
+
+    <!-- web fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <!--[if lt IE 9]>
+      <script src="../../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">-->
+    <link rel="shortcut icon" href="../../../../favicon.ico">
+  </head>
+  <body onload="prettyPrint()">
+    <div id="wrap">
+
+	<!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+			<li><a href="../../../../index.html">Home</a></li>
+			<li><a href="../../../../archive.html">Archive</a></li>
+            <li><a href="../../../../feed.xml">Subscribe</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+	<div class="page-header">
+		<h1>Karten rendern mit PyQGIS</h1>
+	</div>
+
+	<p class="date"><em>19 October 2014</em></p>
+
+	<p><div class="paragraph">
+<p>An der FOSSGIS 2013 wurde von Andreas Schmid <a href="http://www.fossgis.de/konferenz/2013/programm/attachments/432_fossgis_2013_Schmid_QGIS_Server_Praesentation.pdf">gezeigt</a> wie mit QGIS der <a href="http://www.cadastre.ch/internet/kataster/de/home/services/service/bp.html">Basisplan der amtlichen Vermessung</a> erstellt werden kann. Der ganze Systemaufbau ist nicht gerade trivial weil für das Rendern des Kartenbildes <a href="http://hub.qgis.org/projects/quantum-gis/wiki/QGIS_Server_Tutorial">QGIS Server</a> eingesetzt wird. Dies setzt z.B. Apache 2 und ein FCGI-Modul voraus. Das eigentliche Ziel der Übung ist aber nicht einen WMS-Dienst anzubieten, sondern aus Vektordaten ein Rasterkartenwerk zu erstellen.</p>
+</div>
+<div class="paragraph">
+<p>Weil bei Projektstart einige Funktionen in den Python-Bindings von QGIS (PyQGIS) fehlten, konnte nicht dieser Weg gewählt werden, sondern es wurde der Umweg über einen WMS-Dienst als Kartenrenderer gewählt. Die fehlenden Funktionen sind jetzt alle vorhanden und es steht einer Vereinfachung des Herstellungsprozesses nichts mehr im Wege.</p>
+</div>
+<div class="paragraph">
+<p>Vieles zu PyQGIS steht im <a href="http://docs.qgis.org/testing/en/docs/pyqgis_developer_cookbook/">Kochbuch</a>. Einige Details fehlen aber. Darum folgt nachstehend ein komplettes Beispiel, das zeigt wie man mit einem vorbereiteten QGIS-Projekt die Rasterkarten anhand einer Blatteinteilung erstellen kann <strong>ohne</strong> QGIS manuell starten zu müssen.</p>
+</div>
+<div class="paragraph">
+<p>Das vorbereitete QGIS-Projekt ist simpel. Es besteht nur aus den Gemeindegrenzen des Kantons Solothurn:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="../../../../../images/qgsrenderer_p1/qgisproject.png" alt="QGIS Projekt">
+</div>
+</div>
+<div class="paragraph">
+<p>Als erstes müssen zwei Dateien erstellt werden:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>basisplan.sh</code></p>
+</li>
+<li>
+<p><code>basisplan.py</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>basisplan.sh</code> macht nichts weiter als den Pfad zu den QGIS-Bibliotheken zu setzen und anschliessend die Pythondatei <code>basisplan.py</code> aufzurufen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+</pre></td>
+  <td class="code"><pre>#!/bin/bash
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/stefan/Apps/qgis_master/lib
+export PYTHONPATH=$PYTHONPATH:/home/stefan/Apps/qgis_master/share/qgis/python
+
+python basisplan.py</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>basisplan.py</code> enthält den interessanteren Teil:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+<strong>10</strong>
+11
+12
+13
+14
+15
+16
+17
+18
+19
+<strong>20</strong>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+<strong>30</strong>
+31
+32
+33
+34
+35
+36
+37
+38
+39
+<strong>40</strong>
+41
+42
+43
+44
+45
+46
+47
+48
+49
+<strong>50</strong>
+51
+52
+53
+54
+55
+56
+57
+58
+59
+<strong>60</strong>
+61
+62
+63
+64
+65
+66
+67
+68
+69
+<strong>70</strong>
+71
+72
+73
+74
+75
+76
+77
+78
+79
+<strong>80</strong>
+81
+82
+83
+84
+85
+86
+87
+</pre></td>
+  <td class="code"><pre><span class="comment"># -*- coding: utf-8 -*-</span>
+<span class="keyword">from</span> <span class="include">PyQt4.QtCore</span> <span class="keyword">import</span> <span class="include">*</span>
+<span class="keyword">from</span> <span class="include">PyQt4.QtGui</span> <span class="keyword">import</span> <span class="include">*</span>
+<span class="keyword">from</span> <span class="include">qgis.core</span> <span class="keyword">import</span> <span class="include">*</span>
+<span class="keyword">from</span> <span class="include">qgis.gui</span> <span class="keyword">import</span> <span class="include">*</span>
+
+<span class="keyword">import</span> <span class="include">os</span>
+<span class="keyword">import</span> <span class="include">sys</span>
+
+<span class="comment"># Aktuelles Verzeichnis</span>
+current_dir = os.path.dirname(os.path.realpath(__file__))
+
+<span class="comment"># QGIS initialisieren</span>
+app = QApplication(sys.argv)
+QgsApplication.setPrefixPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/Apps/qgis_master</span><span class="delimiter">&quot;</span></span>, <span class="predefined-constant">True</span>)
+QgsApplication.initQgis()
+
+<span class="comment"># QGIS-Projekt laden</span>
+QgsProject.instance().setFileName(os.path.join(current_dir,  <span class="string"><span class="delimiter">&quot;</span><span class="content">bpav5000sw.qgs</span><span class="delimiter">&quot;</span></span>))
+<span class="keyword">if</span> <span class="keyword">not</span> QgsProject.instance().read():
+    sys.exit(<span class="string"><span class="delimiter">&quot;</span><span class="content">QGIS-Projekt nicht gefunden.</span><span class="delimiter">&quot;</span></span>)
+
+<span class="comment"># List mit sämtlichen Layer im QGIS-Projekt</span>
+lst = []
+layerTreeRoot = QgsProject.instance().layerTreeRoot()
+<span class="keyword">for</span> <span class="predefined">id</span> <span class="keyword">in</span> layerTreeRoot.findLayerIds():
+    node = layerTreeRoot.findLayer(<span class="predefined">id</span>)
+    lst.append(<span class="predefined">id</span>)
+
+<span class="comment"># Layer mit Blatteinteilung laden</span>
+layer_name =  <span class="string"><span class="delimiter">&quot;</span><span class="content">blatteinteilung</span><span class="delimiter">&quot;</span></span>
+vlayer = QgsVectorLayer(os.path.join(current_dir, <span class="string"><span class="delimiter">&quot;</span><span class="content">basisplan.gpkg</span><span class="delimiter">&quot;</span></span>) + <span class="string"><span class="delimiter">&quot;</span><span class="content">|layername=blatteinteilung</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Blatteinteilung</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">ogr</span><span class="delimiter">&quot;</span></span>)
+<span class="keyword">if</span> <span class="keyword">not</span> vlayer.isValid():
+    sys.exit(<span class="string"><span class="delimiter">&quot;</span><span class="content">Blatteinteilung konnte nicht geladen werden.</span><span class="delimiter">&quot;</span></span>)
+
+<span class="comment"># Rasterkarten erstellen</span>
+iter = vlayer.getFeatures()
+<span class="keyword">for</span> feature <span class="keyword">in</span> <span class="predefined">iter</span>:
+    idx = vlayer.fieldNameIndex(<span class="string"><span class="delimiter">'</span><span class="content">nummer</span><span class="delimiter">'</span></span>)
+    nummer = feature.attributes()[idx].toString()
+
+    <span class="comment"># Ausschnitt und Grösse der Karte berechnen</span>
+    dpi = <span class="integer">508</span>
+    scale = <span class="integer">5000</span>
+
+    geom = feature.geometry()
+    p1 = geom.vertexAt(<span class="integer">0</span>)
+    p2 = geom.vertexAt(<span class="integer">2</span>)
+
+    rect = QgsRectangle(p1, p2)
+
+    dx = rect.width()
+    dy = rect.height()
+
+    width = (dx/scale) / <span class="float">0.0254</span> * dpi
+    height = (dy/scale) / <span class="float">0.0254</span> * dpi
+
+    <span class="comment"># Einstellungen für Kartenrenderer</span>
+    mapSettings = QgsMapSettings()
+    mapSettings.setMapUnits(<span class="integer">0</span>)
+    mapSettings.setExtent(rect)
+    mapSettings.setOutputDpi(dpi)
+    mapSettings.setOutputSize(QSize(width, height))
+    mapSettings.setLayers(lst)
+    mapSettings.setFlags(QgsMapSettings.DrawLabeling)
+
+    <span class="comment"># Karte zeichnen</span>
+    img = QImage(QSize(width, height), QImage.Format_Mono)
+    img.setDotsPerMeterX(dpi / <span class="float">25.4</span> * <span class="integer">1000</span>)
+    img.setDotsPerMeterY(dpi / <span class="float">25.4</span> * <span class="integer">1000</span>)
+
+    p = QPainter()
+    p.begin(img)
+
+    mapRenderer = QgsMapRendererCustomPainterJob(mapSettings, p)
+    mapRenderer.start()
+    mapRenderer.waitForFinished()
+
+    p.end()
+
+    img.save(os.path.join(<span class="string"><span class="delimiter">&quot;</span><span class="content">/tmp</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">bpav</span><span class="delimiter">&quot;</span></span> + <span class="predefined">str</span>(scale) + <span class="string"><span class="delimiter">&quot;</span><span class="content">_</span><span class="delimiter">&quot;</span></span> + <span class="predefined">str</span>(nummer) + <span class="predefined">str</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">.png</span><span class="delimiter">&quot;</span></span>)), <span class="string"><span class="delimiter">&quot;</span><span class="content">png</span><span class="delimiter">&quot;</span></span>)
+
+<span class="comment"># Layer mit Blatteinteilung löschen</span>
+<span class="keyword">del</span> vlayer
+
+<span class="comment"># QGIS schliessen</span>
+QgsApplication.exitQgis()</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 2 - 8</strong>: Module werden geladen.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 11</strong>: Bei mir funktionieren verschiedene QGIS-Methoden nicht korrekt mit relativen Pfaden, wenn diese direkt reingeschrieben werden (z.B. <code>"./bpav5000sw.qgs"</code> für das zu ladende QGIS-Projekt). Wird aber zuerst das aktuelle Verzeichnis (in dem das Skript läuft) ermittelt und dieses für die relativen Pfade verwendet, funktionierts.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 14 - 16</strong>: Zuerst wird eine Qt-Applikation und anschliessend QGIS initialisiert. Der Pfad in Zeile 15 zeigt auf die lokale  QGIS-Installation.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 19 - 21</strong>: Hier wird das vorbereitete QGIS-Projekt geladen. Falls es nicht gefunden wird, ist der Rückgabewert der Methode <code>QgsProject.instance().read()</code> <code>False</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 24 - 28</strong>: Für das Rendern der Karte müssen zuerst sämtliche Layer des QGIS-Projekts in eine Liste geschrieben werden. Sollen nur die sichtbaren Layer gerendert werden, kann man diese mit <code>node.isVisible()</code> ermitteln.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 31 - 34</strong>: Die Blatteinteilung wird als QGIS-Layer zusätzlich geladen.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 37ff</strong>: Für jedes Feature des vorhin geladenen Layers mit der Blatteinteilung wird nun die Rasterkarte erstellt.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 42 - 56</strong>: Aufgrund des Massstabes, Auflösung (DPI) und Ausdehnung des Kartenblattes wird die Grösse (Pixelanzahl) und die Boundingbox der zu erstellenden Rasterkarte berechnet.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 59 - 65</strong>: Die oben ermittelnden Werte werden in einer Settings-Klasse gespeichert, die später der Kartenrenderer verwenden wird. Interessant ist die Zeile 65. Hier können verschiedene Flags angegeben werden. Mit <code>QgsMapSettings.DrawLabeling</code> wird dem Renderer mitgeteilt, dass die Labels gezeichnet werden sollen. Ohne das Flag <code>QgsMapSettings.Antialiasing</code> werden die Karten ohne <a href="http://de.wikipedia.org/wiki/Antialiasing_\(Computergrafik\)">Antialiasing</a> gezeichnet. Dies ist insbesondere für schwarz-weisse
+Rasterkarten sinnvoll, da dann 1-Bit-Karten möglich sind. Die Grösse ist um ein vielfaches kleiner als bei RGB-Bildern und die Karte lässt sich mit jeder beliebigen Farbe einfärben.</p>
+</div>
+<div class="paragraph">
+<p>Mehrere Flags werden mittels Pipe-Zeichen aneinandergereiht, z.B. mit Antialiasing: <code>mapSettings.setFlags(QgsMapSettings.Antialiasing | QgsMapSettings.DrawLabeling)</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeilen 68 - 81</strong>: Als nächstes muss ein <code>QImage</code>-Objekt mit der passenden Grösse, Format und Auflösung erstellt werden. Für unseren Fall eignet sich das Format <code>QImage.Format_Mono</code> bestens, denn es erstellt das gewünschte 1-Bit-Rasterbild. Für Farbbilder eignet sich z.B. <code>QImage.Format_RGB32</code>. Alle möglichen Formate sind <a href="http://qt-project.org/doc/qt-4.8/qimage.html#Format-enum">hier</a> beschrieben.</p>
+</div>
+<div class="paragraph">
+<p>Der Kartenrenderer wird auf Zeile 76 gestartet. Die darauffolgende Zeile ist wichtig, da sonst - ohne auf das Ende zu warten - das <em>unfertige</em> Bild physisch auf die Festplatte geschrieben wird.</p>
+</div>
+<div class="paragraph">
+<p>Nachdem das Bild fertig gerendert ist, wird es an einem gewünschten Ort gespeichert.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 84</strong>: Ohne das explizite Löschen des zusätzlich geladenen Layers verabschiedet sich mein Skript mit einem <code>Segmentation fault</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Zeile 87</strong>: QGIS wird geschlossen und alle verwendeten Layer werden gelöscht (siehe Kommentar zu Zeile 84).</p>
+</div>
+<div class="paragraph">
+<p>Die Renderzeit eines Kartenblattes ist abhängig von der Anzahl der Layer, der Komplexität der Symbologie und der Grösse (Pixelanzahl). Am schnellsten sind schwarz-weisse Karten, die ohne Antialiasing gezeichnet werden. Farbige Karten sind ebenfalls schneller ohne als mit Antialiasing.</p>
+</div>
+<div class="paragraph">
+<p>Die hier vorgestellte Lösung kann den Herstellungsprozess des Basisplanes der amtlichen Vermessung vereinfachen, da kein WMS-Dienst verwendet wird. Zudem eignet sich diese Lösung wegen der mächtigen Symbologiemöglichkeiten und Flexibilität von QGIS ebenfalls für das Herstellen von Rasterkarten jeglicher Art.</p>
+</div>
+<div class="paragraph">
+<p>Das QGIS-Beispielprojekt inkl. Shell- und Pythonskript gibt es <a href="../../../data/karten-rendern-mit-pyqgis/qgisrenderer1.zip">hier</a>.</p>
+</div></p>
+
+	<p class="author">
+		Posted by Stefan Ziegler. |
+		<a href="/tags/QGIS.html">QGIS</a>
+		, <a href="/tags/PyQGIS.html">PyQGIS</a>
+		, <a href="/tags/Basisplan.html">Basisplan</a>
+		, <a href="/tags/Amtliche-Vermessung.html">Amtliche-Vermessung</a>
+		
+	</p>
+
+	<hr />
+
+		</div>
+		<div id="push"></div>
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">&copy; 2016 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake v2.4.0</a></p>
+      </div>
+    </div>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../../../js/jquery-1.11.1.min.js"></script>
+    <script src="../../../../js/bootstrap.min.js"></script>
+	<script src="../../../../js/prettify.js"></script>
+  </body>
+</html>
