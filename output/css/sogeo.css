@@ -54,24 +54,24 @@ li p {
 ul {
     line-height: 1.8;
     margin-top: 0px;
-    margin-bottom: 0px;    
+    margin-bottom: 0px;
 }
 
 ol {
     line-height: 1.8;
     margin-top: 0px;
-    margin-bottom: 0px;        
+    margin-bottom: 0px;
 }
 
 dl {
     line-height: 1.8;
     margin-top: 0px;
-    margin-bottom: 0px;        
+    margin-bottom: 0px;
 }
 
 .navbar-default {
     background-color: #fff;
-    font-family: "Open Sans", sans-serif;    
+    font-family: "Open Sans", sans-serif;
     font-weight: 300;
 }
 
@@ -96,8 +96,8 @@ dl {
 }
 
 .container p.credit {
-    font-family: "Open Sans", sans-serif;    
-    font-weight: 300;    
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
     font-size: 14px;
 }
 
@@ -107,6 +107,12 @@ dl {
   box-sizing: border-box;
   border: 0.5em solid #FFF;
 }
+
+.imageblock {
+    margin-top: 25px;
+    margin-bottom: 0px;
+}
+
 
 pre {
   /*background-color: rgb(252,252,252);*/
@@ -118,11 +124,6 @@ pre {
 }
 
 .listingblock {
-    margin-top: 25px;
-    margin-bottom: 0px;
-}
-
-.imageblock {
     margin-top: 25px;
     margin-bottom: 0px;
 }
@@ -146,7 +147,7 @@ pre.CodeRay.highlight {
   padding: 9.5px;
   border-width: 0px;
   border-radius: 4px;
-  /*background-color: rgb(252,252,252);*/ 
+  /*background-color: rgb(252,252,252);*/
   background-color: rgb(255,255,255);
   max-width: 2000px;
 }

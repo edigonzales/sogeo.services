@@ -14,7 +14,7 @@ Die http://www.cadastre.ch/internet/kataster/de/home/av.html[Eidgenössische Ver
 
 Die Daten werden von den Kantonen an die V+D geliefert und anschliessend werden sie publiziert:
 
-+++<iframe src='https://map.geo.admin.ch/embed.html?topic=ech&lang=de&bgLayer=ch.swisstopo.swissimage&layers_opacity=0.75,0.75,0.75&X=249600.00&Y=628300.00&zoom=2&layers=ch.swisstopo-vd.spannungsarme-gebiete,ch.swisstopo-vd.geometa-periodische_nachfuehrung,ch.swisstopo-vd.geometa-standav&layers_visibility=false,true,false' width='700' height='500' frameborder='0' style='border:0'></iframe>+++
++++<iframe src='https://map.geo.admin.ch/embed.html?topic=ech&lang=de&bgLayer=ch.swisstopo.swissimage&layers_opacity=0.75,0.75,0.75&X=249600.00&Y=628300.00&zoom=2&layers=ch.swisstopo-vd.spannungsarme-gebiete,ch.swisstopo-vd.geometa-periodische_nachfuehrung,ch.swisstopo-vd.geometa-standav&layers_visibility=false,true,false' width='100%' height='500' frameborder='0' style='border:0'></iframe>+++
 
 Der &laquo;Stand der amtlichen Vermessung&raquo; war der erste Metadatensatz, den die Kantone liefern mussten. Das http://models.geo.admin.ch/V_D/AMO_Grafik_LV95_e.ili[dazugehörige INTERLIS-Modell] ist einfach und besteht aus zwei Tabellen: `Actual_Status` und `Actual_Status_Geometry`. Die Herausforderung zu diesem Zeitpunkt war aber: Wie kriege ich meine Daten in eine INTERLIS-Transferdatei? Die Lösung war dann nicht so prickelnd: Ich schrieb einen 1:1-Prozessor, der mir die Transferdatei erstellt. Ein Geknorze sondergleichen.
 

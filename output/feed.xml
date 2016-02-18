@@ -6,13 +6,13 @@
     <atom:link href="http://www.sogeo.services/feed.xml" rel="self" type="application/rss+xml" />
     <description>JBake Bootstrap Template</description>
     <language>en-gb</language>
-    <pubDate>Fri, 12 Feb 2016 07:03:06 -0600</pubDate>
-    <lastBuildDate>Fri, 12 Feb 2016 07:03:06 -0600</lastBuildDate>
+    <pubDate>Thu, 18 Feb 2016 11:39:05 +0100</pubDate>
+    <lastBuildDate>Thu, 18 Feb 2016 11:39:05 +0100</lastBuildDate>
 
     <item>
       <title>Interlis leicht gemacht #7</title>
       <link>http://www.sogeo.services/blog/2016/02/11/interlis-leicht-gemacht-number-7.html</link>
-      <pubDate>Thu, 11 Feb 2016 00:00:00 -0600</pubDate>
+      <pubDate>Thu, 11 Feb 2016 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2016/02/11/interlis-leicht-gemacht-number-7.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -658,7 +658,7 @@ logger.info (&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;Einzig die Zeilen 17 und 18 stammen von mir, alles Andere sind Default-Einstellungen. Der Eintrag bewirkt jetzt, dass der Request &lt;a href=&quot;http://www.example.com/groovy/ili2gpkg/mein_skript.groovy&quot; class=&quot;bare&quot;&gt;http://www.example.com/groovy/ili2gpkg/mein_skript.groovy&lt;/a&gt; im Verzeichnis &lt;code&gt;/home/stefan/Projekte/ili2gpkg_service/scripts/&lt;/code&gt; das Groovy-Skript &lt;code&gt;mein_skript.groovy&lt;/code&gt; sucht und, sofern vorhanden, ausführt.&lt;/p&gt;
+&lt;p&gt;Einzig die Zeilen 17 und 18 stammen von mir, alles Andere sind Default-Einstellungen. Der Eintrag bewirkt jetzt, dass der Request &lt;a href=&quot;http://&amp;#8230;&amp;#8203;/groovy/ili2gpkg/mein_skript.groovy&quot; class=&quot;bare&quot;&gt;http://&amp;#8230;&amp;#8203;/groovy/ili2gpkg/mein_skript.groovy&lt;/a&gt; (Attribut &lt;code&gt;path&lt;/code&gt;) im Verzeichnis gemäss dem Attribut &lt;code&gt;docBase&lt;/code&gt; das Groovy-Skript &lt;code&gt;mein_skript.groovy&lt;/code&gt; sucht und, sofern vorhanden, ausführt.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Als letztes muss noch die &lt;code&gt;groovy-all-x.y.z.jar&lt;/code&gt; in das &lt;code&gt;lib&lt;/code&gt;-Verzeichnis von Apache Tomcat kopiert werden. Dieses Groovy-&amp;laquo;Sorglos&amp;raquo;-Paket liegt dem &lt;a href=&quot;http://groovy-lang.org/download.html&quot;&gt;Download&lt;/a&gt; bei.&lt;/p&gt;
@@ -671,7 +671,7 @@ logger.info (&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter
     <item>
       <title>Interlis leicht gemacht #6</title>
       <link>http://www.sogeo.services/blog/2015/11/28/interlis-leicht-gemacht-number-6.html</link>
-      <pubDate>Sat, 28 Nov 2015 00:00:00 -0600</pubDate>
+      <pubDate>Sat, 28 Nov 2015 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2015/11/28/interlis-leicht-gemacht-number-6.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -694,7 +694,7 @@ logger.info (&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter
 &lt;p&gt;Die Daten werden von den Kantonen an die V+D geliefert und anschliessend werden sie publiziert:&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;&lt;iframe src=&apos;https://map.geo.admin.ch/embed.html?topic=ech&amp;lang=de&amp;bgLayer=ch.swisstopo.swissimage&amp;layers_opacity=0.75,0.75,0.75&amp;X=249600.00&amp;Y=628300.00&amp;zoom=2&amp;layers=ch.swisstopo-vd.spannungsarme-gebiete,ch.swisstopo-vd.geometa-periodische_nachfuehrung,ch.swisstopo-vd.geometa-standav&amp;layers_visibility=false,true,false&apos; width=&apos;700&apos; height=&apos;500&apos; frameborder=&apos;0&apos; style=&apos;border:0&apos;&gt;&lt;/iframe&gt;&lt;/p&gt;
+&lt;p&gt;&lt;iframe src=&apos;https://map.geo.admin.ch/embed.html?topic=ech&amp;lang=de&amp;bgLayer=ch.swisstopo.swissimage&amp;layers_opacity=0.75,0.75,0.75&amp;X=249600.00&amp;Y=628300.00&amp;zoom=2&amp;layers=ch.swisstopo-vd.spannungsarme-gebiete,ch.swisstopo-vd.geometa-periodische_nachfuehrung,ch.swisstopo-vd.geometa-standav&amp;layers_visibility=false,true,false&apos; width=&apos;100%&apos; height=&apos;500&apos; frameborder=&apos;0&apos; style=&apos;border:0&apos;&gt;&lt;/iframe&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Der &amp;laquo;Stand der amtlichen Vermessung&amp;raquo; war der erste Metadatensatz, den die Kantone liefern mussten. Das &lt;a href=&quot;http://models.geo.admin.ch/V_D/AMO_Grafik_LV95_e.ili&quot;&gt;dazugehörige INTERLIS-Modell&lt;/a&gt; ist einfach und besteht aus zwei Tabellen: &lt;code&gt;Actual_Status&lt;/code&gt; und &lt;code&gt;Actual_Status_Geometry&lt;/code&gt;. Die Herausforderung zu diesem Zeitpunkt war aber: Wie kriege ich meine Daten in eine INTERLIS-Transferdatei? Die Lösung war dann nicht so prickelnd: Ich schrieb einen 1:1-Prozessor, der mir die Transferdatei erstellt. Ein Geknorze sondergleichen.&lt;/p&gt;
@@ -963,7 +963,7 @@ logger.info (&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter
     <item>
       <title>State of WFS</title>
       <link>http://www.sogeo.services/blog/2015/10/18/state-of-wfs.html</link>
-      <pubDate>Sun, 18 Oct 2015 00:00:00 -0600</pubDate>
+      <pubDate>Sun, 18 Oct 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/10/18/state-of-wfs.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -1063,7 +1063,7 @@ logger.info (&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter
     <item>
       <title>Bezugsrahmenwechsel: ST_Fineltra in Action</title>
       <link>http://www.sogeo.services/blog/2015/10/04/bezugsrahmenwechsel-st-fineltra-in-action.html</link>
-      <pubDate>Sun, 4 Oct 2015 00:00:00 -0600</pubDate>
+      <pubDate>Sun, 4 Oct 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/10/04/bezugsrahmenwechsel-st-fineltra-in-action.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -1432,7 +1432,7 @@ sql.close()&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>Interlis leicht gemacht #5</title>
       <link>http://www.sogeo.services/blog/2015/10/03/interlis-leicht-gemacht-number-5.html</link>
-      <pubDate>Sat, 3 Oct 2015 00:00:00 -0600</pubDate>
+      <pubDate>Sat, 3 Oct 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/10/03/interlis-leicht-gemacht-number-5.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -1513,7 +1513,7 @@ sql.close()&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>Bezugsrahmenwechsel: PostGIS to the rescue</title>
       <link>http://www.sogeo.services/blog/2015/09/17/bezugsrahmenwechsel-postgis-to-the-rescue.html</link>
-      <pubDate>Thu, 17 Sep 2015 00:00:00 -0600</pubDate>
+      <pubDate>Thu, 17 Sep 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/09/17/bezugsrahmenwechsel-postgis-to-the-rescue.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -1588,7 +1588,7 @@ sql.close()&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>Interlis leicht gemacht #4</title>
       <link>http://www.sogeo.services/blog/2015/08/30/interlis-leicht-gemacht-number-4.html</link>
-      <pubDate>Sun, 30 Aug 2015 00:00:00 -0600</pubDate>
+      <pubDate>Sun, 30 Aug 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/08/30/interlis-leicht-gemacht-number-4.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -1949,7 +1949,7 @@ Ili2db.runExport(config, &lt;span class=&quot;string&quot;&gt;&lt;span class=&qu
     <item>
       <title>Interlis leicht gemacht #3</title>
       <link>http://www.sogeo.services/blog/2015/08/09/interlis-leicht-gemacht-number-3.html</link>
-      <pubDate>Sun, 9 Aug 2015 00:00:00 -0600</pubDate>
+      <pubDate>Sun, 9 Aug 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/08/09/interlis-leicht-gemacht-number-3.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -2272,7 +2272,7 @@ startJetty()&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>Bezugsrahmenwechsel: Transformation von Lidardaten</title>
       <link>http://www.sogeo.services/blog/2015/08/24/bezugsrahmenwechsel-transformation-von-lidardaten.html</link>
-      <pubDate>Wed, 24 Jun 2015 00:00:00 -0600</pubDate>
+      <pubDate>Wed, 24 Jun 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/08/24/bezugsrahmenwechsel-transformation-von-lidardaten.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -2653,7 +2653,7 @@ lyr = gpkg.GetLayerByName(LAYERNAME)
     <item>
       <title>Interlis leicht gemacht #2</title>
       <link>http://www.sogeo.services/blog/2015/06/09/interlis-leicht-gemacht-p2.html</link>
-      <pubDate>Tue, 9 Jun 2015 00:00:00 -0600</pubDate>
+      <pubDate>Tue, 9 Jun 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/06/09/interlis-leicht-gemacht-p2.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -2804,7 +2804,7 @@ lyr = gpkg.GetLayerByName(LAYERNAME)
     <item>
       <title>Interlis leicht gemacht #1</title>
       <link>http://www.sogeo.services/blog/2015/05/09/interlis-leicht-gemacht-number-1.html</link>
-      <pubDate>Sat, 9 May 2015 00:00:00 -0600</pubDate>
+      <pubDate>Sat, 9 May 2015 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2015/05/09/interlis-leicht-gemacht-number-1.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -2892,7 +2892,7 @@ lyr = gpkg.GetLayerByName(LAYERNAME)
     <item>
       <title>QGIS Server: VRT vs. GeoPackage Raster</title>
       <link>http://www.sogeo.services/blog/2014/12/25/qgis-server-vrt-vs-geopackage.html</link>
-      <pubDate>Thu, 25 Dec 2014 00:00:00 -0600</pubDate>
+      <pubDate>Thu, 25 Dec 2014 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2014/12/25/qgis-server-vrt-vs-geopackage.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -2947,7 +2947,7 @@ gdaladdo --config OGR_SQLITE_SYNCHRONOUS OFF -oo TABLE=ch.so.agi.orthofoto.2014.
     <item>
       <title>Fun with GeoKettle Episode 2</title>
       <link>http://www.sogeo.services/blog/2014/11/29/fun-with-geokettle-episode-2.html</link>
-      <pubDate>Sat, 29 Nov 2014 00:00:00 -0600</pubDate>
+      <pubDate>Sat, 29 Nov 2014 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2014/11/29/fun-with-geokettle-episode-2.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -3071,7 +3071,7 @@ gdaladdo --config OGR_SQLITE_SYNCHRONOUS OFF -oo TABLE=ch.so.agi.orthofoto.2014.
     <item>
       <title>Bezugsrahmenwechsel: Transformation von Rasterdaten #1</title>
       <link>http://www.sogeo.services/blog/2014/11/15/bezugsrahmenwechsel-transformation-von-rasterdaten-number-1.html</link>
-      <pubDate>Sat, 15 Nov 2014 00:00:00 -0600</pubDate>
+      <pubDate>Sat, 15 Nov 2014 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2014/11/15/bezugsrahmenwechsel-transformation-von-rasterdaten-number-1.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -3230,7 +3230,7 @@ layer = shp.GetLayer(&lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;)
     <item>
       <title>Karten rendern mit PyQGIS</title>
       <link>http://www.sogeo.services/blog/2014/10/19/karten-rendern-mit-pyqgis.html</link>
-      <pubDate>Sun, 19 Oct 2014 00:00:00 -0600</pubDate>
+      <pubDate>Sun, 19 Oct 2014 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2014/10/19/karten-rendern-mit-pyqgis.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -3527,7 +3527,7 @@ Rasterkarten sinnvoll, da dann 1-Bit-Karten möglich sind. Die Grösse ist um ei
     <item>
       <title>NDVI Orthofotos</title>
       <link>http://www.sogeo.services/blog/2014/09/22/ndvi-orthofotos.html</link>
-      <pubDate>Mon, 22 Sep 2014 00:00:00 -0600</pubDate>
+      <pubDate>Mon, 22 Sep 2014 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2014/09/22/ndvi-orthofotos.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -3690,7 +3690,7 @@ done&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>Pimp your Orthophoto</title>
       <link>http://www.sogeo.services/blog/2014/09/22/pimp-your-orthofoto.html</link>
-      <pubDate>Mon, 22 Sep 2014 00:00:00 -0600</pubDate>
+      <pubDate>Mon, 22 Sep 2014 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2014/09/22/pimp-your-orthofoto.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -3741,7 +3741,7 @@ done&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>GeoAdmin API Plugin für QGIS</title>
       <link>http://www.sogeo.services/blog/2014/08/24/geoadmin-api-plugin-fur-qgis.html</link>
-      <pubDate>Sun, 24 Aug 2014 00:00:00 -0600</pubDate>
+      <pubDate>Sun, 24 Aug 2014 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2014/08/24/geoadmin-api-plugin-fur-qgis.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -3820,7 +3820,7 @@ done&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>Vom Webdienst zum Bulkdownload</title>
       <link>http://www.sogeo.services/blog/2014/06/08/vom-webdienst-zum-bulkdownload.html</link>
-      <pubDate>Sun, 8 Jun 2014 00:00:00 -0600</pubDate>
+      <pubDate>Sun, 8 Jun 2014 00:00:00 +0200</pubDate>
       <guid isPermaLink="false">blog/2014/06/08/vom-webdienst-zum-bulkdownload.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -4025,7 +4025,7 @@ ds_mopublic.Destroy()&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>Fun with GeoKettle Episode 1</title>
       <link>http://www.sogeo.services/blog/2014/02/09/fun-with-geokettle-episode-1.html</link>
-      <pubDate>Sun, 9 Feb 2014 00:00:00 -0600</pubDate>
+      <pubDate>Sun, 9 Feb 2014 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2014/02/09/fun-with-geokettle-episode-1.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -4107,7 +4107,7 @@ ds_mopublic.Destroy()&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>QGIS server vs. QGIS server</title>
       <link>http://www.sogeo.services/blog/2014/01/29/qgis-server-vs-qgis-server.html</link>
-      <pubDate>Wed, 29 Jan 2014 00:00:00 -0600</pubDate>
+      <pubDate>Wed, 29 Jan 2014 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2014/01/29/qgis-server-vs-qgis-server.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;
@@ -4208,7 +4208,7 @@ ds_mopublic.Destroy()&lt;/pre&gt;&lt;/td&gt;
     <item>
       <title>Smoothe Höhenkurven</title>
       <link>http://www.sogeo.services/blog/2014/01/03/smoothe-hoehenkurven.html</link>
-      <pubDate>Fri, 3 Jan 2014 00:00:00 -0600</pubDate>
+      <pubDate>Fri, 3 Jan 2014 00:00:00 +0100</pubDate>
       <guid isPermaLink="false">blog/2014/01/03/smoothe-hoehenkurven.html</guid>
       	<description>
 	&lt;div class=&quot;paragraph&quot;&gt;

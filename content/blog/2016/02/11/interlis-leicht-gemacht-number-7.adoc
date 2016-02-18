@@ -109,7 +109,7 @@ Zudem wollen wir dieses Verzeichnis an einem beliebigen Ort im Filesystem haben 
 </Host>
 ----
 
-Einzig die Zeilen 17 und 18 stammen von mir, alles Andere sind Default-Einstellungen. Der Eintrag bewirkt jetzt, dass der Request http://www.example.com/groovy/ili2gpkg/mein_skript.groovy im Verzeichnis `/home/stefan/Projekte/ili2gpkg_service/scripts/` das Groovy-Skript `mein_skript.groovy` sucht und, sofern vorhanden, ausführt.
+Einzig die Zeilen 17 und 18 stammen von mir, alles Andere sind Default-Einstellungen. Der Eintrag bewirkt jetzt, dass der Request http://.../groovy/ili2gpkg/mein_skript.groovy (Attribut `path`) im Verzeichnis gemäss dem Attribut `docBase` das Groovy-Skript `mein_skript.groovy` sucht und, sofern vorhanden, ausführt.
 
 Als letztes muss noch die `groovy-all-x.y.z.jar` in das `lib`-Verzeichnis von Apache Tomcat kopiert werden. Dieses Groovy-&laquo;Sorglos&raquo;-Paket liegt dem http://groovy-lang.org/download.html[Download] bei.
 
