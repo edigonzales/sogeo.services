@@ -1,137 +1,68 @@
-/* syntax highlighting */ 
-.listingblock {
-    margin-top: 25px;
-    margin-bottom: 0px;
+html {
+  position: relative;
+  min-height: 100%;
 }
-
-
-pre.prettyprint {
-    background-color: rgb(255,255,255);    
-    border-width: 0px;
-}
-
-.listingblock ol.linenums {
-    font-family: 'Hack', monospace;
-    font-size: 0.9em;        
-    color: #ccc;
-    margin-left: 10px;
-    line-height: 1.5;     
-}
-
-li code {
-    border-width: 0px;
-    background-color: #fff;   
-    white-space: pre;
-    overflow-x: scroll;
-    word-break: keep-all;
-    word-wrap: normal;
-}
-
-li.L1, li.L3, li.L5, li.L7, li.L9 {
-    background-color: #fff;
-}
-/* /syntax highlighting */ 
 
 body {
   font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
+  margin-bottom: 60px;
 }
 
-h1 {
-  font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.8);
-  font-size: 32px;
+.item img {
+    width: 100%;
 }
 
-h1 a {
-    color:#000000;
-    text-decoration: none;
-    -webkit-transition: 0.3s ease-in-out;
-    -moz-transition: 0.3s ease-in-out;
-    -ms-transition: 0.3s ease-in-out;
-    -o-transition: 0.3s ease-in-out;
-    transition: 0.3s ease-in-out;
+.carousel-caption h3 a {
+    color: rgb(255,255,255);
 }
 
-h1 a:hover {
-    color:#0181eb;
+.carousel {
+    margin-bottom: 60px;
+}
+
+.carousel-caption h3 a:hover {
     text-decoration: none;
 }
 
-.date {
-  font-size: 18px;
-  color: #aaa;
-  text-transform: uppercase;
-  font-style: italic;
+
+.marketing {
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
-.paragraph {
-  font-size: 18px;
-  line-height: 1.8;
+/* Center align the text within the three columns below the carousel */
+.marketing .col-lg-4 {
+  margin-bottom: 20px;
+  text-align: center;
 }
-
-p.author {
-  margin-top: 20px;
-  font-size: 14px;
+.marketing h2 {
+  font-weight: normal;
+}
+.marketing .col-lg-4 p {
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 p {
-    margin-top: 25px;
-    margin-bottom: 0px;
+    font-size: 16px;
 }
 
-li p {
-    margin-top: 25px;
-    margin-bottom: 0px;
+#select_from_me {
+    font-family: 'Hack', monospace;
 }
 
-ul, ol, dl {
-    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
-    line-height: 1.8;
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
 
-.navbar-default {
-    background-color: #fff;
-    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
-    /*font-weight: 300;*/
-}
-
-.navbar-default .navbar-brand {
-    color: rgba(0, 0, 0, 0.8);
-}
-
-.navbar-default .navbar-nav>li>a {
-    color: rgba(0, 0, 0, 0.8);
-}
-
+/* footer */
 #footer {
-    border-top-width: 0px;
-    border-top-style: solid;
-    border-top-color: rgb(231, 231, 231);
-    background-color: #fff;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: white;
 }
 
-.container {
-  font-size: 18px;
-  max-width: 800px;
+.container .text-muted {
+  margin: 20px 0;
 }
-
-.container p.credit {
-    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
-    /*font-weight: 300;*/
-    font-size: 14px;
-}
-
-.content img {
-  border-radius: 0.3em;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.15);
-  box-sizing: border-box;
-  border: 0.5em solid #FFF;
-}
-
-.imageblock {
-    margin-top: 25px;
-    margin-bottom: 0px;
-}
+/* /footer */
