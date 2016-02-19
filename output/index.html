@@ -14,11 +14,12 @@
     <link href="css/asciidoctor.css" rel="stylesheet">
     <link href="css/base.css" rel="stylesheet">
     <link href="css/prettify.css" rel="stylesheet">
-    <link href="css/coderay.css" rel="stylesheet">
     <link href="css/sogeo.css" rel="stylesheet">
 
     <!-- web fonts -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
+    
     <!--[if lt IE 9]>
       <script src="js/html5shiv.min.js"></script>
     <![endif]-->
@@ -66,11 +67,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>java -jar ili2gpkg.jar --import --nameByTopic --modeldir http://models.geo.admin.ch --models DM01AVCH24D --dbfile av_solothurn.gpkg ch_260100.itf</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">java -jar ili2gpkg.jar --import --nameByTopic --modeldir http://models.geo.admin.ch --models DM01AVCH24D --dbfile av_solothurn.gpkg ch_260100.itf</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -84,81 +81,42 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-36
-</pre></td>
-  <td class="code"><pre>html.html {
+<pre class="prettyprint highlight linenums"><code class="language-groovy" data-lang="groovy">html.html {
     head {
-        meta(<span class="key">charset</span>:<span class="string"><span class="delimiter">'</span><span class="content">utf-8</span><span class="delimiter">'</span></span>)
-        meta(<span class="key">name</span>:<span class="string"><span class="delimiter">'</span><span class="content">viewport</span><span class="delimiter">'</span></span>, <span class="key">content</span>:<span class="string"><span class="delimiter">'</span><span class="content">width=device-width, initial-scale=1</span><span class="delimiter">'</span></span>)
-        meta(<span class="string"><span class="delimiter">'</span><span class="content">http-equiv</span><span class="delimiter">'</span></span>:<span class="string"><span class="delimiter">'</span><span class="content">x-ua-compatible</span><span class="delimiter">'</span></span>, <span class="key">content</span>:<span class="string"><span class="delimiter">'</span><span class="content">ie=edge</span><span class="delimiter">'</span></span>)
+        meta(charset:'utf-8')
+        meta(name:'viewport', content:'width=device-width, initial-scale=1')
+        meta('http-equiv':'x-ua-compatible', content:'ie=edge')
 
-        title <span class="string"><span class="delimiter">'</span><span class="content">ili2gpkg online converter</span><span class="delimiter">'</span></span>
-        style <span class="string"><span class="delimiter">'''</span><span class="content">
+        title 'ili2gpkg online converter'
+        style '''
             label { display: block; padding: 0.2em; }
-        </span><span class="delimiter">'''</span></span>
+        '''
     }
     body {
-        h1 <span class="string"><span class="delimiter">'</span><span class="content">INTERLIS (ITF/XTF) to GeoPackage Converter</span><span class="delimiter">'</span></span>
-        form <span class="key">action</span>: <span class="string"><span class="delimiter">'</span><span class="content">do_ili2gpkg.groovy</span><span class="delimiter">'</span></span>, <span class="key">method</span>: <span class="string"><span class="delimiter">'</span><span class="content">post</span><span class="delimiter">'</span></span>, <span class="key">enctype</span>: <span class="string"><span class="delimiter">'</span><span class="content">multipart/form-data</span><span class="delimiter">'</span></span>, {
-            label <span class="string"><span class="delimiter">'</span><span class="content">Reference frame: </span><span class="delimiter">'</span></span>, {
-                select <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">reference_frame</span><span class="delimiter">'</span></span>, {
-                    option <span class="string"><span class="delimiter">'</span><span class="content">LV03</span><span class="delimiter">'</span></span>
-                    option <span class="string"><span class="delimiter">'</span><span class="content">LV95</span><span class="delimiter">'</span></span>
+        h1 'INTERLIS (ITF/XTF) to GeoPackage Converter'
+        form action: 'do_ili2gpkg.groovy', method: 'post', enctype: 'multipart/form-data', {
+            label 'Reference frame: ', {
+                select name: 'reference_frame', {
+                    option 'LV03'
+                    option 'LV95'
                 }
             }
-            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--strokeArcs</span><span class="delimiter">&quot;</span></span>, {
-                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">checked</span>: <span class="string"><span class="delimiter">'</span><span class="content">checked</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">strokeArcs</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">strokeArcs</span><span class="delimiter">'</span></span>
+            label "--strokeArcs", {
+                input type: 'checkbox', checked: 'checked', name: 'strokeArcs', id: 'strokeArcs'
             }
-            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--skipPolygonBuilding</span><span class="delimiter">&quot;</span></span>, {
-                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">skipPolygonBuilding</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">skipPolygonBuilding</span><span class="delimiter">'</span></span>
+            label "--skipPolygonBuilding", {
+                input type: 'checkbox', name: 'skipPolygonBuilding', id: 'skipPolygonBuilding'
             }
-            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--nameByTopic</span><span class="delimiter">&quot;</span></span>, {
-                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">checked</span>: <span class="string"><span class="delimiter">'</span><span class="content">checked</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">nameByTopic</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">nameByTopic</span><span class="delimiter">'</span></span>
+            label "--nameByTopic", {
+                input type: 'checkbox', checked: 'checked', name: 'nameByTopic', id: 'nameByTopic'
             }
-            label <span class="string"><span class="delimiter">'</span><span class="content">File: </span><span class="delimiter">'</span></span>, {
-                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">file</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">file</span><span class="delimiter">'</span></span>
+            label 'File: ', {
+                input type: 'file', name: 'file'
             }
-            input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">submit</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">submit</span><span class="delimiter">'</span></span>, <span class="key">value</span>: <span class="string"><span class="delimiter">'</span><span class="content">Send to server</span><span class="delimiter">'</span></span>
+            input type: 'submit', name: 'submit', value: 'Send to server'
         }
     }
-}</pre></td>
-</tr></table></code></pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -193,351 +151,158 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-36
-37
-38
-39
-<strong>40</strong>
-41
-42
-43
-44
-45
-46
-47
-48
-49
-<strong>50</strong>
-51
-52
-53
-54
-55
-56
-57
-58
-59
-<strong>60</strong>
-61
-62
-63
-64
-65
-66
-67
-68
-69
-<strong>70</strong>
-71
-72
-73
-74
-75
-76
-77
-78
-79
-<strong>80</strong>
-81
-82
-83
-84
-85
-86
-87
-88
-89
-<strong>90</strong>
-91
-92
-93
-94
-95
-96
-97
-98
-99
-<strong>100</strong>
-101
-102
-103
-104
-105
-106
-107
-108
-109
-<strong>110</strong>
-111
-112
-113
-114
-115
-116
-117
-118
-119
-<strong>120</strong>
-121
-122
-123
-124
-125
-126
-127
-128
-129
-<strong>130</strong>
-131
-132
-133
-134
-135
-136
-137
-138
-139
-<strong>140</strong>
-141
-142
-143
-144
-145
-146
-147
-148
-149
-<strong>150</strong>
-151
-152
-153
-154
-155
-156
-157
-158
-159
-<strong>160</strong>
-161
-162
-163
-164
-165
-166
-167
-168
-169
-<strong>170</strong>
-171
-172
-173
-174
-175
-176
-177
-178
-179
-<strong>180</strong>
-181
-182
-183
-184
-185
-186
-187
-188
-189
-<strong>190</strong>
-191
-</pre></td>
-  <td class="code"><pre><span class="annotation">@Grapes</span>([
-   <span class="annotation">@GrabResolver</span>(name=<span class="string"><span class="delimiter">'</span><span class="content">catais.org</span><span class="delimiter">'</span></span>, root=<span class="string"><span class="delimiter">'</span><span class="content">http://www.catais.org/maven/repository/release/</span><span class="delimiter">'</span></span>, m2Compatible=<span class="string"><span class="delimiter">'</span><span class="content">true</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">commons-fileupload</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">commons-fileupload</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">1.3.1</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">commons-io</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">commons-io</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">2.4</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">org.xerial</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">sqlite-jdbc</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">3.8.11.2</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2c:4.5.21</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2gpkg:3.0.0</span><span class="delimiter">'</span></span>),
-   <span class="comment">//@GrabConfig(systemClassLoader = true)</span>
+<pre class="prettyprint highlight linenums"><code class="language-groovy" data-lang="groovy">@Grapes([
+   @GrabResolver(name='catais.org', root='http://www.catais.org/maven/repository/release/', m2Compatible='true'),
+   @Grab(group='commons-fileupload', module='commons-fileupload', version='1.3.1'),
+   @Grab(group='commons-io', module='commons-io', version='2.4'),
+   @Grab(group='org.xerial', module='sqlite-jdbc', version='3.8.11.2'),
+   @Grab('ch.interlis:ili2c:4.5.21'),
+   @Grab('ch.interlis:ili2gpkg:3.0.0'),
+   //@GrabConfig(systemClassLoader = true)
 ])
 
-<span class="keyword">import</span> <span class="include">javax.servlet.http.HttpServletResponse</span>
-<span class="keyword">import</span> <span class="include">javax.servlet.ServletOutputStream</span>
-<span class="keyword">import</span> <span class="include">java.util.logging.Logger</span>
-<span class="keyword">import</span> <span class="include">java.nio.file.Path</span>
-<span class="keyword">import</span> <span class="include">java.nio.file.Files</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.io.IOUtils</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.io.FilenameUtils</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.io.FileUtils</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.FileItem</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.util.Streams</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.servlet.ServletFileUpload</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.disk.DiskFileItemFactory</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.FileUploadException</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2db</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2dbException</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.gui.Config</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.mapping.NameMapping</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.basics.logging.EhiLogger</span>
+import javax.servlet.http.HttpServletResponse
+import javax.servlet.ServletOutputStream
+import java.util.logging.Logger
+import java.nio.file.Path
+import java.nio.file.Files
+import org.apache.commons.io.IOUtils
+import org.apache.commons.io.FilenameUtils
+import org.apache.commons.io.FileUtils
+import org.apache.commons.fileupload.FileItem
+import org.apache.commons.fileupload.util.Streams
+import org.apache.commons.fileupload.servlet.ServletFileUpload
+import org.apache.commons.fileupload.disk.DiskFileItemFactory
+import org.apache.commons.fileupload.FileUploadException
+import ch.ehi.ili2db.base.Ili2db
+import ch.ehi.ili2db.base.Ili2dbException
+import ch.ehi.ili2db.gui.Config
+import ch.ehi.ili2db.mapping.NameMapping
+import ch.ehi.basics.logging.EhiLogger
 
-<span class="predefined-type">Logger</span> logger = <span class="predefined-type">Logger</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">do_ili2gpkg.groovy</span><span class="delimiter">&quot;</span></span>)
-logger.setUseParentHandlers(<span class="predefined-constant">true</span>)
-logger.info (<span class="string"><span class="delimiter">&quot;</span><span class="content">Starts at: </span><span class="delimiter">&quot;</span></span> + <span class="keyword">new</span> <span class="predefined-type">Date</span>())
+Logger logger = Logger.getLogger("do_ili2gpkg.groovy")
+logger.setUseParentHandlers(true)
+logger.info ("Starts at: " + new Date())
 
-<span class="keyword">if</span> (ServletFileUpload.isMultipartContent(request)) {
-    ServletFileUpload upload = <span class="keyword">new</span> ServletFileUpload(<span class="keyword">new</span> DiskFileItemFactory())
-    <span class="comment">//upload.setSizeMax(52428800) // 50MB</span>
-    upload.setSizeMax(<span class="integer">2</span>*<span class="integer">5242880</span>) <span class="comment">// 2*5MB</span>
+if (ServletFileUpload.isMultipartContent(request)) {
+    ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory())
+    //upload.setSizeMax(52428800) // 50MB
+    upload.setSizeMax(2*5242880) // 2*5MB
 
-    <span class="predefined-type">List</span>&lt;FileItem&gt; items = <span class="predefined-constant">null</span>
+    List&lt;FileItem&gt; items = null
 
-    <span class="keyword">try</span> {
+    try {
         items = upload.parseRequest(request);
-    } <span class="keyword">catch</span> (FileUploadException e) {
+    } catch (FileUploadException e) {
         logger.severe e.getMessage()
         response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage())
-        <span class="keyword">return</span>
+        return
     }
 
-    <span class="keyword">for</span> (item <span class="keyword">in</span> items) {
-        <span class="keyword">if</span> (item.isFormField()) { <span class="comment">// 'normal' form fields</span>
-            <span class="predefined-type">String</span> fieldName = item.getFieldName()
-            <span class="predefined-type">String</span> value = item.getString()
+    for (item in items) {
+        if (item.isFormField()) { // 'normal' form fields
+            String fieldName = item.getFieldName()
+            String value = item.getString()
 
             params[fieldName] = value
             logger.info fieldName.toString()
             logger.info value.toString()
             logger.info item.getClass().toString()
 
-        } <span class="keyword">else</span> { <span class="comment">// files</span>
-            <span class="predefined-type">String</span> fieldName = item.getFieldName()
-            <span class="predefined-type">String</span> fileName = FilenameUtils.getName(item.getName())
+        } else { // files
+            String fieldName = item.getFieldName()
+            String fileName = FilenameUtils.getName(item.getName())
 
-            <span class="keyword">if</span> (fileName.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)) {
-                <span class="comment">// return 'bad request' (400) if no file was sent</span>
-                <span class="predefined-type">String</span> errorMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">No file chosen.</span><span class="delimiter">&quot;</span></span>
+            if (fileName.equalsIgnoreCase("")) {
+                // return 'bad request' (400) if no file was sent
+                String errorMessage = "No file chosen."
                 logger.severe errorMessage
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage)
-                <span class="keyword">return</span>
+                return
             }
 
-            <span class="comment">// get the file as input stream</span>
-            <span class="predefined-type">InputStream</span> fileContent = item.getInputStream()
+            // get the file as input stream
+            InputStream fileContent = item.getInputStream()
 
-            <span class="comment">// create random temporary directory</span>
-            <span class="predefined-type">String</span> tmpDirPrefix = <span class="string"><span class="delimiter">&quot;</span><span class="content">ili2gpkg_</span><span class="delimiter">&quot;</span></span>;
+            // create random temporary directory
+            String tmpDirPrefix = "ili2gpkg_";
             Path tmpDir = Files.createTempDirectory(tmpDirPrefix);
 
-            <span class="comment">// copy input stream into target file</span>
-            <span class="predefined-type">String</span> targetFileName = fileName
-            <span class="predefined-type">File</span> targetFile = <span class="keyword">new</span> <span class="predefined-type">File</span>(tmpDir.toString() + <span class="predefined-type">File</span>.separator + targetFileName)
+            // copy input stream into target file
+            String targetFileName = fileName
+            File targetFile = new File(tmpDir.toString() + File.separator + targetFileName)
 
-            <span class="keyword">try</span> {
+            try {
                 FileUtils.copyInputStreamToFile(fileContent, targetFile)
-                logger.info <span class="string"><span class="delimiter">&quot;</span><span class="content">Uploaded file: </span><span class="delimiter">&quot;</span></span> + targetFile.toString()
-                logger.info <span class="string"><span class="delimiter">&quot;</span><span class="content">Uploaded file size [KB]: </span><span class="delimiter">&quot;</span></span> + (<span class="type">int</span>) (targetFile.length() / <span class="integer">1024</span>)
-            } <span class="keyword">catch</span> (java.io.IOException e) {
+                logger.info "Uploaded file: " + targetFile.toString()
+                logger.info "Uploaded file size [KB]: " + (int) (targetFile.length() / 1024)
+            } catch (java.io.IOException e) {
                 FileUtils.deleteDirectory(tmpDir.toFile())
 
                 logger.severe e.getMessage()
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
-                <span class="keyword">return</span>
+                return
             }
 
-            <span class="comment">// create configuration for ili2gpkg</span>
-            <span class="keyword">def</span> config = initConfig(params)
+            // create configuration for ili2gpkg
+            def config = initConfig(params)
 
-            <span class="comment">// Set the name of the geopackage.</span>
-            <span class="comment">// Same name as input file but with *.gpkg extension instead.</span>
-            <span class="predefined-type">String</span> gpkgFileName = FilenameUtils.removeExtension(targetFileName) + <span class="string"><span class="delimiter">&quot;</span><span class="content">.gpkg</span><span class="delimiter">&quot;</span></span>
-            gpkgFullFileName = tmpDir.toString() + <span class="predefined-type">File</span>.separator + gpkgFileName
+            // Set the name of the geopackage.
+            // Same name as input file but with *.gpkg extension instead.
+            String gpkgFileName = FilenameUtils.removeExtension(targetFileName) + ".gpkg"
+            gpkgFullFileName = tmpDir.toString() + File.separator + gpkgFileName
             config.setDbfile(gpkgFullFileName)
-            config.setDburl(<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:sqlite:</span><span class="delimiter">&quot;</span></span>+config.getDbfile())
+            config.setDburl("jdbc:sqlite:"+config.getDbfile())
             config.setXtffile(targetFile.toString())
 
-            <span class="predefined-type">String</span> fileExtension = FilenameUtils.getExtension(targetFileName)
-            <span class="predefined-type">System</span>.out.println(fileExtension)
-            <span class="keyword">if</span> (fileExtension.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">itf</span><span class="delimiter">&quot;</span></span>)) {
-                config.setItfTranferfile(<span class="predefined-constant">true</span>)
+            String fileExtension = FilenameUtils.getExtension(targetFileName)
+            System.out.println(fileExtension)
+            if (fileExtension.equalsIgnoreCase("itf")) {
+                config.setItfTranferfile(true)
             }
 
-            <span class="comment">// Now create the GeoPackage.</span>
-            <span class="keyword">try</span> {
-                <span class="comment">//EhiLogger.getInstance().setTraceFilter(false)</span>
-                Ili2db.runImport(config, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)
-            } <span class="keyword">catch</span> (Ili2dbException e) {
+            // Now create the GeoPackage.
+            try {
+                //EhiLogger.getInstance().setTraceFilter(false)
+                Ili2db.runImport(config, "")
+            } catch (Ili2dbException e) {
                 logger.severe e.getMessage()
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
-                <span class="keyword">return</span>
+                return
             }
 
-            <span class="comment">// Send GeoPackage to browser.</span>
-            response.setContentType(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/x-sqlite3</span><span class="delimiter">&quot;</span></span>)
-            response.setHeader(<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Disposition</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">attachment; filename=</span><span class="delimiter">&quot;</span></span> + gpkgFileName);
+            // Send GeoPackage to browser.
+            response.setContentType("application/x-sqlite3")
+            response.setHeader("Content-Disposition", "attachment; filename=" + gpkgFileName);
             ServletOutputStream os = response.getOutputStream();
-            <span class="predefined-type">FileInputStream</span> fis = <span class="keyword">new</span> <span class="predefined-type">FileInputStream</span>(gpkgFullFileName);
-            <span class="keyword">try</span> {
-                <span class="type">int</span> buffSize = <span class="integer">1024</span>
-                <span class="type">byte</span><span class="type">[]</span> buffer = <span class="keyword">new</span> <span class="type">byte</span>[buffSize]
-                <span class="type">int</span> len
-                <span class="keyword">while</span> ((len = fis.read(buffer)) != -<span class="integer">1</span>) {
-                    os.write(buffer, <span class="integer">0</span>, len)
+            FileInputStream fis = new FileInputStream(gpkgFullFileName);
+            try {
+                int buffSize = 1024
+                byte[] buffer = new byte[buffSize]
+                int len
+                while ((len = fis.read(buffer)) != -1) {
+                    os.write(buffer, 0, len)
                     os.flush()
                     response.flushBuffer()
                 }
-            } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+            } catch (Exception e) {
                 logger.severe e.getMessage()
             }
-            <span class="keyword">finally</span> {
+            finally {
                 FileUtils.deleteDirectory(tmpDir.toFile())
             }
         }
     }
 }
 
-<span class="keyword">def</span> <span class="function">initConfig</span>(params) {
-    <span class="keyword">def</span> config = <span class="keyword">new</span> Config()
-    config.setModeldir(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://models.geo.admin.ch/;http://models.geo.gl.ch/;http://www.catais.org/models</span><span class="delimiter">&quot;</span></span>)
+def initConfig(params) {
+    def config = new Config()
+    config.setModeldir("http://models.geo.admin.ch/;http://models.geo.gl.ch/;http://www.catais.org/models")
     config.setModels(Ili2db.XTF)
-    config.setSqlNull(<span class="string"><span class="delimiter">&quot;</span><span class="content">enable</span><span class="delimiter">&quot;</span></span>);
-    config.setDefaultSrsAuthority(<span class="string"><span class="delimiter">&quot;</span><span class="content">EPSG</span><span class="delimiter">&quot;</span></span>);
-    config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">21781</span><span class="delimiter">&quot;</span></span>);
-    config.setMaxSqlNameLength(<span class="predefined-type">Integer</span>.toString(NameMapping.DEFAULT_NAME_LENGTH));
+    config.setSqlNull("enable");
+    config.setDefaultSrsAuthority("EPSG");
+    config.setDefaultSrsCode("21781");
+    config.setMaxSqlNameLength(Integer.toString(NameMapping.DEFAULT_NAME_LENGTH));
     config.setIdGenerator(ch.ehi.ili2db.base.TableBasedIdGen.class.getName());
     config.setInheritanceTrafo(config.INHERITANCE_TRAFO_SMART1);
     config.setCatalogueRefTrafo(Config.CATALOGUE_REF_TRAFO_COALESCE);
@@ -546,38 +311,37 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 
     config.setGeometryConverter(ch.ehi.ili2gpkg.GpkgColumnConverter.class.getName());
     config.setDdlGenerator(ch.ehi.sqlgen.generator_impl.jdbc.GeneratorGeoPackage.class.getName());
-    config.setJdbcDriver(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.sqlite.JDBC</span><span class="delimiter">&quot;</span></span>);
+    config.setJdbcDriver("org.sqlite.JDBC");
     config.setIdGenerator(ch.ehi.ili2db.base.TableBasedIdGen.class.getName());
     config.setIli2dbCustomStrategy(ch.ehi.ili2gpkg.GpkgMapping.class.getName());
-    config.setOneGeomPerTable(<span class="predefined-constant">true</span>);
+    config.setOneGeomPerTable(true);
 
-    <span class="keyword">for</span> (param <span class="keyword">in</span> params) {
-        <span class="keyword">def</span> key = param.key
+    for (param in params) {
+        def key = param.key
 
-        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">strokeArcs</span><span class="delimiter">&quot;</span></span>)) {
+        if (key.equalsIgnoreCase("strokeArcs")) {
             config.setStrokeArcs(config.STROKE_ARCS_ENABLE)
         }
 
-        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">nameByTopic</span><span class="delimiter">&quot;</span></span>)) {
+        if (key.equalsIgnoreCase("nameByTopic")) {
             config.setNameOptimization(config.NAME_OPTIMIZATION_TOPIC)
         }
 
-        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">skipPolygonBuilding</span><span class="delimiter">&quot;</span></span>)) {
-            config.setDoItfLineTables(<span class="predefined-constant">true</span>);
+        if (key.equalsIgnoreCase("skipPolygonBuilding")) {
+            config.setDoItfLineTables(true);
             config.setAreaRef(config.AREA_REF_KEEP);
         }
 
-        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">reference_frame</span><span class="delimiter">&quot;</span></span>)) {
-            <span class="keyword">if</span> (param.value.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">LV95</span><span class="delimiter">&quot;</span></span>)) {
-                config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">2056</span><span class="delimiter">&quot;</span></span>);
+        if (key.equalsIgnoreCase("reference_frame")) {
+            if (param.value.equalsIgnoreCase("LV95")) {
+                config.setDefaultSrsCode("2056");
             }
         }
     }
-    <span class="keyword">return</span> config
+    return config
 }
 
-logger.info (<span class="string"><span class="delimiter">&quot;</span><span class="content">Stops at: </span><span class="delimiter">&quot;</span></span> + <span class="keyword">new</span> <span class="predefined-type">Date</span>())</pre></td>
-</tr></table></code></pre>
+logger.info ("Stops at: " + new Date())</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -630,27 +394,15 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-</pre></td>
-  <td class="code"><pre><span class="tag">&lt;servlet&gt;</span>
-    <span class="tag">&lt;servlet-name&gt;</span>Groovy<span class="tag">&lt;/servlet-name&gt;</span>
-    <span class="tag">&lt;servlet-class&gt;</span>groovy.servlet.GroovyServlet<span class="tag">&lt;/servlet-class&gt;</span>
-<span class="tag">&lt;/servlet&gt;</span>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">&lt;servlet&gt;
+    &lt;servlet-name&gt;Groovy&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;groovy.servlet.GroovyServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
 
-<span class="tag">&lt;servlet-mapping&gt;</span>
-    <span class="tag">&lt;servlet-name&gt;</span>Groovy<span class="tag">&lt;/servlet-name&gt;</span>
-    <span class="tag">&lt;url-pattern&gt;</span>*.groovy<span class="tag">&lt;/url-pattern&gt;</span>
-<span class="tag">&lt;/servlet-mapping&gt;</span></pre></td>
-</tr></table></code></pre>
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;Groovy&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;*.groovy&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -658,49 +410,26 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-</pre></td>
-  <td class="code"><pre><span class="tag">&lt;Host</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>  <span class="attribute-name">appBase</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">webapps</span><span class="delimiter">&quot;</span></span>
-      <span class="attribute-name">unpackWARs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">autoDeploy</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">&lt;Host name="localhost"  appBase="webapps"
+      unpackWARs="true" autoDeploy="true"&gt;
 
-  <span class="comment">&lt;!-- SingleSignOn valve, share authentication between web applications
-       Documentation at: /docs/config/valve.html --&gt;</span>
-  <span class="comment">&lt;!--
-  &lt;Valve className=&quot;org.apache.catalina.authenticator.SingleSignOn&quot; /&gt;
-  --&gt;</span>
+  &lt;!-- SingleSignOn valve, share authentication between web applications
+       Documentation at: /docs/config/valve.html --&gt;
+  &lt;!--
+  &lt;Valve className="org.apache.catalina.authenticator.SingleSignOn" /&gt;
+  --&gt;
 
-  <span class="comment">&lt;!-- Access log processes all example.
+  &lt;!-- Access log processes all example.
        Documentation at: /docs/config/valve.html
-       Note: The pattern used is equivalent to using pattern=&quot;common&quot; --&gt;</span>
-  <span class="tag">&lt;Valve</span> <span class="attribute-name">className</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.apache.catalina.valves.AccessLogValve</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">directory</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">logs</span><span class="delimiter">&quot;</span></span>
-         <span class="attribute-name">prefix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost_access_log</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">suffix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">.txt</span><span class="delimiter">&quot;</span></span>
-         <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">%h %l %u %t </span><span class="entity">&amp;quot;</span><span class="content">%r</span><span class="entity">&amp;quot;</span> <span class="content">%s %b</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+       Note: The pattern used is equivalent to using pattern="common" --&gt;
+  &lt;Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+         prefix="localhost_access_log" suffix=".txt"
+         pattern="%h %l %u %t &amp;quot;%r&amp;quot; %s %b" /&gt;
 
- <span class="comment">&lt;!-- Groovlets --&gt;</span>
- <span class="tag">&lt;Context</span> <span class="attribute-name">path</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/groovy/ili2gpkg</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">docBase</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/Projekte/ili2gpkg_service/scripts</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">reloadable</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+ &lt;!-- Groovlets --&gt;
+ &lt;Context path="/groovy/ili2gpkg" docBase="/home/stefan/Projekte/ili2gpkg_service/scripts" reloadable="true"/&gt;
 
-<span class="tag">&lt;/Host&gt;</span></pre></td>
-</tr></table></code></pre>
+&lt;/Host&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -766,11 +495,7 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>java -jar ili2pg.jar --schemaimport --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">java -jar ili2pg.jar --schemaimport --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -800,11 +525,7 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre><span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ADD</span> <span class="type">CONSTRAINT</span> pnf_pnf_ili_unique <span class="directive">UNIQUE</span> (canton, id);</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">ALTER TABLE av_pnf_stand_amo.pnf_pnf ADD CONSTRAINT pnf_pnf_ili_unique UNIQUE (canton, id);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -812,31 +533,17 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-</pre></td>
-  <td class="code"><pre><span class="comment">-- sequence for t_id &quot;pnf_pnf&quot;</span>
-<span class="class">CREATE</span> SEQUENCE av_pnf_stand_amo.pnf_t_id_seq;
-<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="directive">DEFAULT</span> nextval(<span class="string"><span class="delimiter">'</span><span class="content">av_pnf_stand_amo.pnf_t_id_seq</span><span class="delimiter">'</span></span>);
-<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>;
-<span class="class">ALTER</span> SEQUENCE av_pnf_stand_amo.pnf_t_id_seq OWNED <span class="keyword">BY</span> av_pnf_stand_amo.pnf_pnf.t_id;
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">-- sequence for t_id "pnf_pnf"
+CREATE SEQUENCE av_pnf_stand_amo.pnf_t_id_seq;
+ALTER TABLE av_pnf_stand_amo.pnf_pnf ALTER COLUMN t_id SET DEFAULT nextval('av_pnf_stand_amo.pnf_t_id_seq');
+ALTER TABLE av_pnf_stand_amo.pnf_pnf ALTER COLUMN t_id SET NOT NULL;
+ALTER SEQUENCE av_pnf_stand_amo.pnf_t_id_seq OWNED BY av_pnf_stand_amo.pnf_pnf.t_id;
 
-<span class="comment">-- sequence for t_id &quot;pnf_pnf_geometry&quot;</span>
-<span class="class">CREATE</span> SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq;
-<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf_geometry <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="directive">DEFAULT</span> nextval(<span class="string"><span class="delimiter">'</span><span class="content">av_pnf_stand_amo.pnf_geometry_t_id_seq</span><span class="delimiter">'</span></span>);
-<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf_geometry <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>;
-<span class="class">ALTER</span> SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq OWNED <span class="keyword">BY</span> av_pnf_stand_amo.pnf_pnf_geometry.t_id;</pre></td>
-</tr></table></code></pre>
+-- sequence for t_id "pnf_pnf_geometry"
+CREATE SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq;
+ALTER TABLE av_pnf_stand_amo.pnf_pnf_geometry ALTER COLUMN t_id SET DEFAULT nextval('av_pnf_stand_amo.pnf_geometry_t_id_seq');
+ALTER TABLE av_pnf_stand_amo.pnf_pnf_geometry ALTER COLUMN t_id SET NOT NULL;
+ALTER SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq OWNED BY av_pnf_stand_amo.pnf_pnf_geometry.t_id;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -947,11 +654,7 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>java -jar ili2pg.jar --export --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF stand_pnf_20151118.itf</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">java -jar ili2pg.jar --export --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF stand_pnf_20151118.itf</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -967,35 +670,19 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-</pre></td>
-  <td class="code"><pre><span class="class">DELETE</span> <span class="keyword">FROM</span> av_pnf_stand_amo_export.pnf_pnf_geometry;
-<span class="class">DELETE</span> <span class="keyword">FROM</span> av_pnf_stand_amo_export.pnf_pnf;
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">DELETE FROM av_pnf_stand_amo_export.pnf_pnf_geometry;
+DELETE FROM av_pnf_stand_amo_export.pnf_pnf;
 
-<span class="class">INSERT</span> <span class="class">INTO</span> av_pnf_stand_amo_export.pnf_pnf (t_id, canton, id, description, practice, reference_frame, <span class="predefined-type">year</span>)
-<span class="class">SELECT</span> t_id, canton, id, description, practice, reference_frame, <span class="predefined-type">year</span>
-<span class="keyword">FROM</span> av_pnf_stand_amo.pnf_pnf
-<span class="keyword">WHERE</span> <span class="predefined-type">year</span> = <span class="integer">2015</span>;
+INSERT INTO av_pnf_stand_amo_export.pnf_pnf (t_id, canton, id, description, practice, reference_frame, year)
+SELECT t_id, canton, id, description, practice, reference_frame, year
+FROM av_pnf_stand_amo.pnf_pnf
+WHERE year = 2015;
 
-<span class="class">INSERT</span> <span class="class">INTO</span> av_pnf_stand_amo_export.pnf_pnf_geometry (t_id, afrom, perimeter)
-<span class="class">SELECT</span> g.t_id <span class="keyword">as</span> t_id, g.afrom, g.perimeter
-<span class="keyword">FROM</span> av_pnf_stand_amo.pnf_pnf <span class="keyword">as</span> p, av_pnf_stand_amo.pnf_pnf_geometry <span class="keyword">as</span> g
-<span class="keyword">WHERE</span> p.t_id = g.afrom
-<span class="keyword">AND</span> p.year = <span class="integer">2015</span>;</pre></td>
-</tr></table></code></pre>
+INSERT INTO av_pnf_stand_amo_export.pnf_pnf_geometry (t_id, afrom, perimeter)
+SELECT g.t_id as t_id, g.afrom, g.perimeter
+FROM av_pnf_stand_amo.pnf_pnf as p, av_pnf_stand_amo.pnf_pnf_geometry as g
+WHERE p.t_id = g.afrom
+AND p.year = 2015;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1121,11 +808,7 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo apt-get install liblwgeom-dev</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo apt-get install liblwgeom-dev</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1133,21 +816,12 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-</pre></td>
-  <td class="code"><pre>git clone https://github.com/strk/fineltra.git
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">git clone https://github.com/strk/fineltra.git
 cd fineltra
 ./autogen.sh
 ./configure
 make
-sudo make install</pre></td>
-</tr></table></code></pre>
+sudo make install</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1155,11 +829,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE EXTENSION fineltra;&quot;</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo -u postgres psql -d xanadu2 -c "CREATE EXTENSION fineltra;"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1167,11 +837,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>ogr2ogr -f &quot;PostgreSQL&quot; PG:&quot;dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'&quot; chenyx06.sqlite chenyx06 -lco SCHEMA=av_chenyx06 -nln chenyx06_triangles</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">ogr2ogr -f "PostgreSQL" PG:"dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'" chenyx06.sqlite chenyx06 -lco SCHEMA=av_chenyx06 -nln chenyx06_triangles</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1182,11 +848,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE SCHEMA av_chenyx06 AUTHORIZATION stefan;&quot;</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo -u postgres psql -d xanadu2 -c "CREATE SCHEMA av_chenyx06 AUTHORIZATION stefan;"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1194,11 +856,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE INDEX ON av_chenyx06.chenyx06_triangles USING GiST (the_geom_lv03);&quot;</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo -u postgres psql -d xanadu2 -c "CREATE INDEX ON av_chenyx06.chenyx06_triangles USING GiST (the_geom_lv03);"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1220,17 +878,10 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-</pre></td>
-  <td class="code"><pre>git clone https://github.com/pramsey/pgsql-http.git
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">git clone https://github.com/pramsey/pgsql-http.git
 cd pgsql-http
 make
-sudo make install</pre></td>
-</tr></table></code></pre>
+sudo make install</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1238,11 +889,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE EXTENSION http;&quot;</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo -u postgres psql -d xanadu2 -c "CREATE EXTENSION http;"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1258,43 +905,23 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-</pre></td>
-  <td class="code"><pre>WITH fineltra <span class="keyword">AS</span> (
-  <span class="class">SELECT</span> nummer, nbident,
-    ST_X(wkb_geometry) <span class="keyword">as</span> x_lv03, ST_Y(wkb_geometry) <span class="keyword">as</span> y_lv03,
-    ST_X((ST_Fineltra(wkb_geometry, <span class="string"><span class="delimiter">'</span><span class="content">av_chenyx06.chenyx06_triangles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv95</span><span class="delimiter">'</span></span>))) <span class="keyword">as</span> x_lv95_pg,
-    ST_Y((ST_Fineltra(wkb_geometry, <span class="string"><span class="delimiter">'</span><span class="content">av_chenyx06.chenyx06_triangles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv95</span><span class="delimiter">'</span></span>))) <span class="keyword">as</span> y_lv95_pg
-  <span class="keyword">FROM</span> av_avdpool_test.fixpunktekategorie__lfp
-  <span class="comment">--WHERE fid = 3515717</span>
-  LIMIT <span class="integer">100</span>
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">WITH fineltra AS (
+  SELECT nummer, nbident,
+    ST_X(wkb_geometry) as x_lv03, ST_Y(wkb_geometry) as y_lv03,
+    ST_X((ST_Fineltra(wkb_geometry, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95'))) as x_lv95_pg,
+    ST_Y((ST_Fineltra(wkb_geometry, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95'))) as y_lv95_pg
+  FROM av_avdpool_test.fixpunktekategorie__lfp
+  --WHERE fid = 3515717
+  LIMIT 100
 ),
-swisstopo <span class="keyword">AS</span> (
-  <span class="class">SELECT</span> nummer, nbident, x_lv95_pg, y_lv95_pg,
-   <span class="predefined">cast</span>(content::json-&gt;&gt;<span class="string"><span class="delimiter">'</span><span class="content">easting</span><span class="delimiter">'</span></span> <span class="keyword">as</span> <span class="predefined-type">double</span> precision) <span class="keyword">as</span> x_lv95_lt,
-   <span class="predefined">cast</span>(content::json-&gt;&gt;<span class="string"><span class="delimiter">'</span><span class="content">northing</span><span class="delimiter">'</span></span> <span class="keyword">as</span> <span class="predefined-type">double</span> precision) <span class="keyword">as</span> y_lv95_lt
-  <span class="keyword">FROM</span> fineltra <span class="keyword">as</span> f, http_get(<span class="string"><span class="delimiter">'</span><span class="content">http://geodesy.geo.admin.ch/reframe/lv03tolv95?easting=</span><span class="delimiter">'</span></span> || f.x_lv03 || <span class="string"><span class="delimiter">'</span><span class="content">&amp;northing=</span><span class="delimiter">'</span></span> || f.y_lv03 || <span class="string"><span class="delimiter">'</span><span class="content">&amp;format=json</span><span class="delimiter">'</span></span>)
+swisstopo AS (
+  SELECT nummer, nbident, x_lv95_pg, y_lv95_pg,
+   cast(content::json-&gt;&gt;'easting' as double precision) as x_lv95_lt,
+   cast(content::json-&gt;&gt;'northing' as double precision) as y_lv95_lt
+  FROM fineltra as f, http_get('http://geodesy.geo.admin.ch/reframe/lv03tolv95?easting=' || f.x_lv03 || '&amp;northing=' || f.y_lv03 || '&amp;format=json')
 )
-<span class="class">SELECT</span> nummer, nbident, (x_lv95_pg - x_lv95_lt)*<span class="integer">1000</span> <span class="keyword">as</span> x_diff_mm, (y_lv95_pg - y_lv95_lt)*<span class="integer">1000</span> <span class="keyword">as</span> y_diff_mm
-<span class="keyword">FROM</span> swisstopo;</pre></td>
-</tr></table></code></pre>
+SELECT nummer, nbident, (x_lv95_pg - x_lv95_lt)*1000 as x_diff_mm, (y_lv95_pg - y_lv95_lt)*1000 as y_diff_mm
+FROM swisstopo;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1313,11 +940,7 @@ swisstopo <span class="keyword">AS</span> (
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>ogr2ogr -f &quot;PostgreSQL&quot; PG:&quot;dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'&quot; -lco SCHEMA=av_avdpool_test kanton.gpkg</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">ogr2ogr -f "PostgreSQL" PG:"dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'" -lco SCHEMA=av_avdpool_test kanton.gpkg</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1333,121 +956,62 @@ swisstopo <span class="keyword">AS</span> (
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-36
-37
-38
-39
-<strong>40</strong>
-41
-42
-43
-44
-45
-46
-47
-48
-49
-<strong>50</strong>
-51
-52
-53
-54
-55
-56
-</pre></td>
-  <td class="code"><pre><span class="annotation">@Grapes</span>([
-   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">org.postgresql:postgresql:9.4-1201-jdbc41</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@GrabConfig</span>(systemClassLoader = <span class="predefined-constant">true</span>)
+<pre class="prettyprint highlight linenums"><code class="language-groovy" data-lang="groovy">@Grapes([
+   @Grab('org.postgresql:postgresql:9.4-1201-jdbc41'),
+   @GrabConfig(systemClassLoader = true)
 ])
 
-<span class="keyword">import</span> <span class="include">groovy.sql.*</span>
+import groovy.sql.*
 
-<span class="keyword">def</span> dbhost = <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbport = <span class="string"><span class="delimiter">&quot;</span><span class="content">5432</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbdatabase = <span class="string"><span class="delimiter">&quot;</span><span class="content">xanadu2</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbusr = <span class="string"><span class="delimiter">&quot;</span><span class="content">stefan</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbpwd = <span class="string"><span class="delimiter">&quot;</span><span class="content">ziegler12</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbschema = <span class="string"><span class="delimiter">&quot;</span><span class="content">av_avdpool_test</span><span class="delimiter">&quot;</span></span>
+def dbhost = "localhost"
+def dbport = "5432"
+def dbdatabase = "xanadu2"
+def dbusr = "stefan"
+def dbpwd = "ziegler12"
+def dbschema = "av_avdpool_test"
 
-<span class="keyword">def</span> dburl = <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://</span><span class="inline"><span class="inline-delimiter">${</span>dbhost<span class="inline-delimiter">}</span></span><span class="content">:</span><span class="inline"><span class="inline-delimiter">${</span>dbport<span class="inline-delimiter">}</span></span><span class="content">/</span><span class="inline"><span class="inline-delimiter">${</span>dbdatabase<span class="inline-delimiter">}</span></span><span class="content">?user=</span><span class="inline"><span class="inline-delimiter">${</span>dbusr<span class="inline-delimiter">}</span></span><span class="content">&amp;password=</span><span class="inline"><span class="inline-delimiter">${</span>dbpwd<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+def dburl = "jdbc:postgresql://${dbhost}:${dbport}/${dbdatabase}?user=${dbusr}&amp;password=${dbpwd}"
 
-<span class="keyword">def</span> query = <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type </span><span class="delimiter">&quot;</span></span> +
-  <span class="string"><span class="delimiter">&quot;</span><span class="content"> FROM geometry_columns </span><span class="delimiter">&quot;</span></span> +
-  <span class="string"><span class="delimiter">&quot;</span><span class="content"> WHERE f_table_schema = '</span><span class="inline"><span class="inline-delimiter">$</span>dbschema</span><span class="content">'</span><span class="delimiter">&quot;</span></span> +
-  <span class="string"><span class="delimiter">&quot;</span><span class="content"> AND srid = 21781;</span><span class="delimiter">&quot;</span></span>
+def query = "SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type " +
+  " FROM geometry_columns " +
+  " WHERE f_table_schema = '$dbschema'" +
+  " AND srid = 21781;"
 
-<span class="keyword">def</span> sql = Sql.newInstance(dburl)
+def sql = Sql.newInstance(dburl)
 
-<span class="keyword">def</span> startTime = <span class="predefined-type">Calendar</span>.instance.time
-<span class="keyword">def</span> endTime
-println <span class="string"><span class="delimiter">&quot;</span><span class="content">Start: </span><span class="inline"><span class="inline-delimiter">${</span>startTime<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="delimiter">&quot;</span></span>
+def startTime = Calendar.instance.time
+def endTime
+println "Start: ${startTime}."
 
 sql.withTransaction {
   sql.eachRow(query) {row -&gt;
-    <span class="keyword">def</span> tableName = row.f_table_name
-    <span class="keyword">def</span> geomColumn = row.f_geometry_column
+    def tableName = row.f_table_name
+    def geomColumn = row.f_geometry_column
 
-    <span class="keyword">def</span> geomType = row.type
-    <span class="keyword">if</span> (row.coord_dimension == <span class="integer">3</span>) {
-      geomType += <span class="string"><span class="delimiter">'</span><span class="content">Z</span><span class="delimiter">'</span></span>
+    def geomType = row.type
+    if (row.coord_dimension == 3) {
+      geomType += 'Z'
     }
 
-    <span class="keyword">def</span> alterQuery = <span class="string"><span class="delimiter">&quot;</span><span class="content">ALTER TABLE </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(tableName)<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span> +
-      <span class="string"><span class="delimiter">&quot;</span><span class="content"> ALTER COLUMN </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomColumn)<span class="inline-delimiter">}</span></span><span class="content"> TYPE geometry(</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomType)<span class="inline-delimiter">}</span></span><span class="content">,2056)</span><span class="delimiter">&quot;</span></span> +
-      <span class="string"><span class="delimiter">&quot;</span><span class="content"> USING ST_Fineltra(</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomColumn)<span class="inline-delimiter">}</span></span><span class="content">, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95');</span><span class="delimiter">&quot;</span></span>
+    def alterQuery = "ALTER TABLE ${Sql.expand(dbschema)}.${Sql.expand(tableName)}" +
+      " ALTER COLUMN ${Sql.expand(geomColumn)} TYPE geometry(${Sql.expand(geomType)},2056)" +
+      " USING ST_Fineltra(${Sql.expand(geomColumn)}, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95');"
 
-    println <span class="string"><span class="delimiter">&quot;</span><span class="content">--- </span><span class="inline"><span class="inline-delimiter">$</span>dbschema</span><span class="content">.</span><span class="inline"><span class="inline-delimiter">$</span>tableName</span><span class="content"> ---</span><span class="delimiter">&quot;</span></span>
+    println "--- $dbschema.$tableName ---"
     sql.execute(alterQuery)
 
-    endTime = <span class="predefined-type">Calendar</span>.instance.time
-    println <span class="string"><span class="delimiter">&quot;</span><span class="content">Elapsed time: </span><span class="inline"><span class="inline-delimiter">${</span>(endTime.time - startTime.time)<span class="inline-delimiter">}</span></span><span class="content"> ms</span><span class="delimiter">&quot;</span></span>
+    endTime = Calendar.instance.time
+    println "Elapsed time: ${(endTime.time - startTime.time)} ms"
 
   }
 }
 
-endTime = <span class="predefined-type">Calendar</span>.instance.time
-println <span class="string"><span class="delimiter">&quot;</span><span class="content">End: </span><span class="inline"><span class="inline-delimiter">${</span>endTime<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="delimiter">&quot;</span></span>
-println <span class="string"><span class="delimiter">&quot;</span><span class="content">Total elapsed time: </span><span class="inline"><span class="inline-delimiter">${</span>(endTime.time - startTime.time)<span class="inline-delimiter">}</span></span><span class="content"> ms</span><span class="delimiter">&quot;</span></span>
+endTime = Calendar.instance.time
+println "End: ${endTime}."
+println "Total elapsed time: ${(endTime.time - startTime.time)} ms"
 
 sql.connection.close()
-sql.close()</pre></td>
-</tr></table></code></pre>
+sql.close()</code></pre>
 </div>
 </div>
 <div class="paragraph">

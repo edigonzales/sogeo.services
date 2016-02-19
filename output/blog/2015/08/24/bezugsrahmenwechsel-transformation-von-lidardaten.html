@@ -14,11 +14,12 @@
     <link href="../../../../css/asciidoctor.css" rel="stylesheet">
     <link href="../../../../css/base.css" rel="stylesheet">
     <link href="../../../../css/prettify.css" rel="stylesheet">
-    <link href="../../../../css/coderay.css" rel="stylesheet">
     <link href="../../../../css/sogeo.css" rel="stylesheet">
 
     <!-- web fonts -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
+    
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
@@ -98,11 +99,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>find /home/stefan/mr_candie_nas/Geodaten/ch/so/agi/hoehen/2014/lidar/ -maxdepth 1 -iname &quot;*.laz&quot; | pdal tindex tileindex.gpkg -f &quot;GPKG&quot; --a_srs EPSG:21781 --t_srs EPSG:21781 --fast_boundary --stdin --lyr_name tileindex</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">find /home/stefan/mr_candie_nas/Geodaten/ch/so/agi/hoehen/2014/lidar/ -maxdepth 1 -iname "*.laz" | pdal tindex tileindex.gpkg -f "GPKG" --a_srs EPSG:21781 --t_srs EPSG:21781 --fast_boundary --stdin --lyr_name tileindex</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -110,11 +107,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>pdal info --metadata LAS_592228.laz</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">pdal info --metadata LAS_592228.laz</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -122,79 +115,41 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-</pre></td>
-  <td class="code"><pre>{
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">filename</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">LAS_592228.laz</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">metadata</span><span class="delimiter">&quot;</span></span>:
+<pre class="prettyprint highlight linenums"><code class="language-json" data-lang="json">{
+  "filename": "LAS_592228.laz",
+  "metadata":
   {
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">comp_spatialreference</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">compressed</span><span class="delimiter">&quot;</span></span>: <span class="value">true</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">count</span><span class="delimiter">&quot;</span></span>: <span class="integer">14347366</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">creation_doy</span><span class="delimiter">&quot;</span></span>: <span class="integer">312</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">creation_year</span><span class="delimiter">&quot;</span></span>: <span class="integer">2014</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">dataformat_id</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">dataoffset</span><span class="delimiter">&quot;</span></span>: <span class="integer">329</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">filesource_id</span><span class="delimiter">&quot;</span></span>: <span class="integer">0</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">global_encoding</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">AAA=</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">header_size</span><span class="delimiter">&quot;</span></span>: <span class="integer">227</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">major_version</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">maxx</span><span class="delimiter">&quot;</span></span>: <span class="float">592999.98999999999</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">maxy</span><span class="delimiter">&quot;</span></span>: <span class="float">228999.98999999999</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">maxz</span><span class="delimiter">&quot;</span></span>: <span class="float">2134.52</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">minor_version</span><span class="delimiter">&quot;</span></span>: <span class="integer">2</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">minx</span><span class="delimiter">&quot;</span></span>: <span class="integer">592000</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">miny</span><span class="delimiter">&quot;</span></span>: <span class="integer">228000</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">minz</span><span class="delimiter">&quot;</span></span>: <span class="float">918.08000000000004</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">offset_x</span><span class="delimiter">&quot;</span></span>: <span class="integer">-0</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">offset_y</span><span class="delimiter">&quot;</span></span>: <span class="integer">-0</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">offset_z</span><span class="delimiter">&quot;</span></span>: <span class="integer">-0</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">project_id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">00000000-0000-0000-0000-000000000000</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">scale_x</span><span class="delimiter">&quot;</span></span>: <span class="float">0.01</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">scale_y</span><span class="delimiter">&quot;</span></span>: <span class="float">0.01</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">scale_z</span><span class="delimiter">&quot;</span></span>: <span class="float">0.01</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">software_id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">TerraScan</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">spatialreference</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">system_id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>
+    "comp_spatialreference": "",
+    "compressed": true,
+    "count": 14347366,
+    "creation_doy": 312,
+    "creation_year": 2014,
+    "dataformat_id": 1,
+    "dataoffset": 329,
+    "filesource_id": 0,
+    "global_encoding": "AAA=",
+    "header_size": 227,
+    "major_version": 1,
+    "maxx": 592999.98999999999,
+    "maxy": 228999.98999999999,
+    "maxz": 2134.52,
+    "minor_version": 2,
+    "minx": 592000,
+    "miny": 228000,
+    "minz": 918.08000000000004,
+    "offset_x": -0,
+    "offset_y": -0,
+    "offset_z": -0,
+    "project_id": "00000000-0000-0000-0000-000000000000",
+    "scale_x": 0.01,
+    "scale_y": 0.01,
+    "scale_z": 0.01,
+    "software_id": "TerraScan",
+    "spatialreference": "",
+    "system_id": ""
   },
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">pdal_version</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0.b1 (git-version: 1dce22)</span><span class="delimiter">&quot;</span></span>
-}</pre></td>
-</tr></table></code></pre>
+  "pdal_version": "1.0.0.b1 (git-version: 1dce22)"
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -202,79 +157,41 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="json"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-</pre></td>
-  <td class="code"><pre>{
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">filename</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">LAS_592228.laz</span><span class="delimiter">&quot;</span></span>,
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">metadata</span><span class="delimiter">&quot;</span></span>:
+<pre class="prettyprint highlight linenums"><code class="language-json" data-lang="json">{
+  "filename": "LAS_592228.laz",
+  "metadata":
   {
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">comp_spatialreference</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">PROJCS[</span><span class="char">\&quot;</span><span class="content">CH1903 / LV03</span><span class="char">\&quot;</span><span class="content">,GEOGCS[</span><span class="char">\&quot;</span><span class="content">CH1903</span><span class="char">\&quot;</span><span class="content">,DATUM[</span><span class="char">\&quot;</span><span class="content">CH1903</span><span class="char">\&quot;</span><span class="content">,SPHEROID[</span><span class="char">\&quot;</span><span class="content">Bessel 1841</span><span class="char">\&quot;</span><span class="content">,6377397.155,299.1528128,AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">7004</span><span class="char">\&quot;</span><span class="content">]],TOWGS84[674.4,15.1,405.3,0,0,0,0],AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">6149</span><span class="char">\&quot;</span><span class="content">]],PRIMEM[</span><span class="char">\&quot;</span><span class="content">Greenwich</span><span class="char">\&quot;</span><span class="content">,0,AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">8901</span><span class="char">\&quot;</span><span class="content">]],UNIT[</span><span class="char">\&quot;</span><span class="content">degree</span><span class="char">\&quot;</span><span class="content">,0.0174532925199433,AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">9122</span><span class="char">\&quot;</span><span class="content">]],AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">4149</span><span class="char">\&quot;</span><span class="content">]],PROJECTION[</span><span class="char">\&quot;</span><span class="content">Hotine_Oblique_Mercator_Azimuth_Center</span><span class="char">\&quot;</span><span class="content">],PARAMETER[</span><span class="char">\&quot;</span><span class="content">latitude_of_center</span><span class="char">\&quot;</span><span class="content">,46.95240555555556],PARAMETER[</span><span class="char">\&quot;</span><span class="content">longitude_of_center</span><span class="char">\&quot;</span><span class="content">,7.439583333333333],PARAMETER[</span><span class="char">\&quot;</span><span class="content">azimuth</span><span class="char">\&quot;</span><span class="content">,90],PARAMETER[</span><span class="char">\&quot;</span><span class="content">rectified_grid_angle</span><span class="char">\&quot;</span><span class="content">,90],PARAMETER[</span><span class="char">\&quot;</span><span class="content">scale_factor</span><span class="char">\&quot;</span><span class="content">,1],PARAMETER[</span><span class="char">\&quot;</span><span class="content">false_easting</span><span class="char">\&quot;</span><span class="content">,600000],PARAMETER[</span><span class="char">\&quot;</span><span class="content">false_northing</span><span class="char">\&quot;</span><span class="content">,200000],UNIT[</span><span class="char">\&quot;</span><span class="content">metre</span><span class="char">\&quot;</span><span class="content">,1,AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">9001</span><span class="char">\&quot;</span><span class="content">]],AXIS[</span><span class="char">\&quot;</span><span class="content">Y</span><span class="char">\&quot;</span><span class="content">,EAST],AXIS[</span><span class="char">\&quot;</span><span class="content">X</span><span class="char">\&quot;</span><span class="content">,NORTH],AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">21781</span><span class="char">\&quot;</span><span class="content">]]</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">compressed</span><span class="delimiter">&quot;</span></span>: <span class="value">true</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">count</span><span class="delimiter">&quot;</span></span>: <span class="integer">14347366</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">creation_doy</span><span class="delimiter">&quot;</span></span>: <span class="integer">224</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">creation_year</span><span class="delimiter">&quot;</span></span>: <span class="integer">2015</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">dataformat_id</span><span class="delimiter">&quot;</span></span>: <span class="integer">3</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">dataoffset</span><span class="delimiter">&quot;</span></span>: <span class="integer">2181</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">filesource_id</span><span class="delimiter">&quot;</span></span>: <span class="integer">0</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">global_encoding</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">AAA=</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">header_size</span><span class="delimiter">&quot;</span></span>: <span class="integer">227</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">major_version</span><span class="delimiter">&quot;</span></span>: <span class="integer">1</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">maxx</span><span class="delimiter">&quot;</span></span>: <span class="float">592999.98999999999</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">maxy</span><span class="delimiter">&quot;</span></span>: <span class="float">228999.98999999999</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">maxz</span><span class="delimiter">&quot;</span></span>: <span class="float">2134.52</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">minor_version</span><span class="delimiter">&quot;</span></span>: <span class="integer">2</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">minx</span><span class="delimiter">&quot;</span></span>: <span class="integer">592000</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">miny</span><span class="delimiter">&quot;</span></span>: <span class="integer">228000</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">minz</span><span class="delimiter">&quot;</span></span>: <span class="float">918.08000000000004</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">offset_x</span><span class="delimiter">&quot;</span></span>: <span class="integer">0</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">offset_y</span><span class="delimiter">&quot;</span></span>: <span class="integer">0</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">offset_z</span><span class="delimiter">&quot;</span></span>: <span class="integer">0</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">project_id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">00000000-0000-0000-0000-000000000000</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">scale_x</span><span class="delimiter">&quot;</span></span>: <span class="float">0.01</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">scale_y</span><span class="delimiter">&quot;</span></span>: <span class="float">0.01</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">scale_z</span><span class="delimiter">&quot;</span></span>: <span class="float">0.01</span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">software_id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">PDAL 1.0.0.b1 (e412bd)</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">spatialreference</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">PROJCS[</span><span class="char">\&quot;</span><span class="content">CH1903 / LV03</span><span class="char">\&quot;</span><span class="content">,GEOGCS[</span><span class="char">\&quot;</span><span class="content">CH1903</span><span class="char">\&quot;</span><span class="content">,DATUM[</span><span class="char">\&quot;</span><span class="content">CH1903</span><span class="char">\&quot;</span><span class="content">,SPHEROID[</span><span class="char">\&quot;</span><span class="content">Bessel 1841</span><span class="char">\&quot;</span><span class="content">,6377397.155,299.1528128,AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">7004</span><span class="char">\&quot;</span><span class="content">]],TOWGS84[674.4,15.1,405.3,0,0,0,0],AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">6149</span><span class="char">\&quot;</span><span class="content">]],PRIMEM[</span><span class="char">\&quot;</span><span class="content">Greenwich</span><span class="char">\&quot;</span><span class="content">,0,AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">8901</span><span class="char">\&quot;</span><span class="content">]],UNIT[</span><span class="char">\&quot;</span><span class="content">degree</span><span class="char">\&quot;</span><span class="content">,0.0174532925199433,AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">9122</span><span class="char">\&quot;</span><span class="content">]],AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">4149</span><span class="char">\&quot;</span><span class="content">]],PROJECTION[</span><span class="char">\&quot;</span><span class="content">Hotine_Oblique_Mercator_Azimuth_Center</span><span class="char">\&quot;</span><span class="content">],PARAMETER[</span><span class="char">\&quot;</span><span class="content">latitude_of_center</span><span class="char">\&quot;</span><span class="content">,46.95240555555556],PARAMETER[</span><span class="char">\&quot;</span><span class="content">longitude_of_center</span><span class="char">\&quot;</span><span class="content">,7.439583333333333],PARAMETER[</span><span class="char">\&quot;</span><span class="content">azimuth</span><span class="char">\&quot;</span><span class="content">,90],PARAMETER[</span><span class="char">\&quot;</span><span class="content">rectified_grid_angle</span><span class="char">\&quot;</span><span class="content">,90],PARAMETER[</span><span class="char">\&quot;</span><span class="content">scale_factor</span><span class="char">\&quot;</span><span class="content">,1],PARAMETER[</span><span class="char">\&quot;</span><span class="content">false_easting</span><span class="char">\&quot;</span><span class="content">,600000],PARAMETER[</span><span class="char">\&quot;</span><span class="content">false_northing</span><span class="char">\&quot;</span><span class="content">,200000],UNIT[</span><span class="char">\&quot;</span><span class="content">metre</span><span class="char">\&quot;</span><span class="content">,1,AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">9001</span><span class="char">\&quot;</span><span class="content">]],AXIS[</span><span class="char">\&quot;</span><span class="content">Y</span><span class="char">\&quot;</span><span class="content">,EAST],AXIS[</span><span class="char">\&quot;</span><span class="content">X</span><span class="char">\&quot;</span><span class="content">,NORTH],AUTHORITY[</span><span class="char">\&quot;</span><span class="content">EPSG</span><span class="char">\&quot;</span><span class="content">,</span><span class="char">\&quot;</span><span class="content">21781</span><span class="char">\&quot;</span><span class="content">]]</span><span class="delimiter">&quot;</span></span>,
-    <span class="key"><span class="delimiter">&quot;</span><span class="content">system_id</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">PDAL</span><span class="delimiter">&quot;</span></span>
+    "comp_spatialreference": "PROJCS[\"CH1903 / LV03\",GEOGCS[\"CH1903\",DATUM[\"CH1903\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],TOWGS84[674.4,15.1,405.3,0,0,0,0],AUTHORITY[\"EPSG\",\"6149\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4149\"]],PROJECTION[\"Hotine_Oblique_Mercator_Azimuth_Center\"],PARAMETER[\"latitude_of_center\",46.95240555555556],PARAMETER[\"longitude_of_center\",7.439583333333333],PARAMETER[\"azimuth\",90],PARAMETER[\"rectified_grid_angle\",90],PARAMETER[\"scale_factor\",1],PARAMETER[\"false_easting\",600000],PARAMETER[\"false_northing\",200000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Y\",EAST],AXIS[\"X\",NORTH],AUTHORITY[\"EPSG\",\"21781\"]]",
+    "compressed": true,
+    "count": 14347366,
+    "creation_doy": 224,
+    "creation_year": 2015,
+    "dataformat_id": 3,
+    "dataoffset": 2181,
+    "filesource_id": 0,
+    "global_encoding": "AAA=",
+    "header_size": 227,
+    "major_version": 1,
+    "maxx": 592999.98999999999,
+    "maxy": 228999.98999999999,
+    "maxz": 2134.52,
+    "minor_version": 2,
+    "minx": 592000,
+    "miny": 228000,
+    "minz": 918.08000000000004,
+    "offset_x": 0,
+    "offset_y": 0,
+    "offset_z": 0,
+    "project_id": "00000000-0000-0000-0000-000000000000",
+    "scale_x": 0.01,
+    "scale_y": 0.01,
+    "scale_z": 0.01,
+    "software_id": "PDAL 1.0.0.b1 (e412bd)",
+    "spatialreference": "PROJCS[\"CH1903 / LV03\",GEOGCS[\"CH1903\",DATUM[\"CH1903\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",\"7004\"]],TOWGS84[674.4,15.1,405.3,0,0,0,0],AUTHORITY[\"EPSG\",\"6149\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4149\"]],PROJECTION[\"Hotine_Oblique_Mercator_Azimuth_Center\"],PARAMETER[\"latitude_of_center\",46.95240555555556],PARAMETER[\"longitude_of_center\",7.439583333333333],PARAMETER[\"azimuth\",90],PARAMETER[\"rectified_grid_angle\",90],PARAMETER[\"scale_factor\",1],PARAMETER[\"false_easting\",600000],PARAMETER[\"false_northing\",200000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Y\",EAST],AXIS[\"X\",NORTH],AUTHORITY[\"EPSG\",\"21781\"]]",
+    "system_id": "PDAL"
   },
-  <span class="key"><span class="delimiter">&quot;</span><span class="content">pdal_version</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0.0.b1 (git-version: 1dce22)</span><span class="delimiter">&quot;</span></span>
-}</pre></td>
-</tr></table></code></pre>
+  "pdal_version": "1.0.0.b1 (git-version: 1dce22)"
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -285,130 +202,66 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-36
-37
-38
-39
-<strong>40</strong>
-41
-42
-43
-44
-45
-46
-47
-48
-49
-<strong>50</strong>
-51
-52
-53
-54
-55
-56
-57
-58
-59
-<strong>60</strong>
-</pre></td>
-  <td class="code"><pre><span class="comment">#!/usr/bin/python</span>
-<span class="comment"># -*- coding: utf-8 -*-</span>
-<span class="keyword">import</span> <span class="include">os.path</span>
+<pre class="prettyprint highlight linenums"><code class="language-python" data-lang="python">#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os.path
 
-<span class="keyword">from</span> <span class="include">osgeo</span> <span class="keyword">import</span> <span class="include">ogr</span>, <span class="include">osr</span>
-<span class="keyword">import</span> <span class="include">os</span>
-<span class="keyword">import</span> <span class="include">sys</span>
+from osgeo import ogr, osr
+import os
+import sys
 
 ogr.UseExceptions()
 
-S_SRS = <span class="string"><span class="delimiter">&quot;</span><span class="content">+proj=somerc +lat_0=46.952405555555555N +lon_0=7.439583333333333E +ellps=bessel +x_0=600000 +y_0=200000 +towgs84=674.374,15.056,405.346 +units=m +units=m +k_0=1 +nadgrids=./chenyx06/chenyx06a.gsb</span><span class="delimiter">&quot;</span></span>
-T_SRS = <span class="string"><span class="delimiter">&quot;</span><span class="content">+proj=somerc +lat_0=46.952405555555555N +lon_0=7.439583333333333E +ellps=bessel +x_0=2600000 +y_0=1200000 +towgs84=674.374,15.056,405.346 +units=m +k_0=1 +nadgrids=@null</span><span class="delimiter">&quot;</span></span>
+S_SRS = "+proj=somerc +lat_0=46.952405555555555N +lon_0=7.439583333333333E +ellps=bessel +x_0=600000 +y_0=200000 +towgs84=674.374,15.056,405.346 +units=m +units=m +k_0=1 +nadgrids=./chenyx06/chenyx06a.gsb"
+T_SRS = "+proj=somerc +lat_0=46.952405555555555N +lon_0=7.439583333333333E +ellps=bessel +x_0=2600000 +y_0=1200000 +towgs84=674.374,15.056,405.346 +units=m +k_0=1 +nadgrids=@null"
 
-LAYERNAME = <span class="string"><span class="delimiter">&quot;</span><span class="content">tileindex</span><span class="delimiter">&quot;</span></span>
-TEMPDIR = <span class="string"><span class="delimiter">&quot;</span><span class="content">/tmp/</span><span class="delimiter">&quot;</span></span>
+LAYERNAME = "tileindex"
+TEMPDIR = "/tmp/"
 
-TILEINDEX = <span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/tmp/lidar/tileindex.gpkg</span><span class="delimiter">&quot;</span></span>
-OUTDIR = <span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/tmp/</span><span class="delimiter">&quot;</span></span>
+TILEINDEX = "/home/stefan/tmp/lidar/tileindex.gpkg"
+OUTDIR = "/home/stefan/tmp/"
 
-BUFFER = <span class="integer">2</span>
-SCALE = <span class="float">0.01</span>
+BUFFER = 2
+SCALE = 0.01
 
 gpkg = ogr.Open(TILEINDEX)
 lyr = gpkg.GetLayerByName(LAYERNAME)
 
-<span class="keyword">for</span> feat <span class="keyword">in</span> lyr:
-    cmd = <span class="string"><span class="delimiter">&quot;</span><span class="content">rm </span><span class="delimiter">&quot;</span></span> + os.path.join(TEMPDIR, <span class="string"><span class="delimiter">&quot;</span><span class="content">*.las</span><span class="delimiter">&quot;</span></span>)
+for feat in lyr:
+    cmd = "rm " + os.path.join(TEMPDIR, "*.las")
     os.system(cmd)
 
-    cmd = <span class="string"><span class="delimiter">&quot;</span><span class="content">rm </span><span class="delimiter">&quot;</span></span> + os.path.join(TEMPDIR, <span class="string"><span class="delimiter">&quot;</span><span class="content">*.laz</span><span class="delimiter">&quot;</span></span>)
+    cmd = "rm " + os.path.join(TEMPDIR, "*.laz")
     os.system(cmd)
 
-    filename = feat.GetField(<span class="string"><span class="delimiter">&quot;</span><span class="content">location</span><span class="delimiter">&quot;</span></span>)
-    <span class="keyword">print</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">*** </span><span class="delimiter">&quot;</span></span> + os.path.basename(filename) + <span class="string"><span class="delimiter">&quot;</span><span class="content"> ***</span><span class="delimiter">&quot;</span></span>
+    filename = feat.GetField("location")
+    print "*** " + os.path.basename(filename) + " ***"
 
     env = feat.GetGeometryRef().GetEnvelope()
-    min_x = <span class="predefined">int</span>(env[<span class="integer">0</span>] + <span class="float">0.001</span>)
-    min_y = <span class="predefined">int</span>(env[<span class="integer">2</span>] + <span class="float">0.001</span>)
-    max_x = <span class="predefined">int</span>(env[<span class="integer">1</span>] + <span class="float">0.001</span>)
-    max_y = <span class="predefined">int</span>(env[<span class="integer">3</span>] + <span class="float">0.001</span>)
+    min_x = int(env[0] + 0.001)
+    min_y = int(env[2] + 0.001)
+    max_x = int(env[1] + 0.001)
+    max_y = int(env[3] + 0.001)
 
-    <span class="comment"># Create new file name.</span>
-    filename_lv95 = <span class="string"><span class="delimiter">&quot;</span><span class="content">LAS_</span><span class="delimiter">&quot;</span></span> + <span class="predefined">str</span>(min_x/<span class="integer">1000</span> + <span class="integer">2000</span>) + <span class="string"><span class="delimiter">&quot;</span><span class="content">_</span><span class="delimiter">&quot;</span></span> + <span class="predefined">str</span>(min_y/<span class="integer">1000</span> + <span class="integer">1000</span>) + <span class="string"><span class="delimiter">&quot;</span><span class="content">.laz</span><span class="delimiter">&quot;</span></span>
+    # Create new file name.
+    filename_lv95 = "LAS_" + str(min_x/1000 + 2000) + "_" + str(min_y/1000 + 1000) + ".laz"
     filename_lv95 = os.path.join(OUTDIR, filename_lv95)
 
-    <span class="comment"># Get a slightly larger tile. Two meters buffer is enough. We crop afterwards.</span>
-    <span class="comment"># Reason: 620'000 -&gt; 2'620'000.65</span>
-    bounds = <span class="string"><span class="delimiter">&quot;</span><span class="content">([</span><span class="delimiter">&quot;</span></span>+<span class="predefined">str</span>(min_x-BUFFER)+<span class="string"><span class="delimiter">&quot;</span><span class="content">, </span><span class="delimiter">&quot;</span></span>+<span class="predefined">str</span>(max_x+BUFFER)+<span class="string"><span class="delimiter">&quot;</span><span class="content">], [</span><span class="delimiter">&quot;</span></span>+<span class="predefined">str</span>(min_y-BUFFER)+<span class="string"><span class="delimiter">&quot;</span><span class="content">, </span><span class="delimiter">&quot;</span></span>+<span class="predefined">str</span>(max_y+BUFFER)+<span class="string"><span class="delimiter">&quot;</span><span class="content">])</span><span class="delimiter">&quot;</span></span>
-    cmd = <span class="string"><span class="delimiter">'</span><span class="content">pdal tindex --merge </span><span class="delimiter">'</span></span> + TILEINDEX + <span class="string"><span class="delimiter">'</span><span class="content"> --lyr_name tileindex --bounds &quot;</span><span class="delimiter">'</span></span> + <span class="predefined">str</span>(bounds) + <span class="string"><span class="delimiter">'</span><span class="content">&quot; --t_srs EPSG:21781 </span><span class="delimiter">'</span></span> + os.path.join(TEMPDIR, <span class="string"><span class="delimiter">'</span><span class="content">tmp.las</span><span class="delimiter">'</span></span>)
+    # Get a slightly larger tile. Two meters buffer is enough. We crop afterwards.
+    # Reason: 620'000 -&gt; 2'620'000.65
+    bounds = "(["+str(min_x-BUFFER)+", "+str(max_x+BUFFER)+"], ["+str(min_y-BUFFER)+", "+str(max_y+BUFFER)+"])"
+    cmd = 'pdal tindex --merge ' + TILEINDEX + ' --lyr_name tileindex --bounds "' + str(bounds) + '" --t_srs EPSG:21781 ' + os.path.join(TEMPDIR, 'tmp.las')
     os.system(cmd)
 
-    <span class="comment"># Now change reference frame with ntv2.</span>
-    cmd = <span class="string"><span class="delimiter">'</span><span class="content">pdal translate --a_srs &quot;</span><span class="delimiter">'</span></span>+S_SRS+<span class="string"><span class="delimiter">'</span><span class="content">&quot; --t_srs &quot;</span><span class="delimiter">'</span></span>+T_SRS+<span class="string"><span class="delimiter">'</span><span class="content">&quot; -i </span><span class="delimiter">'</span></span> + os.path.join(TEMPDIR, <span class="string"><span class="delimiter">'</span><span class="content">tmp.las</span><span class="delimiter">'</span></span>) + <span class="string"><span class="delimiter">'</span><span class="content"> -o </span><span class="delimiter">'</span></span> + os.path.join(TEMPDIR, <span class="string"><span class="delimiter">'</span><span class="content">tmp_lv95.las</span><span class="delimiter">'</span></span>)
+    # Now change reference frame with ntv2.
+    cmd = 'pdal translate --a_srs "'+S_SRS+'" --t_srs "'+T_SRS+'" -i ' + os.path.join(TEMPDIR, 'tmp.las') + ' -o ' + os.path.join(TEMPDIR, 'tmp_lv95.las')
     os.system(cmd)
 
-    <span class="comment"># Set better/nicer EPSG:2056. The ntv2 transformation lacks of datum name.</span>
-    <span class="comment"># Crop to nice bbbox.</span>
-    bounds = <span class="string"><span class="delimiter">&quot;</span><span class="content">([</span><span class="delimiter">&quot;</span></span>+<span class="predefined">str</span>(min_x+<span class="integer">2000000</span>)+<span class="string"><span class="delimiter">&quot;</span><span class="content">, </span><span class="delimiter">&quot;</span></span>+<span class="predefined">str</span>(max_x+<span class="integer">2000000</span>)+<span class="string"><span class="delimiter">&quot;</span><span class="content">], [</span><span class="delimiter">&quot;</span></span>+<span class="predefined">str</span>(min_y+<span class="integer">1000000</span>)+<span class="string"><span class="delimiter">&quot;</span><span class="content">, </span><span class="delimiter">&quot;</span></span>+<span class="predefined">str</span>(max_y+<span class="integer">1000000</span>)+<span class="string"><span class="delimiter">&quot;</span><span class="content">])</span><span class="delimiter">&quot;</span></span>
-    cmd = <span class="string"><span class="delimiter">'</span><span class="content">pdal translate --a_srs EPSG:2056 --t_srs EPSG:2056 --writers.las.format=&quot;1&quot; --bounds &quot;</span><span class="delimiter">'</span></span> + bounds + <span class="string"><span class="delimiter">'</span><span class="content">&quot; -z -i </span><span class="delimiter">'</span></span> + os.path.join(TEMPDIR, <span class="string"><span class="delimiter">'</span><span class="content">tmp_lv95.las</span><span class="delimiter">'</span></span>) + <span class="string"><span class="delimiter">'</span><span class="content"> -o </span><span class="delimiter">'</span></span> + os.path.join(OUTDIR, filename_lv95)
-    os.system(cmd)
-</pre></td>
-</tr></table></code></pre>
+    # Set better/nicer EPSG:2056. The ntv2 transformation lacks of datum name.
+    # Crop to nice bbbox.
+    bounds = "(["+str(min_x+2000000)+", "+str(max_x+2000000)+"], ["+str(min_y+1000000)+", "+str(max_y+1000000)+"])"
+    cmd = 'pdal translate --a_srs EPSG:2056 --t_srs EPSG:2056 --writers.las.format="1" --bounds "' + bounds + '" -z -i ' + os.path.join(TEMPDIR, 'tmp_lv95.las') + ' -o ' + os.path.join(OUTDIR, filename_lv95)
+    os.system(cmd)</code></pre>
 </div>
 </div>
 <div class="paragraph">

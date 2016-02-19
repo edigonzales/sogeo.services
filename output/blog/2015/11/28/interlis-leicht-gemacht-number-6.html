@@ -14,11 +14,12 @@
     <link href="../../../../css/asciidoctor.css" rel="stylesheet">
     <link href="../../../../css/base.css" rel="stylesheet">
     <link href="../../../../css/prettify.css" rel="stylesheet">
-    <link href="../../../../css/coderay.css" rel="stylesheet">
     <link href="../../../../css/sogeo.css" rel="stylesheet">
 
     <!-- web fonts -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
+    
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
@@ -111,11 +112,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>java -jar ili2pg.jar --schemaimport --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">java -jar ili2pg.jar --schemaimport --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -145,11 +142,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre><span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ADD</span> <span class="type">CONSTRAINT</span> pnf_pnf_ili_unique <span class="directive">UNIQUE</span> (canton, id);</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">ALTER TABLE av_pnf_stand_amo.pnf_pnf ADD CONSTRAINT pnf_pnf_ili_unique UNIQUE (canton, id);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -157,31 +150,17 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-</pre></td>
-  <td class="code"><pre><span class="comment">-- sequence for t_id &quot;pnf_pnf&quot;</span>
-<span class="class">CREATE</span> SEQUENCE av_pnf_stand_amo.pnf_t_id_seq;
-<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="directive">DEFAULT</span> nextval(<span class="string"><span class="delimiter">'</span><span class="content">av_pnf_stand_amo.pnf_t_id_seq</span><span class="delimiter">'</span></span>);
-<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>;
-<span class="class">ALTER</span> SEQUENCE av_pnf_stand_amo.pnf_t_id_seq OWNED <span class="keyword">BY</span> av_pnf_stand_amo.pnf_pnf.t_id;
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">-- sequence for t_id "pnf_pnf"
+CREATE SEQUENCE av_pnf_stand_amo.pnf_t_id_seq;
+ALTER TABLE av_pnf_stand_amo.pnf_pnf ALTER COLUMN t_id SET DEFAULT nextval('av_pnf_stand_amo.pnf_t_id_seq');
+ALTER TABLE av_pnf_stand_amo.pnf_pnf ALTER COLUMN t_id SET NOT NULL;
+ALTER SEQUENCE av_pnf_stand_amo.pnf_t_id_seq OWNED BY av_pnf_stand_amo.pnf_pnf.t_id;
 
-<span class="comment">-- sequence for t_id &quot;pnf_pnf_geometry&quot;</span>
-<span class="class">CREATE</span> SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq;
-<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf_geometry <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="directive">DEFAULT</span> nextval(<span class="string"><span class="delimiter">'</span><span class="content">av_pnf_stand_amo.pnf_geometry_t_id_seq</span><span class="delimiter">'</span></span>);
-<span class="class">ALTER</span> <span class="type">TABLE</span> av_pnf_stand_amo.pnf_pnf_geometry <span class="class">ALTER</span> <span class="type">COLUMN</span> t_id <span class="class">SET</span> <span class="keyword">NOT</span> <span class="predefined-constant">NULL</span>;
-<span class="class">ALTER</span> SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq OWNED <span class="keyword">BY</span> av_pnf_stand_amo.pnf_pnf_geometry.t_id;</pre></td>
-</tr></table></code></pre>
+-- sequence for t_id "pnf_pnf_geometry"
+CREATE SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq;
+ALTER TABLE av_pnf_stand_amo.pnf_pnf_geometry ALTER COLUMN t_id SET DEFAULT nextval('av_pnf_stand_amo.pnf_geometry_t_id_seq');
+ALTER TABLE av_pnf_stand_amo.pnf_pnf_geometry ALTER COLUMN t_id SET NOT NULL;
+ALTER SEQUENCE av_pnf_stand_amo.pnf_geometry_t_id_seq OWNED BY av_pnf_stand_amo.pnf_pnf_geometry.t_id;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -292,11 +271,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>java -jar ili2pg.jar --export --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF stand_pnf_20151118.itf</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">java -jar ili2pg.jar --export --dbhost localhost --dbport 5432 --dbdatabase rosebud2 --dbusr stefan --dbpwd ziegler12 --defaultSrsAuth EPSG --defaultSrsCode 2056 --createGeomIdx --createEnumTabs --nameByTopic --strokeArcs --dbschema av_pnf_stand_amo --modeldir http://models.geo.admin.ch --models AMO_Grafik_LV95_PNF stand_pnf_20151118.itf</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -312,35 +287,19 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-</pre></td>
-  <td class="code"><pre><span class="class">DELETE</span> <span class="keyword">FROM</span> av_pnf_stand_amo_export.pnf_pnf_geometry;
-<span class="class">DELETE</span> <span class="keyword">FROM</span> av_pnf_stand_amo_export.pnf_pnf;
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">DELETE FROM av_pnf_stand_amo_export.pnf_pnf_geometry;
+DELETE FROM av_pnf_stand_amo_export.pnf_pnf;
 
-<span class="class">INSERT</span> <span class="class">INTO</span> av_pnf_stand_amo_export.pnf_pnf (t_id, canton, id, description, practice, reference_frame, <span class="predefined-type">year</span>)
-<span class="class">SELECT</span> t_id, canton, id, description, practice, reference_frame, <span class="predefined-type">year</span>
-<span class="keyword">FROM</span> av_pnf_stand_amo.pnf_pnf
-<span class="keyword">WHERE</span> <span class="predefined-type">year</span> = <span class="integer">2015</span>;
+INSERT INTO av_pnf_stand_amo_export.pnf_pnf (t_id, canton, id, description, practice, reference_frame, year)
+SELECT t_id, canton, id, description, practice, reference_frame, year
+FROM av_pnf_stand_amo.pnf_pnf
+WHERE year = 2015;
 
-<span class="class">INSERT</span> <span class="class">INTO</span> av_pnf_stand_amo_export.pnf_pnf_geometry (t_id, afrom, perimeter)
-<span class="class">SELECT</span> g.t_id <span class="keyword">as</span> t_id, g.afrom, g.perimeter
-<span class="keyword">FROM</span> av_pnf_stand_amo.pnf_pnf <span class="keyword">as</span> p, av_pnf_stand_amo.pnf_pnf_geometry <span class="keyword">as</span> g
-<span class="keyword">WHERE</span> p.t_id = g.afrom
-<span class="keyword">AND</span> p.year = <span class="integer">2015</span>;</pre></td>
-</tr></table></code></pre>
+INSERT INTO av_pnf_stand_amo_export.pnf_pnf_geometry (t_id, afrom, perimeter)
+SELECT g.t_id as t_id, g.afrom, g.perimeter
+FROM av_pnf_stand_amo.pnf_pnf as p, av_pnf_stand_amo.pnf_pnf_geometry as g
+WHERE p.t_id = g.afrom
+AND p.year = 2015;</code></pre>
 </div>
 </div>
 <div class="paragraph">

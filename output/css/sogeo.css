@@ -1,3 +1,39 @@
+/* syntax highlighting */ 
+
+.listingblock {
+    margin-top: 25px;
+    margin-bottom: 0px;
+}
+
+
+pre.prettyprint {
+    background-color: rgb(255,255,255);    
+    border-width: 0px;
+}
+
+.listingblock ol.linenums {
+    font-family: 'Hack', monospace;
+    font-size: 0.9em;        
+    color: #ccc;
+    margin-left: 10px;
+    line-height: 1.5;     
+}
+
+li code {
+    border-width: 0px;
+    background-color: #fff;   
+    white-space: pre;
+    overflow-x: scroll;
+    word-break: keep-all;
+    word-wrap: normal;
+}
+
+li.L1, li.L3, li.L5, li.L7, li.L9 {
+    background-color: #fff;
+}
+
+/* /syntax highlighting */ 
+
 body {
   font-family: "Open Sans", sans-serif;
 }
@@ -111,64 +147,4 @@ dl {
 .imageblock {
     margin-top: 25px;
     margin-bottom: 0px;
-}
-
-
-pre {
-  /*background-color: rgb(252,252,252);*/
-  background-color: rgb(255,255,255);
-}
-
-.literalblock > .content pre, .listingblock > .content pre {
-    font-size: 0.9em;
-}
-
-.listingblock {
-    margin-top: 25px;
-    margin-bottom: 0px;
-}
-
-code {
-  font-family: "Hack", monospace;
-}
-
-.code pre {
-  border-width: 0px;
-  font-family: "Hack", monospace;
-}
-
-
-.line-numbers pre {
-  border-width: 0px;
-  color: #ccc;
-}
-
-pre.CodeRay.highlight {
-  padding: 9.5px;
-  border-width: 0px;
-  border-radius: 4px;
-  /*background-color: rgb(252,252,252);*/
-  background-color: rgb(255,255,255);
-  max-width: 2000px;
-}
-
-
-.CodeRay pre {
-  margin: 0px;
-  padding-left: 0px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-}
-
-table.CodeRay {
-  border-width: 0px;
-  background-color: #f5f5f5;
-}
-
-table.CodeRay td {
-  padding: 0px;
-}
-
-.CodeRay {
-  margin-bottom: 0px;
 }

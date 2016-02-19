@@ -14,11 +14,12 @@
     <link href="../../../../css/asciidoctor.css" rel="stylesheet">
     <link href="../../../../css/base.css" rel="stylesheet">
     <link href="../../../../css/prettify.css" rel="stylesheet">
-    <link href="../../../../css/coderay.css" rel="stylesheet">
     <link href="../../../../css/sogeo.css" rel="stylesheet">
 
     <!-- web fonts -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
+    
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
@@ -67,11 +68,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>java -jar ili2gpkg.jar --import --nameByTopic --modeldir http://models.geo.admin.ch --models DM01AVCH24D --dbfile av_solothurn.gpkg ch_260100.itf</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">java -jar ili2gpkg.jar --import --nameByTopic --modeldir http://models.geo.admin.ch --models DM01AVCH24D --dbfile av_solothurn.gpkg ch_260100.itf</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -85,81 +82,42 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-36
-</pre></td>
-  <td class="code"><pre>html.html {
+<pre class="prettyprint highlight linenums"><code class="language-groovy" data-lang="groovy">html.html {
     head {
-        meta(<span class="key">charset</span>:<span class="string"><span class="delimiter">'</span><span class="content">utf-8</span><span class="delimiter">'</span></span>)
-        meta(<span class="key">name</span>:<span class="string"><span class="delimiter">'</span><span class="content">viewport</span><span class="delimiter">'</span></span>, <span class="key">content</span>:<span class="string"><span class="delimiter">'</span><span class="content">width=device-width, initial-scale=1</span><span class="delimiter">'</span></span>)
-        meta(<span class="string"><span class="delimiter">'</span><span class="content">http-equiv</span><span class="delimiter">'</span></span>:<span class="string"><span class="delimiter">'</span><span class="content">x-ua-compatible</span><span class="delimiter">'</span></span>, <span class="key">content</span>:<span class="string"><span class="delimiter">'</span><span class="content">ie=edge</span><span class="delimiter">'</span></span>)
+        meta(charset:'utf-8')
+        meta(name:'viewport', content:'width=device-width, initial-scale=1')
+        meta('http-equiv':'x-ua-compatible', content:'ie=edge')
 
-        title <span class="string"><span class="delimiter">'</span><span class="content">ili2gpkg online converter</span><span class="delimiter">'</span></span>
-        style <span class="string"><span class="delimiter">'''</span><span class="content">
+        title 'ili2gpkg online converter'
+        style '''
             label { display: block; padding: 0.2em; }
-        </span><span class="delimiter">'''</span></span>
+        '''
     }
     body {
-        h1 <span class="string"><span class="delimiter">'</span><span class="content">INTERLIS (ITF/XTF) to GeoPackage Converter</span><span class="delimiter">'</span></span>
-        form <span class="key">action</span>: <span class="string"><span class="delimiter">'</span><span class="content">do_ili2gpkg.groovy</span><span class="delimiter">'</span></span>, <span class="key">method</span>: <span class="string"><span class="delimiter">'</span><span class="content">post</span><span class="delimiter">'</span></span>, <span class="key">enctype</span>: <span class="string"><span class="delimiter">'</span><span class="content">multipart/form-data</span><span class="delimiter">'</span></span>, {
-            label <span class="string"><span class="delimiter">'</span><span class="content">Reference frame: </span><span class="delimiter">'</span></span>, {
-                select <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">reference_frame</span><span class="delimiter">'</span></span>, {
-                    option <span class="string"><span class="delimiter">'</span><span class="content">LV03</span><span class="delimiter">'</span></span>
-                    option <span class="string"><span class="delimiter">'</span><span class="content">LV95</span><span class="delimiter">'</span></span>
+        h1 'INTERLIS (ITF/XTF) to GeoPackage Converter'
+        form action: 'do_ili2gpkg.groovy', method: 'post', enctype: 'multipart/form-data', {
+            label 'Reference frame: ', {
+                select name: 'reference_frame', {
+                    option 'LV03'
+                    option 'LV95'
                 }
             }
-            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--strokeArcs</span><span class="delimiter">&quot;</span></span>, {
-                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">checked</span>: <span class="string"><span class="delimiter">'</span><span class="content">checked</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">strokeArcs</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">strokeArcs</span><span class="delimiter">'</span></span>
+            label "--strokeArcs", {
+                input type: 'checkbox', checked: 'checked', name: 'strokeArcs', id: 'strokeArcs'
             }
-            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--skipPolygonBuilding</span><span class="delimiter">&quot;</span></span>, {
-                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">skipPolygonBuilding</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">skipPolygonBuilding</span><span class="delimiter">'</span></span>
+            label "--skipPolygonBuilding", {
+                input type: 'checkbox', name: 'skipPolygonBuilding', id: 'skipPolygonBuilding'
             }
-            label <span class="string"><span class="delimiter">&quot;</span><span class="content">--nameByTopic</span><span class="delimiter">&quot;</span></span>, {
-                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">checkbox</span><span class="delimiter">'</span></span>, <span class="key">checked</span>: <span class="string"><span class="delimiter">'</span><span class="content">checked</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">nameByTopic</span><span class="delimiter">'</span></span>, <span class="key">id</span>: <span class="string"><span class="delimiter">'</span><span class="content">nameByTopic</span><span class="delimiter">'</span></span>
+            label "--nameByTopic", {
+                input type: 'checkbox', checked: 'checked', name: 'nameByTopic', id: 'nameByTopic'
             }
-            label <span class="string"><span class="delimiter">'</span><span class="content">File: </span><span class="delimiter">'</span></span>, {
-                input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">file</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">file</span><span class="delimiter">'</span></span>
+            label 'File: ', {
+                input type: 'file', name: 'file'
             }
-            input <span class="key">type</span>: <span class="string"><span class="delimiter">'</span><span class="content">submit</span><span class="delimiter">'</span></span>, <span class="key">name</span>: <span class="string"><span class="delimiter">'</span><span class="content">submit</span><span class="delimiter">'</span></span>, <span class="key">value</span>: <span class="string"><span class="delimiter">'</span><span class="content">Send to server</span><span class="delimiter">'</span></span>
+            input type: 'submit', name: 'submit', value: 'Send to server'
         }
     }
-}</pre></td>
-</tr></table></code></pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -194,351 +152,158 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-36
-37
-38
-39
-<strong>40</strong>
-41
-42
-43
-44
-45
-46
-47
-48
-49
-<strong>50</strong>
-51
-52
-53
-54
-55
-56
-57
-58
-59
-<strong>60</strong>
-61
-62
-63
-64
-65
-66
-67
-68
-69
-<strong>70</strong>
-71
-72
-73
-74
-75
-76
-77
-78
-79
-<strong>80</strong>
-81
-82
-83
-84
-85
-86
-87
-88
-89
-<strong>90</strong>
-91
-92
-93
-94
-95
-96
-97
-98
-99
-<strong>100</strong>
-101
-102
-103
-104
-105
-106
-107
-108
-109
-<strong>110</strong>
-111
-112
-113
-114
-115
-116
-117
-118
-119
-<strong>120</strong>
-121
-122
-123
-124
-125
-126
-127
-128
-129
-<strong>130</strong>
-131
-132
-133
-134
-135
-136
-137
-138
-139
-<strong>140</strong>
-141
-142
-143
-144
-145
-146
-147
-148
-149
-<strong>150</strong>
-151
-152
-153
-154
-155
-156
-157
-158
-159
-<strong>160</strong>
-161
-162
-163
-164
-165
-166
-167
-168
-169
-<strong>170</strong>
-171
-172
-173
-174
-175
-176
-177
-178
-179
-<strong>180</strong>
-181
-182
-183
-184
-185
-186
-187
-188
-189
-<strong>190</strong>
-191
-</pre></td>
-  <td class="code"><pre><span class="annotation">@Grapes</span>([
-   <span class="annotation">@GrabResolver</span>(name=<span class="string"><span class="delimiter">'</span><span class="content">catais.org</span><span class="delimiter">'</span></span>, root=<span class="string"><span class="delimiter">'</span><span class="content">http://www.catais.org/maven/repository/release/</span><span class="delimiter">'</span></span>, m2Compatible=<span class="string"><span class="delimiter">'</span><span class="content">true</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">commons-fileupload</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">commons-fileupload</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">1.3.1</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">commons-io</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">commons-io</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">2.4</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">org.xerial</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">sqlite-jdbc</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">3.8.11.2</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2c:4.5.21</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis:ili2gpkg:3.0.0</span><span class="delimiter">'</span></span>),
-   <span class="comment">//@GrabConfig(systemClassLoader = true)</span>
+<pre class="prettyprint highlight linenums"><code class="language-groovy" data-lang="groovy">@Grapes([
+   @GrabResolver(name='catais.org', root='http://www.catais.org/maven/repository/release/', m2Compatible='true'),
+   @Grab(group='commons-fileupload', module='commons-fileupload', version='1.3.1'),
+   @Grab(group='commons-io', module='commons-io', version='2.4'),
+   @Grab(group='org.xerial', module='sqlite-jdbc', version='3.8.11.2'),
+   @Grab('ch.interlis:ili2c:4.5.21'),
+   @Grab('ch.interlis:ili2gpkg:3.0.0'),
+   //@GrabConfig(systemClassLoader = true)
 ])
 
-<span class="keyword">import</span> <span class="include">javax.servlet.http.HttpServletResponse</span>
-<span class="keyword">import</span> <span class="include">javax.servlet.ServletOutputStream</span>
-<span class="keyword">import</span> <span class="include">java.util.logging.Logger</span>
-<span class="keyword">import</span> <span class="include">java.nio.file.Path</span>
-<span class="keyword">import</span> <span class="include">java.nio.file.Files</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.io.IOUtils</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.io.FilenameUtils</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.io.FileUtils</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.FileItem</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.util.Streams</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.servlet.ServletFileUpload</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.disk.DiskFileItemFactory</span>
-<span class="keyword">import</span> <span class="include">org.apache.commons.fileupload.FileUploadException</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2db</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2dbException</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.gui.Config</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.mapping.NameMapping</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.basics.logging.EhiLogger</span>
+import javax.servlet.http.HttpServletResponse
+import javax.servlet.ServletOutputStream
+import java.util.logging.Logger
+import java.nio.file.Path
+import java.nio.file.Files
+import org.apache.commons.io.IOUtils
+import org.apache.commons.io.FilenameUtils
+import org.apache.commons.io.FileUtils
+import org.apache.commons.fileupload.FileItem
+import org.apache.commons.fileupload.util.Streams
+import org.apache.commons.fileupload.servlet.ServletFileUpload
+import org.apache.commons.fileupload.disk.DiskFileItemFactory
+import org.apache.commons.fileupload.FileUploadException
+import ch.ehi.ili2db.base.Ili2db
+import ch.ehi.ili2db.base.Ili2dbException
+import ch.ehi.ili2db.gui.Config
+import ch.ehi.ili2db.mapping.NameMapping
+import ch.ehi.basics.logging.EhiLogger
 
-<span class="predefined-type">Logger</span> logger = <span class="predefined-type">Logger</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">do_ili2gpkg.groovy</span><span class="delimiter">&quot;</span></span>)
-logger.setUseParentHandlers(<span class="predefined-constant">true</span>)
-logger.info (<span class="string"><span class="delimiter">&quot;</span><span class="content">Starts at: </span><span class="delimiter">&quot;</span></span> + <span class="keyword">new</span> <span class="predefined-type">Date</span>())
+Logger logger = Logger.getLogger("do_ili2gpkg.groovy")
+logger.setUseParentHandlers(true)
+logger.info ("Starts at: " + new Date())
 
-<span class="keyword">if</span> (ServletFileUpload.isMultipartContent(request)) {
-    ServletFileUpload upload = <span class="keyword">new</span> ServletFileUpload(<span class="keyword">new</span> DiskFileItemFactory())
-    <span class="comment">//upload.setSizeMax(52428800) // 50MB</span>
-    upload.setSizeMax(<span class="integer">2</span>*<span class="integer">5242880</span>) <span class="comment">// 2*5MB</span>
+if (ServletFileUpload.isMultipartContent(request)) {
+    ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory())
+    //upload.setSizeMax(52428800) // 50MB
+    upload.setSizeMax(2*5242880) // 2*5MB
 
-    <span class="predefined-type">List</span>&lt;FileItem&gt; items = <span class="predefined-constant">null</span>
+    List&lt;FileItem&gt; items = null
 
-    <span class="keyword">try</span> {
+    try {
         items = upload.parseRequest(request);
-    } <span class="keyword">catch</span> (FileUploadException e) {
+    } catch (FileUploadException e) {
         logger.severe e.getMessage()
         response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage())
-        <span class="keyword">return</span>
+        return
     }
 
-    <span class="keyword">for</span> (item <span class="keyword">in</span> items) {
-        <span class="keyword">if</span> (item.isFormField()) { <span class="comment">// 'normal' form fields</span>
-            <span class="predefined-type">String</span> fieldName = item.getFieldName()
-            <span class="predefined-type">String</span> value = item.getString()
+    for (item in items) {
+        if (item.isFormField()) { // 'normal' form fields
+            String fieldName = item.getFieldName()
+            String value = item.getString()
 
             params[fieldName] = value
             logger.info fieldName.toString()
             logger.info value.toString()
             logger.info item.getClass().toString()
 
-        } <span class="keyword">else</span> { <span class="comment">// files</span>
-            <span class="predefined-type">String</span> fieldName = item.getFieldName()
-            <span class="predefined-type">String</span> fileName = FilenameUtils.getName(item.getName())
+        } else { // files
+            String fieldName = item.getFieldName()
+            String fileName = FilenameUtils.getName(item.getName())
 
-            <span class="keyword">if</span> (fileName.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)) {
-                <span class="comment">// return 'bad request' (400) if no file was sent</span>
-                <span class="predefined-type">String</span> errorMessage = <span class="string"><span class="delimiter">&quot;</span><span class="content">No file chosen.</span><span class="delimiter">&quot;</span></span>
+            if (fileName.equalsIgnoreCase("")) {
+                // return 'bad request' (400) if no file was sent
+                String errorMessage = "No file chosen."
                 logger.severe errorMessage
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage)
-                <span class="keyword">return</span>
+                return
             }
 
-            <span class="comment">// get the file as input stream</span>
-            <span class="predefined-type">InputStream</span> fileContent = item.getInputStream()
+            // get the file as input stream
+            InputStream fileContent = item.getInputStream()
 
-            <span class="comment">// create random temporary directory</span>
-            <span class="predefined-type">String</span> tmpDirPrefix = <span class="string"><span class="delimiter">&quot;</span><span class="content">ili2gpkg_</span><span class="delimiter">&quot;</span></span>;
+            // create random temporary directory
+            String tmpDirPrefix = "ili2gpkg_";
             Path tmpDir = Files.createTempDirectory(tmpDirPrefix);
 
-            <span class="comment">// copy input stream into target file</span>
-            <span class="predefined-type">String</span> targetFileName = fileName
-            <span class="predefined-type">File</span> targetFile = <span class="keyword">new</span> <span class="predefined-type">File</span>(tmpDir.toString() + <span class="predefined-type">File</span>.separator + targetFileName)
+            // copy input stream into target file
+            String targetFileName = fileName
+            File targetFile = new File(tmpDir.toString() + File.separator + targetFileName)
 
-            <span class="keyword">try</span> {
+            try {
                 FileUtils.copyInputStreamToFile(fileContent, targetFile)
-                logger.info <span class="string"><span class="delimiter">&quot;</span><span class="content">Uploaded file: </span><span class="delimiter">&quot;</span></span> + targetFile.toString()
-                logger.info <span class="string"><span class="delimiter">&quot;</span><span class="content">Uploaded file size [KB]: </span><span class="delimiter">&quot;</span></span> + (<span class="type">int</span>) (targetFile.length() / <span class="integer">1024</span>)
-            } <span class="keyword">catch</span> (java.io.IOException e) {
+                logger.info "Uploaded file: " + targetFile.toString()
+                logger.info "Uploaded file size [KB]: " + (int) (targetFile.length() / 1024)
+            } catch (java.io.IOException e) {
                 FileUtils.deleteDirectory(tmpDir.toFile())
 
                 logger.severe e.getMessage()
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
-                <span class="keyword">return</span>
+                return
             }
 
-            <span class="comment">// create configuration for ili2gpkg</span>
-            <span class="keyword">def</span> config = initConfig(params)
+            // create configuration for ili2gpkg
+            def config = initConfig(params)
 
-            <span class="comment">// Set the name of the geopackage.</span>
-            <span class="comment">// Same name as input file but with *.gpkg extension instead.</span>
-            <span class="predefined-type">String</span> gpkgFileName = FilenameUtils.removeExtension(targetFileName) + <span class="string"><span class="delimiter">&quot;</span><span class="content">.gpkg</span><span class="delimiter">&quot;</span></span>
-            gpkgFullFileName = tmpDir.toString() + <span class="predefined-type">File</span>.separator + gpkgFileName
+            // Set the name of the geopackage.
+            // Same name as input file but with *.gpkg extension instead.
+            String gpkgFileName = FilenameUtils.removeExtension(targetFileName) + ".gpkg"
+            gpkgFullFileName = tmpDir.toString() + File.separator + gpkgFileName
             config.setDbfile(gpkgFullFileName)
-            config.setDburl(<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:sqlite:</span><span class="delimiter">&quot;</span></span>+config.getDbfile())
+            config.setDburl("jdbc:sqlite:"+config.getDbfile())
             config.setXtffile(targetFile.toString())
 
-            <span class="predefined-type">String</span> fileExtension = FilenameUtils.getExtension(targetFileName)
-            <span class="predefined-type">System</span>.out.println(fileExtension)
-            <span class="keyword">if</span> (fileExtension.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">itf</span><span class="delimiter">&quot;</span></span>)) {
-                config.setItfTranferfile(<span class="predefined-constant">true</span>)
+            String fileExtension = FilenameUtils.getExtension(targetFileName)
+            System.out.println(fileExtension)
+            if (fileExtension.equalsIgnoreCase("itf")) {
+                config.setItfTranferfile(true)
             }
 
-            <span class="comment">// Now create the GeoPackage.</span>
-            <span class="keyword">try</span> {
-                <span class="comment">//EhiLogger.getInstance().setTraceFilter(false)</span>
-                Ili2db.runImport(config, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)
-            } <span class="keyword">catch</span> (Ili2dbException e) {
+            // Now create the GeoPackage.
+            try {
+                //EhiLogger.getInstance().setTraceFilter(false)
+                Ili2db.runImport(config, "")
+            } catch (Ili2dbException e) {
                 logger.severe e.getMessage()
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage())
-                <span class="keyword">return</span>
+                return
             }
 
-            <span class="comment">// Send GeoPackage to browser.</span>
-            response.setContentType(<span class="string"><span class="delimiter">&quot;</span><span class="content">application/x-sqlite3</span><span class="delimiter">&quot;</span></span>)
-            response.setHeader(<span class="string"><span class="delimiter">&quot;</span><span class="content">Content-Disposition</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">attachment; filename=</span><span class="delimiter">&quot;</span></span> + gpkgFileName);
+            // Send GeoPackage to browser.
+            response.setContentType("application/x-sqlite3")
+            response.setHeader("Content-Disposition", "attachment; filename=" + gpkgFileName);
             ServletOutputStream os = response.getOutputStream();
-            <span class="predefined-type">FileInputStream</span> fis = <span class="keyword">new</span> <span class="predefined-type">FileInputStream</span>(gpkgFullFileName);
-            <span class="keyword">try</span> {
-                <span class="type">int</span> buffSize = <span class="integer">1024</span>
-                <span class="type">byte</span><span class="type">[]</span> buffer = <span class="keyword">new</span> <span class="type">byte</span>[buffSize]
-                <span class="type">int</span> len
-                <span class="keyword">while</span> ((len = fis.read(buffer)) != -<span class="integer">1</span>) {
-                    os.write(buffer, <span class="integer">0</span>, len)
+            FileInputStream fis = new FileInputStream(gpkgFullFileName);
+            try {
+                int buffSize = 1024
+                byte[] buffer = new byte[buffSize]
+                int len
+                while ((len = fis.read(buffer)) != -1) {
+                    os.write(buffer, 0, len)
                     os.flush()
                     response.flushBuffer()
                 }
-            } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+            } catch (Exception e) {
                 logger.severe e.getMessage()
             }
-            <span class="keyword">finally</span> {
+            finally {
                 FileUtils.deleteDirectory(tmpDir.toFile())
             }
         }
     }
 }
 
-<span class="keyword">def</span> <span class="function">initConfig</span>(params) {
-    <span class="keyword">def</span> config = <span class="keyword">new</span> Config()
-    config.setModeldir(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://models.geo.admin.ch/;http://models.geo.gl.ch/;http://www.catais.org/models</span><span class="delimiter">&quot;</span></span>)
+def initConfig(params) {
+    def config = new Config()
+    config.setModeldir("http://models.geo.admin.ch/;http://models.geo.gl.ch/;http://www.catais.org/models")
     config.setModels(Ili2db.XTF)
-    config.setSqlNull(<span class="string"><span class="delimiter">&quot;</span><span class="content">enable</span><span class="delimiter">&quot;</span></span>);
-    config.setDefaultSrsAuthority(<span class="string"><span class="delimiter">&quot;</span><span class="content">EPSG</span><span class="delimiter">&quot;</span></span>);
-    config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">21781</span><span class="delimiter">&quot;</span></span>);
-    config.setMaxSqlNameLength(<span class="predefined-type">Integer</span>.toString(NameMapping.DEFAULT_NAME_LENGTH));
+    config.setSqlNull("enable");
+    config.setDefaultSrsAuthority("EPSG");
+    config.setDefaultSrsCode("21781");
+    config.setMaxSqlNameLength(Integer.toString(NameMapping.DEFAULT_NAME_LENGTH));
     config.setIdGenerator(ch.ehi.ili2db.base.TableBasedIdGen.class.getName());
     config.setInheritanceTrafo(config.INHERITANCE_TRAFO_SMART1);
     config.setCatalogueRefTrafo(Config.CATALOGUE_REF_TRAFO_COALESCE);
@@ -547,38 +312,37 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 
     config.setGeometryConverter(ch.ehi.ili2gpkg.GpkgColumnConverter.class.getName());
     config.setDdlGenerator(ch.ehi.sqlgen.generator_impl.jdbc.GeneratorGeoPackage.class.getName());
-    config.setJdbcDriver(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.sqlite.JDBC</span><span class="delimiter">&quot;</span></span>);
+    config.setJdbcDriver("org.sqlite.JDBC");
     config.setIdGenerator(ch.ehi.ili2db.base.TableBasedIdGen.class.getName());
     config.setIli2dbCustomStrategy(ch.ehi.ili2gpkg.GpkgMapping.class.getName());
-    config.setOneGeomPerTable(<span class="predefined-constant">true</span>);
+    config.setOneGeomPerTable(true);
 
-    <span class="keyword">for</span> (param <span class="keyword">in</span> params) {
-        <span class="keyword">def</span> key = param.key
+    for (param in params) {
+        def key = param.key
 
-        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">strokeArcs</span><span class="delimiter">&quot;</span></span>)) {
+        if (key.equalsIgnoreCase("strokeArcs")) {
             config.setStrokeArcs(config.STROKE_ARCS_ENABLE)
         }
 
-        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">nameByTopic</span><span class="delimiter">&quot;</span></span>)) {
+        if (key.equalsIgnoreCase("nameByTopic")) {
             config.setNameOptimization(config.NAME_OPTIMIZATION_TOPIC)
         }
 
-        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">skipPolygonBuilding</span><span class="delimiter">&quot;</span></span>)) {
-            config.setDoItfLineTables(<span class="predefined-constant">true</span>);
+        if (key.equalsIgnoreCase("skipPolygonBuilding")) {
+            config.setDoItfLineTables(true);
             config.setAreaRef(config.AREA_REF_KEEP);
         }
 
-        <span class="keyword">if</span> (key.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">reference_frame</span><span class="delimiter">&quot;</span></span>)) {
-            <span class="keyword">if</span> (param.value.equalsIgnoreCase(<span class="string"><span class="delimiter">&quot;</span><span class="content">LV95</span><span class="delimiter">&quot;</span></span>)) {
-                config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">2056</span><span class="delimiter">&quot;</span></span>);
+        if (key.equalsIgnoreCase("reference_frame")) {
+            if (param.value.equalsIgnoreCase("LV95")) {
+                config.setDefaultSrsCode("2056");
             }
         }
     }
-    <span class="keyword">return</span> config
+    return config
 }
 
-logger.info (<span class="string"><span class="delimiter">&quot;</span><span class="content">Stops at: </span><span class="delimiter">&quot;</span></span> + <span class="keyword">new</span> <span class="predefined-type">Date</span>())</pre></td>
-</tr></table></code></pre>
+logger.info ("Stops at: " + new Date())</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -631,27 +395,15 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-</pre></td>
-  <td class="code"><pre><span class="tag">&lt;servlet&gt;</span>
-    <span class="tag">&lt;servlet-name&gt;</span>Groovy<span class="tag">&lt;/servlet-name&gt;</span>
-    <span class="tag">&lt;servlet-class&gt;</span>groovy.servlet.GroovyServlet<span class="tag">&lt;/servlet-class&gt;</span>
-<span class="tag">&lt;/servlet&gt;</span>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">&lt;servlet&gt;
+    &lt;servlet-name&gt;Groovy&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;groovy.servlet.GroovyServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
 
-<span class="tag">&lt;servlet-mapping&gt;</span>
-    <span class="tag">&lt;servlet-name&gt;</span>Groovy<span class="tag">&lt;/servlet-name&gt;</span>
-    <span class="tag">&lt;url-pattern&gt;</span>*.groovy<span class="tag">&lt;/url-pattern&gt;</span>
-<span class="tag">&lt;/servlet-mapping&gt;</span></pre></td>
-</tr></table></code></pre>
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;Groovy&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;*.groovy&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -659,49 +411,26 @@ logger.info (<span class="string"><span class="delimiter">&quot;</span><span cla
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-</pre></td>
-  <td class="code"><pre><span class="tag">&lt;Host</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>  <span class="attribute-name">appBase</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">webapps</span><span class="delimiter">&quot;</span></span>
-      <span class="attribute-name">unpackWARs</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">autoDeploy</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">&lt;Host name="localhost"  appBase="webapps"
+      unpackWARs="true" autoDeploy="true"&gt;
 
-  <span class="comment">&lt;!-- SingleSignOn valve, share authentication between web applications
-       Documentation at: /docs/config/valve.html --&gt;</span>
-  <span class="comment">&lt;!--
-  &lt;Valve className=&quot;org.apache.catalina.authenticator.SingleSignOn&quot; /&gt;
-  --&gt;</span>
+  &lt;!-- SingleSignOn valve, share authentication between web applications
+       Documentation at: /docs/config/valve.html --&gt;
+  &lt;!--
+  &lt;Valve className="org.apache.catalina.authenticator.SingleSignOn" /&gt;
+  --&gt;
 
-  <span class="comment">&lt;!-- Access log processes all example.
+  &lt;!-- Access log processes all example.
        Documentation at: /docs/config/valve.html
-       Note: The pattern used is equivalent to using pattern=&quot;common&quot; --&gt;</span>
-  <span class="tag">&lt;Valve</span> <span class="attribute-name">className</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.apache.catalina.valves.AccessLogValve</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">directory</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">logs</span><span class="delimiter">&quot;</span></span>
-         <span class="attribute-name">prefix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost_access_log</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">suffix</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">.txt</span><span class="delimiter">&quot;</span></span>
-         <span class="attribute-name">pattern</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">%h %l %u %t </span><span class="entity">&amp;quot;</span><span class="content">%r</span><span class="entity">&amp;quot;</span> <span class="content">%s %b</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+       Note: The pattern used is equivalent to using pattern="common" --&gt;
+  &lt;Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+         prefix="localhost_access_log" suffix=".txt"
+         pattern="%h %l %u %t &amp;quot;%r&amp;quot; %s %b" /&gt;
 
- <span class="comment">&lt;!-- Groovlets --&gt;</span>
- <span class="tag">&lt;Context</span> <span class="attribute-name">path</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/groovy/ili2gpkg</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">docBase</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/Projekte/ili2gpkg_service/scripts</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">reloadable</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">true</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+ &lt;!-- Groovlets --&gt;
+ &lt;Context path="/groovy/ili2gpkg" docBase="/home/stefan/Projekte/ili2gpkg_service/scripts" reloadable="true"/&gt;
 
-<span class="tag">&lt;/Host&gt;</span></pre></td>
-</tr></table></code></pre>
+&lt;/Host&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">

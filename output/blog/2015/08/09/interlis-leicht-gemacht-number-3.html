@@ -14,11 +14,12 @@
     <link href="../../../../css/asciidoctor.css" rel="stylesheet">
     <link href="../../../../css/base.css" rel="stylesheet">
     <link href="../../../../css/prettify.css" rel="stylesheet">
-    <link href="../../../../css/coderay.css" rel="stylesheet">
     <link href="../../../../css/sogeo.css" rel="stylesheet">
 
     <!-- web fonts -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
+    
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
@@ -84,51 +85,27 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-</pre></td>
-  <td class="code"><pre><span class="doctype">#!/usr/bin/env groovy</span>
+<pre class="prettyprint highlight linenums"><code class="language-groovy" data-lang="groovy">#!/usr/bin/env groovy
 
-<span class="keyword">import</span> <span class="include">org.eclipse.jetty.server.Server</span>
-<span class="keyword">import</span> <span class="include">org.eclipse.jetty.servlet.*</span>
-<span class="keyword">import</span> <span class="include">groovy.servlet.*</span>
+import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.servlet.*
+import groovy.servlet.*
 
-<span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">org.eclipse.jetty.aggregate</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">jetty-all</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">9.2.10.v20150310</span><span class="delimiter">'</span></span>)
-<span class="keyword">def</span> <span class="function">startJetty</span>() {
-    <span class="keyword">def</span> server = <span class="keyword">new</span> Server(<span class="integer">8080</span>)
-    <span class="keyword">def</span> handler = <span class="keyword">new</span> ServletContextHandler(ServletContextHandler.SESSIONS)
-    handler.contextPath = <span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span>
-    handler.resourceBase = <span class="string"><span class="delimiter">'</span><span class="content">.</span><span class="delimiter">'</span></span>
-    handler.addServlet(IliExport, <span class="string"><span class="delimiter">'</span><span class="content">/*</span><span class="delimiter">'</span></span>)
+@Grab(group='org.eclipse.jetty.aggregate', module='jetty-all', version='9.2.10.v20150310')
+def startJetty() {
+    def server = new Server(8080)
+    def handler = new ServletContextHandler(ServletContextHandler.SESSIONS)
+    handler.contextPath = '/'
+    handler.resourceBase = '.'
+    handler.addServlet(IliExport, '/*')
 
     server.handler = handler
     server.start()
     server.join()
 }
 
-println <span class="string"><span class="delimiter">&quot;</span><span class="content">Starting Jetty, press Ctrl+C to stop.</span><span class="delimiter">&quot;</span></span>
-startJetty()</pre></td>
-</tr></table></code></pre>
+println "Starting Jetty, press Ctrl+C to stop."
+startJetty()</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -145,175 +122,89 @@ startJetty()</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-36
-37
-38
-39
-<strong>40</strong>
-41
-42
-43
-44
-45
-46
-47
-48
-49
-<strong>50</strong>
-51
-52
-53
-54
-55
-56
-57
-58
-59
-<strong>60</strong>
-61
-62
-63
-64
-65
-66
-67
-68
-69
-<strong>70</strong>
-71
-72
-73
-74
-75
-76
-77
-78
-79
-<strong>80</strong>
-81
-82
-83
-</pre></td>
-  <td class="code"><pre><span class="annotation">@GrabConfig</span>(systemClassLoader=<span class="predefined-constant">true</span>)
-<span class="annotation">@GrabResolver</span>(name=<span class="string"><span class="delimiter">'</span><span class="content">catais.org</span><span class="delimiter">'</span></span>, root=<span class="string"><span class="delimiter">'</span><span class="content">http://www.catais.org/maven/repository/release/</span><span class="delimiter">'</span></span>, m2Compatible=<span class="string"><span class="delimiter">'</span><span class="content">true</span><span class="delimiter">'</span></span>)
-<span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">org.postgresql</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">postgresql</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">9.4-1201-jdbc41</span><span class="delimiter">'</span></span>)
-<span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">ili2c</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">4.5.12</span><span class="delimiter">'</span></span>)
-<span class="annotation">@Grab</span>(group=<span class="string"><span class="delimiter">'</span><span class="content">ch.interlis</span><span class="delimiter">'</span></span>, module=<span class="string"><span class="delimiter">'</span><span class="content">ili2pg</span><span class="delimiter">'</span></span>, version=<span class="string"><span class="delimiter">'</span><span class="content">2.1.4</span><span class="delimiter">'</span></span>)
+<pre class="prettyprint highlight linenums"><code class="language-groovy" data-lang="groovy">@GrabConfig(systemClassLoader=true)
+@GrabResolver(name='catais.org', root='http://www.catais.org/maven/repository/release/', m2Compatible='true')
+@Grab(group='org.postgresql', module='postgresql', version='9.4-1201-jdbc41')
+@Grab(group='ch.interlis', module='ili2c', version='4.5.12')
+@Grab(group='ch.interlis', module='ili2pg', version='2.1.4')
 
-<span class="keyword">import</span> <span class="include">javax.servlet.http.*</span>
-<span class="keyword">import</span> <span class="include">javax.servlet.*</span>
-<span class="keyword">import</span> <span class="include">groovy.servlet.ServletCategory</span>
+import javax.servlet.http.*
+import javax.servlet.*
+import groovy.servlet.ServletCategory
 
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2db</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.base.Ili2dbException</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2db.gui.Config</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.ili2pg.converter.PostgisGeometryConverter</span>
-<span class="keyword">import</span> <span class="include">ch.ehi.sqlgen.generator_impl.jdbc.GeneratorPostgresql</span>
+import ch.ehi.ili2db.base.Ili2db
+import ch.ehi.ili2db.base.Ili2dbException
+import ch.ehi.ili2db.gui.Config
+import ch.ehi.ili2pg.converter.PostgisGeometryConverter
+import ch.ehi.sqlgen.generator_impl.jdbc.GeneratorPostgresql
 
-<span class="type">class</span> <span class="class">IliExport</span> <span class="directive">extends</span> HttpServlet {
-    <span class="keyword">def</span> application
+class IliExport extends HttpServlet {
+    def application
 
-    <span class="type">void</span> init(ServletConfig config) {
-        <span class="local-variable">super</span>.init(config)
+    void init(ServletConfig config) {
+        super.init(config)
         application = config.servletContext
     }
 
-    <span class="type">void</span> doGet(HttpServletRequest request, HttpServletResponse response) {
-        <span class="keyword">def</span> requestedFileName = request.getRequestURI() - <span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span>
+    void doGet(HttpServletRequest request, HttpServletResponse response) {
+        def requestedFileName = request.getRequestURI() - '/'
 
-        <span class="keyword">def</span> mapping = [
-        <span class="string"><span class="delimiter">'</span><span class="content">2583_schoenenwerd.xtf</span><span class="delimiter">'</span></span>: [<span class="string"><span class="delimiter">'</span><span class="content">modelname</span><span class="delimiter">'</span></span>:<span class="string"><span class="delimiter">'</span><span class="content">MOpublic03_ili2_v13</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">dbschema</span><span class="delimiter">'</span></span>:<span class="string"><span class="delimiter">'</span><span class="content">av_mopublic_export</span><span class="delimiter">'</span></span>],
-        <span class="string"><span class="delimiter">'</span><span class="content">2583_schoenenwerd.gml</span><span class="delimiter">'</span></span>: [<span class="string"><span class="delimiter">'</span><span class="content">modelname</span><span class="delimiter">'</span></span>:<span class="string"><span class="delimiter">'</span><span class="content">MOpublic03_ili2_v13</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">dbschema</span><span class="delimiter">'</span></span>:<span class="string"><span class="delimiter">'</span><span class="content">av_mopublic_export</span><span class="delimiter">'</span></span>]
+        def mapping = [
+        '2583_schoenenwerd.xtf': ['modelname':'MOpublic03_ili2_v13', 'dbschema':'av_mopublic_export'],
+        '2583_schoenenwerd.gml': ['modelname':'MOpublic03_ili2_v13', 'dbschema':'av_mopublic_export']
         ]
-        <span class="keyword">def</span> params = mapping.get(requestedFileName)
-        <span class="keyword">def</span> modelName = params[<span class="string"><span class="delimiter">'</span><span class="content">modelname</span><span class="delimiter">'</span></span>]
-        <span class="keyword">def</span> dbschema = params[<span class="string"><span class="delimiter">'</span><span class="content">dbschema</span><span class="delimiter">'</span></span>]
+        def params = mapping.get(requestedFileName)
+        def modelName = params['modelname']
+        def dbschema = params['dbschema']
 
-        <span class="keyword">def</span> config = <span class="keyword">new</span> Config()
-        config.setDbhost(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>)
-        config.setDbdatabase(<span class="string"><span class="delimiter">&quot;</span><span class="content">xanadu2</span><span class="delimiter">&quot;</span></span>)
-        config.setDbport(<span class="string"><span class="delimiter">&quot;</span><span class="content">5432</span><span class="delimiter">&quot;</span></span>)
-        config.setDbusr(<span class="string"><span class="delimiter">&quot;</span><span class="content">stefan</span><span class="delimiter">&quot;</span></span>)
-        config.setDbpwd(<span class="string"><span class="delimiter">&quot;</span><span class="content">ziegler12</span><span class="delimiter">&quot;</span></span>)
+        def config = new Config()
+        config.setDbhost("localhost")
+        config.setDbdatabase("xanadu2")
+        config.setDbport("5432")
+        config.setDbusr("stefan")
+        config.setDbpwd("ziegler12")
         config.setDbschema(dbschema)
-        config.setDburl(<span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://localhost:5432/xanadu2</span><span class="delimiter">&quot;</span></span>)
+        config.setDburl("jdbc:postgresql://localhost:5432/xanadu2")
 
         config.setModels(modelName);
-        config.setModeldir(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://models.geo.admin.ch/</span><span class="delimiter">&quot;</span></span>);
+        config.setModeldir("http://models.geo.admin.ch/");
 
         config.setGeometryConverter(PostgisGeometryConverter.class.getName())
         config.setDdlGenerator(GeneratorPostgresql.class.getName())
-        config.setJdbcDriver(<span class="string"><span class="delimiter">&quot;</span><span class="content">org.postgresql.Driver</span><span class="delimiter">&quot;</span></span>)
+        config.setJdbcDriver("org.postgresql.Driver")
 
-        config.setNameOptimization(<span class="string"><span class="delimiter">&quot;</span><span class="content">topic</span><span class="delimiter">&quot;</span></span>)
-        config.setMaxSqlNameLength(<span class="string"><span class="delimiter">&quot;</span><span class="content">60</span><span class="delimiter">&quot;</span></span>)
-        config.setStrokeArcs(<span class="string"><span class="delimiter">&quot;</span><span class="content">enable</span><span class="delimiter">&quot;</span></span>)
-        config.setSqlNull(<span class="string"><span class="delimiter">&quot;</span><span class="content">enable</span><span class="delimiter">&quot;</span></span>);
-        config.setValue(<span class="string"><span class="delimiter">&quot;</span><span class="content">ch.ehi.sqlgen.createGeomIndex</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">True</span><span class="delimiter">&quot;</span></span>);
+        config.setNameOptimization("topic")
+        config.setMaxSqlNameLength("60")
+        config.setStrokeArcs("enable")
+        config.setSqlNull("enable");
+        config.setValue("ch.ehi.sqlgen.createGeomIndex", "True");
 
-        config.setDefaultSrsAuthority(<span class="string"><span class="delimiter">&quot;</span><span class="content">EPSG</span><span class="delimiter">&quot;</span></span>)
-        config.setDefaultSrsCode(<span class="string"><span class="delimiter">&quot;</span><span class="content">21781</span><span class="delimiter">&quot;</span></span>)
+        config.setDefaultSrsAuthority("EPSG")
+        config.setDefaultSrsCode("21781")
 
-        <span class="keyword">def</span> tmpDir = <span class="predefined-type">System</span>.getProperty(<span class="string"><span class="delimiter">'</span><span class="content">java.io.tmpdir</span><span class="delimiter">'</span></span>)
-        <span class="keyword">def</span> fileName = tmpDir + <span class="predefined-type">File</span>.separator + requestedFileName
+        def tmpDir = System.getProperty('java.io.tmpdir')
+        def fileName = tmpDir + File.separator + requestedFileName
 
         config.setXtffile(fileName)
 
-        Ili2db.runExport(config, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)
+        Ili2db.runExport(config, "")
 
         ServletOutputStream os = response.getOutputStream();
-        <span class="predefined-type">FileInputStream</span> fis = <span class="keyword">new</span> <span class="predefined-type">FileInputStream</span>(fileName);
-        <span class="keyword">try</span> {
-            <span class="type">int</span> buffSize = <span class="integer">1024</span>;
-            <span class="type">byte</span><span class="type">[]</span> buffer = <span class="keyword">new</span> <span class="type">byte</span>[buffSize];
-            <span class="type">int</span> len;
-            <span class="keyword">while</span> ((len = fis.read(buffer)) != -<span class="integer">1</span>) {
-                os.write(buffer, <span class="integer">0</span>, len);
+        FileInputStream fis = new FileInputStream(fileName);
+        try {
+            int buffSize = 1024;
+            byte[] buffer = new byte[buffSize];
+            int len;
+            while ((len = fis.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
                 os.flush();
                 response.flushBuffer();
             }
-        } <span class="keyword">finally</span> {
+        } finally {
             os.close();
         }
     }
-}</pre></td>
-</tr></table></code></pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -333,11 +224,7 @@ startJetty()</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>curl http://localhost:8080/2583_schoenenwerd.xtf | xmllint --format -</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">curl http://localhost:8080/2583_schoenenwerd.xtf | xmllint --format -</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -353,11 +240,7 @@ startJetty()</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>curl http://localhost:8080/2583_schoenenwerd.gml | xmllint --format -</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">curl http://localhost:8080/2583_schoenenwerd.gml | xmllint --format -</code></pre>
 </div>
 </div>
 <div class="paragraph">

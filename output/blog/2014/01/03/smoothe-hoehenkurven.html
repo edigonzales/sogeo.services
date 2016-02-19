@@ -14,11 +14,12 @@
     <link href="../../../../css/asciidoctor.css" rel="stylesheet">
     <link href="../../../../css/base.css" rel="stylesheet">
     <link href="../../../../css/prettify.css" rel="stylesheet">
-    <link href="../../../../css/coderay.css" rel="stylesheet">
     <link href="../../../../css/sogeo.css" rel="stylesheet">
 
     <!-- web fonts -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
+    
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
@@ -67,7 +68,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code>gdal_contour -a elev dtm110733.tif contour.shp -i 10.0</code></pre>
+<pre class="prettyprint highlight"><code>gdal_contour -a elev dtm110733.tif contour.shp -i 10.0</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -86,37 +87,20 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="ruby"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-</pre></td>
-  <td class="code"><pre><span class="doctype">#!/bin/bash</span>
+<pre class="prettyprint highlight linenums"><code class="language-ruby" data-lang="ruby">#!/bin/bash
 
-cp <span class="global-variable">$1</span> tmp_<span class="global-variable">$1</span>
+cp $1 tmp_$1
 
-<span class="keyword">for</span> i <span class="keyword">in</span> {<span class="integer">1</span>..<span class="integer">10</span>}
-<span class="keyword">do</span>
-  gdalwarp -co <span class="constant">COMPRESS</span>=<span class="constant">PACKBITS</span> -overwrite -r cubicspline tmp_<span class="global-variable">$1</span> smooth_<span class="global-variable">$1</span>
-  cp smooth_<span class="global-variable">$1</span> tmp_<span class="global-variable">$1</span>
+for i in {1..10}
+do
+  gdalwarp -co COMPRESS=PACKBITS -overwrite -r cubicspline tmp_$1 smooth_$1
+  cp smooth_$1 tmp_$1
 done
 
 rm contour_smooth.*
-gdal_contour -a elev smooth_<span class="global-variable">$1</span> contour_smooth.shp -i <span class="float">10.0</span>
+gdal_contour -a elev smooth_$1 contour_smooth.shp -i 10.0
 
-ogr2ogr -overwrite -dialect <span class="constant">SQLITE</span> contour_smooth_reduced.shp contour_smooth.shp -sql <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT * FROM  contour_smooth WHERE ST_Length(GEOMETRY) &gt; 100</span><span class="delimiter">&quot;</span></span></pre></td>
-</tr></table></code></pre>
+ogr2ogr -overwrite -dialect SQLITE contour_smooth_reduced.shp contour_smooth.shp -sql "SELECT * FROM  contour_smooth WHERE ST_Length(GEOMETRY) &gt; 100"</code></pre>
 </div>
 </div>
 <div class="paragraph">

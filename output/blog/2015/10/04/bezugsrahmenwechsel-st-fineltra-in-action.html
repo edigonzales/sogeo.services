@@ -14,11 +14,12 @@
     <link href="../../../../css/asciidoctor.css" rel="stylesheet">
     <link href="../../../../css/base.css" rel="stylesheet">
     <link href="../../../../css/prettify.css" rel="stylesheet">
-    <link href="../../../../css/coderay.css" rel="stylesheet">
     <link href="../../../../css/sogeo.css" rel="stylesheet">
 
     <!-- web fonts -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
+    
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
@@ -80,11 +81,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo apt-get install liblwgeom-dev</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo apt-get install liblwgeom-dev</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -92,21 +89,12 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-</pre></td>
-  <td class="code"><pre>git clone https://github.com/strk/fineltra.git
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">git clone https://github.com/strk/fineltra.git
 cd fineltra
 ./autogen.sh
 ./configure
 make
-sudo make install</pre></td>
-</tr></table></code></pre>
+sudo make install</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -114,11 +102,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE EXTENSION fineltra;&quot;</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo -u postgres psql -d xanadu2 -c "CREATE EXTENSION fineltra;"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -126,11 +110,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>ogr2ogr -f &quot;PostgreSQL&quot; PG:&quot;dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'&quot; chenyx06.sqlite chenyx06 -lco SCHEMA=av_chenyx06 -nln chenyx06_triangles</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">ogr2ogr -f "PostgreSQL" PG:"dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'" chenyx06.sqlite chenyx06 -lco SCHEMA=av_chenyx06 -nln chenyx06_triangles</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -141,11 +121,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE SCHEMA av_chenyx06 AUTHORIZATION stefan;&quot;</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo -u postgres psql -d xanadu2 -c "CREATE SCHEMA av_chenyx06 AUTHORIZATION stefan;"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -153,11 +129,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE INDEX ON av_chenyx06.chenyx06_triangles USING GiST (the_geom_lv03);&quot;</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo -u postgres psql -d xanadu2 -c "CREATE INDEX ON av_chenyx06.chenyx06_triangles USING GiST (the_geom_lv03);"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -179,17 +151,10 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-</pre></td>
-  <td class="code"><pre>git clone https://github.com/pramsey/pgsql-http.git
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">git clone https://github.com/pramsey/pgsql-http.git
 cd pgsql-http
 make
-sudo make install</pre></td>
-</tr></table></code></pre>
+sudo make install</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -197,11 +162,7 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>sudo -u postgres psql -d xanadu2 -c &quot;CREATE EXTENSION http;&quot;</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">sudo -u postgres psql -d xanadu2 -c "CREATE EXTENSION http;"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -217,43 +178,23 @@ sudo make install</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-</pre></td>
-  <td class="code"><pre>WITH fineltra <span class="keyword">AS</span> (
-  <span class="class">SELECT</span> nummer, nbident,
-    ST_X(wkb_geometry) <span class="keyword">as</span> x_lv03, ST_Y(wkb_geometry) <span class="keyword">as</span> y_lv03,
-    ST_X((ST_Fineltra(wkb_geometry, <span class="string"><span class="delimiter">'</span><span class="content">av_chenyx06.chenyx06_triangles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv95</span><span class="delimiter">'</span></span>))) <span class="keyword">as</span> x_lv95_pg,
-    ST_Y((ST_Fineltra(wkb_geometry, <span class="string"><span class="delimiter">'</span><span class="content">av_chenyx06.chenyx06_triangles</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">the_geom_lv95</span><span class="delimiter">'</span></span>))) <span class="keyword">as</span> y_lv95_pg
-  <span class="keyword">FROM</span> av_avdpool_test.fixpunktekategorie__lfp
-  <span class="comment">--WHERE fid = 3515717</span>
-  LIMIT <span class="integer">100</span>
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">WITH fineltra AS (
+  SELECT nummer, nbident,
+    ST_X(wkb_geometry) as x_lv03, ST_Y(wkb_geometry) as y_lv03,
+    ST_X((ST_Fineltra(wkb_geometry, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95'))) as x_lv95_pg,
+    ST_Y((ST_Fineltra(wkb_geometry, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95'))) as y_lv95_pg
+  FROM av_avdpool_test.fixpunktekategorie__lfp
+  --WHERE fid = 3515717
+  LIMIT 100
 ),
-swisstopo <span class="keyword">AS</span> (
-  <span class="class">SELECT</span> nummer, nbident, x_lv95_pg, y_lv95_pg,
-   <span class="predefined">cast</span>(content::json-&gt;&gt;<span class="string"><span class="delimiter">'</span><span class="content">easting</span><span class="delimiter">'</span></span> <span class="keyword">as</span> <span class="predefined-type">double</span> precision) <span class="keyword">as</span> x_lv95_lt,
-   <span class="predefined">cast</span>(content::json-&gt;&gt;<span class="string"><span class="delimiter">'</span><span class="content">northing</span><span class="delimiter">'</span></span> <span class="keyword">as</span> <span class="predefined-type">double</span> precision) <span class="keyword">as</span> y_lv95_lt
-  <span class="keyword">FROM</span> fineltra <span class="keyword">as</span> f, http_get(<span class="string"><span class="delimiter">'</span><span class="content">http://geodesy.geo.admin.ch/reframe/lv03tolv95?easting=</span><span class="delimiter">'</span></span> || f.x_lv03 || <span class="string"><span class="delimiter">'</span><span class="content">&amp;northing=</span><span class="delimiter">'</span></span> || f.y_lv03 || <span class="string"><span class="delimiter">'</span><span class="content">&amp;format=json</span><span class="delimiter">'</span></span>)
+swisstopo AS (
+  SELECT nummer, nbident, x_lv95_pg, y_lv95_pg,
+   cast(content::json-&gt;&gt;'easting' as double precision) as x_lv95_lt,
+   cast(content::json-&gt;&gt;'northing' as double precision) as y_lv95_lt
+  FROM fineltra as f, http_get('http://geodesy.geo.admin.ch/reframe/lv03tolv95?easting=' || f.x_lv03 || '&amp;northing=' || f.y_lv03 || '&amp;format=json')
 )
-<span class="class">SELECT</span> nummer, nbident, (x_lv95_pg - x_lv95_lt)*<span class="integer">1000</span> <span class="keyword">as</span> x_diff_mm, (y_lv95_pg - y_lv95_lt)*<span class="integer">1000</span> <span class="keyword">as</span> y_diff_mm
-<span class="keyword">FROM</span> swisstopo;</pre></td>
-</tr></table></code></pre>
+SELECT nummer, nbident, (x_lv95_pg - x_lv95_lt)*1000 as x_diff_mm, (y_lv95_pg - y_lv95_lt)*1000 as y_diff_mm
+FROM swisstopo;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -272,11 +213,7 @@ swisstopo <span class="keyword">AS</span> (
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-</pre></td>
-  <td class="code"><pre>ogr2ogr -f &quot;PostgreSQL&quot; PG:&quot;dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'&quot; -lco SCHEMA=av_avdpool_test kanton.gpkg</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">ogr2ogr -f "PostgreSQL" PG:"dbname='xanadu2' host='localhost' port='5432' user='stefan' password='ziegler12'" -lco SCHEMA=av_avdpool_test kanton.gpkg</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -292,121 +229,62 @@ swisstopo <span class="keyword">AS</span> (
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-36
-37
-38
-39
-<strong>40</strong>
-41
-42
-43
-44
-45
-46
-47
-48
-49
-<strong>50</strong>
-51
-52
-53
-54
-55
-56
-</pre></td>
-  <td class="code"><pre><span class="annotation">@Grapes</span>([
-   <span class="annotation">@Grab</span>(<span class="string"><span class="delimiter">'</span><span class="content">org.postgresql:postgresql:9.4-1201-jdbc41</span><span class="delimiter">'</span></span>),
-   <span class="annotation">@GrabConfig</span>(systemClassLoader = <span class="predefined-constant">true</span>)
+<pre class="prettyprint highlight linenums"><code class="language-groovy" data-lang="groovy">@Grapes([
+   @Grab('org.postgresql:postgresql:9.4-1201-jdbc41'),
+   @GrabConfig(systemClassLoader = true)
 ])
 
-<span class="keyword">import</span> <span class="include">groovy.sql.*</span>
+import groovy.sql.*
 
-<span class="keyword">def</span> dbhost = <span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbport = <span class="string"><span class="delimiter">&quot;</span><span class="content">5432</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbdatabase = <span class="string"><span class="delimiter">&quot;</span><span class="content">xanadu2</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbusr = <span class="string"><span class="delimiter">&quot;</span><span class="content">stefan</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbpwd = <span class="string"><span class="delimiter">&quot;</span><span class="content">ziegler12</span><span class="delimiter">&quot;</span></span>
-<span class="keyword">def</span> dbschema = <span class="string"><span class="delimiter">&quot;</span><span class="content">av_avdpool_test</span><span class="delimiter">&quot;</span></span>
+def dbhost = "localhost"
+def dbport = "5432"
+def dbdatabase = "xanadu2"
+def dbusr = "stefan"
+def dbpwd = "ziegler12"
+def dbschema = "av_avdpool_test"
 
-<span class="keyword">def</span> dburl = <span class="string"><span class="delimiter">&quot;</span><span class="content">jdbc:postgresql://</span><span class="inline"><span class="inline-delimiter">${</span>dbhost<span class="inline-delimiter">}</span></span><span class="content">:</span><span class="inline"><span class="inline-delimiter">${</span>dbport<span class="inline-delimiter">}</span></span><span class="content">/</span><span class="inline"><span class="inline-delimiter">${</span>dbdatabase<span class="inline-delimiter">}</span></span><span class="content">?user=</span><span class="inline"><span class="inline-delimiter">${</span>dbusr<span class="inline-delimiter">}</span></span><span class="content">&amp;password=</span><span class="inline"><span class="inline-delimiter">${</span>dbpwd<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+def dburl = "jdbc:postgresql://${dbhost}:${dbport}/${dbdatabase}?user=${dbusr}&amp;password=${dbpwd}"
 
-<span class="keyword">def</span> query = <span class="string"><span class="delimiter">&quot;</span><span class="content">SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type </span><span class="delimiter">&quot;</span></span> +
-  <span class="string"><span class="delimiter">&quot;</span><span class="content"> FROM geometry_columns </span><span class="delimiter">&quot;</span></span> +
-  <span class="string"><span class="delimiter">&quot;</span><span class="content"> WHERE f_table_schema = '</span><span class="inline"><span class="inline-delimiter">$</span>dbschema</span><span class="content">'</span><span class="delimiter">&quot;</span></span> +
-  <span class="string"><span class="delimiter">&quot;</span><span class="content"> AND srid = 21781;</span><span class="delimiter">&quot;</span></span>
+def query = "SELECT f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type " +
+  " FROM geometry_columns " +
+  " WHERE f_table_schema = '$dbschema'" +
+  " AND srid = 21781;"
 
-<span class="keyword">def</span> sql = Sql.newInstance(dburl)
+def sql = Sql.newInstance(dburl)
 
-<span class="keyword">def</span> startTime = <span class="predefined-type">Calendar</span>.instance.time
-<span class="keyword">def</span> endTime
-println <span class="string"><span class="delimiter">&quot;</span><span class="content">Start: </span><span class="inline"><span class="inline-delimiter">${</span>startTime<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="delimiter">&quot;</span></span>
+def startTime = Calendar.instance.time
+def endTime
+println "Start: ${startTime}."
 
 sql.withTransaction {
   sql.eachRow(query) {row -&gt;
-    <span class="keyword">def</span> tableName = row.f_table_name
-    <span class="keyword">def</span> geomColumn = row.f_geometry_column
+    def tableName = row.f_table_name
+    def geomColumn = row.f_geometry_column
 
-    <span class="keyword">def</span> geomType = row.type
-    <span class="keyword">if</span> (row.coord_dimension == <span class="integer">3</span>) {
-      geomType += <span class="string"><span class="delimiter">'</span><span class="content">Z</span><span class="delimiter">'</span></span>
+    def geomType = row.type
+    if (row.coord_dimension == 3) {
+      geomType += 'Z'
     }
 
-    <span class="keyword">def</span> alterQuery = <span class="string"><span class="delimiter">&quot;</span><span class="content">ALTER TABLE </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(dbschema)<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(tableName)<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span> +
-      <span class="string"><span class="delimiter">&quot;</span><span class="content"> ALTER COLUMN </span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomColumn)<span class="inline-delimiter">}</span></span><span class="content"> TYPE geometry(</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomType)<span class="inline-delimiter">}</span></span><span class="content">,2056)</span><span class="delimiter">&quot;</span></span> +
-      <span class="string"><span class="delimiter">&quot;</span><span class="content"> USING ST_Fineltra(</span><span class="inline"><span class="inline-delimiter">${</span>Sql.expand(geomColumn)<span class="inline-delimiter">}</span></span><span class="content">, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95');</span><span class="delimiter">&quot;</span></span>
+    def alterQuery = "ALTER TABLE ${Sql.expand(dbschema)}.${Sql.expand(tableName)}" +
+      " ALTER COLUMN ${Sql.expand(geomColumn)} TYPE geometry(${Sql.expand(geomType)},2056)" +
+      " USING ST_Fineltra(${Sql.expand(geomColumn)}, 'av_chenyx06.chenyx06_triangles', 'the_geom_lv03', 'the_geom_lv95');"
 
-    println <span class="string"><span class="delimiter">&quot;</span><span class="content">--- </span><span class="inline"><span class="inline-delimiter">$</span>dbschema</span><span class="content">.</span><span class="inline"><span class="inline-delimiter">$</span>tableName</span><span class="content"> ---</span><span class="delimiter">&quot;</span></span>
+    println "--- $dbschema.$tableName ---"
     sql.execute(alterQuery)
 
-    endTime = <span class="predefined-type">Calendar</span>.instance.time
-    println <span class="string"><span class="delimiter">&quot;</span><span class="content">Elapsed time: </span><span class="inline"><span class="inline-delimiter">${</span>(endTime.time - startTime.time)<span class="inline-delimiter">}</span></span><span class="content"> ms</span><span class="delimiter">&quot;</span></span>
+    endTime = Calendar.instance.time
+    println "Elapsed time: ${(endTime.time - startTime.time)} ms"
 
   }
 }
 
-endTime = <span class="predefined-type">Calendar</span>.instance.time
-println <span class="string"><span class="delimiter">&quot;</span><span class="content">End: </span><span class="inline"><span class="inline-delimiter">${</span>endTime<span class="inline-delimiter">}</span></span><span class="content">.</span><span class="delimiter">&quot;</span></span>
-println <span class="string"><span class="delimiter">&quot;</span><span class="content">Total elapsed time: </span><span class="inline"><span class="inline-delimiter">${</span>(endTime.time - startTime.time)<span class="inline-delimiter">}</span></span><span class="content"> ms</span><span class="delimiter">&quot;</span></span>
+endTime = Calendar.instance.time
+println "End: ${endTime}."
+println "Total elapsed time: ${(endTime.time - startTime.time)} ms"
 
 sql.connection.close()
-sql.close()</pre></td>
-</tr></table></code></pre>
+sql.close()</code></pre>
 </div>
 </div>
 <div class="paragraph">

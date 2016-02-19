@@ -14,11 +14,12 @@
     <link href="../../../../css/asciidoctor.css" rel="stylesheet">
     <link href="../../../../css/base.css" rel="stylesheet">
     <link href="../../../../css/prettify.css" rel="stylesheet">
-    <link href="../../../../css/coderay.css" rel="stylesheet">
     <link href="../../../../css/sogeo.css" rel="stylesheet">
 
     <!-- web fonts -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
+    
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
@@ -89,13 +90,8 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-</pre></td>
-  <td class="code"><pre><span class="class">UPDATE</span> bodenbedeckung_boflaeche
-  <span class="class">SET</span> geometrie_lv95 = ST_Fineltra(geometrie_lv03, <span class="string"><span class="delimiter">'</span><span class="content">chenyx06</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">geom_lv95</span><span class="delimiter">'</span></span>);</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">UPDATE bodenbedeckung_boflaeche
+  SET geometrie_lv95 = ST_Fineltra(geometrie_lv03, 'chenyx06', 'geom_lv03', 'geom_lv95');</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -115,15 +111,9 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sql"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-</pre></td>
-  <td class="code"><pre><span class="class">ALTER</span> <span class="type">TABLE</span> bodenbedeckung_boflaeche
-  <span class="class">ALTER</span> <span class="type">COLUMN</span> geometrie TYPE geometry(Polygon,<span class="integer">2056</span>)
-    <span class="keyword">USING</span> ST_Fineltra(geometrie, <span class="string"><span class="delimiter">'</span><span class="content">chenyx06</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">geom_lv03</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">geom_lv95</span><span class="delimiter">'</span></span>);</pre></td>
-</tr></table></code></pre>
+<pre class="prettyprint highlight linenums"><code class="language-sql" data-lang="sql">ALTER TABLE bodenbedeckung_boflaeche
+  ALTER COLUMN geometrie TYPE geometry(Polygon,2056)
+    USING ST_Fineltra(geometrie, 'chenyx06', 'geom_lv03', 'geom_lv95');</code></pre>
 </div>
 </div>
 <div class="paragraph">

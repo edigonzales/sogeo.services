@@ -14,11 +14,12 @@
     <link href="../../../../css/asciidoctor.css" rel="stylesheet">
     <link href="../../../../css/base.css" rel="stylesheet">
     <link href="../../../../css/prettify.css" rel="stylesheet">
-    <link href="../../../../css/coderay.css" rel="stylesheet">
     <link href="../../../../css/sogeo.css" rel="stylesheet">
 
     <!-- web fonts -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
+    
     <!--[if lt IE 9]>
       <script src="../../../../js/html5shiv.min.js"></script>
     <![endif]-->
@@ -97,19 +98,11 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-</pre></td>
-  <td class="code"><pre>#!/bin/bash
+<pre class="prettyprint highlight linenums"><code class="language-xml" data-lang="xml">#!/bin/bash
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/stefan/Apps/qgis_master/lib
 export PYTHONPATH=$PYTHONPATH:/home/stefan/Apps/qgis_master/share/qgis/python
 
-python basisplan.py</pre></td>
-</tr></table></code></pre>
+python basisplan.py</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -117,165 +110,76 @@ python basisplan.py</pre></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><table class="CodeRay"><tr>
-  <td class="line-numbers"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-<strong>10</strong>
-11
-12
-13
-14
-15
-16
-17
-18
-19
-<strong>20</strong>
-21
-22
-23
-24
-25
-26
-27
-28
-29
-<strong>30</strong>
-31
-32
-33
-34
-35
-36
-37
-38
-39
-<strong>40</strong>
-41
-42
-43
-44
-45
-46
-47
-48
-49
-<strong>50</strong>
-51
-52
-53
-54
-55
-56
-57
-58
-59
-<strong>60</strong>
-61
-62
-63
-64
-65
-66
-67
-68
-69
-<strong>70</strong>
-71
-72
-73
-74
-75
-76
-77
-78
-79
-<strong>80</strong>
-81
-82
-83
-84
-85
-86
-87
-</pre></td>
-  <td class="code"><pre><span class="comment"># -*- coding: utf-8 -*-</span>
-<span class="keyword">from</span> <span class="include">PyQt4.QtCore</span> <span class="keyword">import</span> <span class="include">*</span>
-<span class="keyword">from</span> <span class="include">PyQt4.QtGui</span> <span class="keyword">import</span> <span class="include">*</span>
-<span class="keyword">from</span> <span class="include">qgis.core</span> <span class="keyword">import</span> <span class="include">*</span>
-<span class="keyword">from</span> <span class="include">qgis.gui</span> <span class="keyword">import</span> <span class="include">*</span>
+<pre class="prettyprint highlight linenums"><code class="language-python" data-lang="python"># -*- coding: utf-8 -*-
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from qgis.core import *
+from qgis.gui import *
 
-<span class="keyword">import</span> <span class="include">os</span>
-<span class="keyword">import</span> <span class="include">sys</span>
+import os
+import sys
 
-<span class="comment"># Aktuelles Verzeichnis</span>
+# Aktuelles Verzeichnis
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
-<span class="comment"># QGIS initialisieren</span>
+# QGIS initialisieren
 app = QApplication(sys.argv)
-QgsApplication.setPrefixPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/home/stefan/Apps/qgis_master</span><span class="delimiter">&quot;</span></span>, <span class="predefined-constant">True</span>)
+QgsApplication.setPrefixPath("/home/stefan/Apps/qgis_master", True)
 QgsApplication.initQgis()
 
-<span class="comment"># QGIS-Projekt laden</span>
-QgsProject.instance().setFileName(os.path.join(current_dir,  <span class="string"><span class="delimiter">&quot;</span><span class="content">bpav5000sw.qgs</span><span class="delimiter">&quot;</span></span>))
-<span class="keyword">if</span> <span class="keyword">not</span> QgsProject.instance().read():
-    sys.exit(<span class="string"><span class="delimiter">&quot;</span><span class="content">QGIS-Projekt nicht gefunden.</span><span class="delimiter">&quot;</span></span>)
+# QGIS-Projekt laden
+QgsProject.instance().setFileName(os.path.join(current_dir,  "bpav5000sw.qgs"))
+if not QgsProject.instance().read():
+    sys.exit("QGIS-Projekt nicht gefunden.")
 
-<span class="comment"># List mit sämtlichen Layer im QGIS-Projekt</span>
+# List mit sämtlichen Layer im QGIS-Projekt
 lst = []
 layerTreeRoot = QgsProject.instance().layerTreeRoot()
-<span class="keyword">for</span> <span class="predefined">id</span> <span class="keyword">in</span> layerTreeRoot.findLayerIds():
-    node = layerTreeRoot.findLayer(<span class="predefined">id</span>)
-    lst.append(<span class="predefined">id</span>)
+for id in layerTreeRoot.findLayerIds():
+    node = layerTreeRoot.findLayer(id)
+    lst.append(id)
 
-<span class="comment"># Layer mit Blatteinteilung laden</span>
-layer_name =  <span class="string"><span class="delimiter">&quot;</span><span class="content">blatteinteilung</span><span class="delimiter">&quot;</span></span>
-vlayer = QgsVectorLayer(os.path.join(current_dir, <span class="string"><span class="delimiter">&quot;</span><span class="content">basisplan.gpkg</span><span class="delimiter">&quot;</span></span>) + <span class="string"><span class="delimiter">&quot;</span><span class="content">|layername=blatteinteilung</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Blatteinteilung</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">ogr</span><span class="delimiter">&quot;</span></span>)
-<span class="keyword">if</span> <span class="keyword">not</span> vlayer.isValid():
-    sys.exit(<span class="string"><span class="delimiter">&quot;</span><span class="content">Blatteinteilung konnte nicht geladen werden.</span><span class="delimiter">&quot;</span></span>)
+# Layer mit Blatteinteilung laden
+layer_name =  "blatteinteilung"
+vlayer = QgsVectorLayer(os.path.join(current_dir, "basisplan.gpkg") + "|layername=blatteinteilung", "Blatteinteilung", "ogr")
+if not vlayer.isValid():
+    sys.exit("Blatteinteilung konnte nicht geladen werden.")
 
-<span class="comment"># Rasterkarten erstellen</span>
+# Rasterkarten erstellen
 iter = vlayer.getFeatures()
-<span class="keyword">for</span> feature <span class="keyword">in</span> <span class="predefined">iter</span>:
-    idx = vlayer.fieldNameIndex(<span class="string"><span class="delimiter">'</span><span class="content">nummer</span><span class="delimiter">'</span></span>)
+for feature in iter:
+    idx = vlayer.fieldNameIndex('nummer')
     nummer = feature.attributes()[idx].toString()
 
-    <span class="comment"># Ausschnitt und Grösse der Karte berechnen</span>
-    dpi = <span class="integer">508</span>
-    scale = <span class="integer">5000</span>
+    # Ausschnitt und Grösse der Karte berechnen
+    dpi = 508
+    scale = 5000
 
     geom = feature.geometry()
-    p1 = geom.vertexAt(<span class="integer">0</span>)
-    p2 = geom.vertexAt(<span class="integer">2</span>)
+    p1 = geom.vertexAt(0)
+    p2 = geom.vertexAt(2)
 
     rect = QgsRectangle(p1, p2)
 
     dx = rect.width()
     dy = rect.height()
 
-    width = (dx/scale) / <span class="float">0.0254</span> * dpi
-    height = (dy/scale) / <span class="float">0.0254</span> * dpi
+    width = (dx/scale) / 0.0254 * dpi
+    height = (dy/scale) / 0.0254 * dpi
 
-    <span class="comment"># Einstellungen für Kartenrenderer</span>
+    # Einstellungen für Kartenrenderer
     mapSettings = QgsMapSettings()
-    mapSettings.setMapUnits(<span class="integer">0</span>)
+    mapSettings.setMapUnits(0)
     mapSettings.setExtent(rect)
     mapSettings.setOutputDpi(dpi)
     mapSettings.setOutputSize(QSize(width, height))
     mapSettings.setLayers(lst)
     mapSettings.setFlags(QgsMapSettings.DrawLabeling)
 
-    <span class="comment"># Karte zeichnen</span>
+    # Karte zeichnen
     img = QImage(QSize(width, height), QImage.Format_Mono)
-    img.setDotsPerMeterX(dpi / <span class="float">25.4</span> * <span class="integer">1000</span>)
-    img.setDotsPerMeterY(dpi / <span class="float">25.4</span> * <span class="integer">1000</span>)
+    img.setDotsPerMeterX(dpi / 25.4 * 1000)
+    img.setDotsPerMeterY(dpi / 25.4 * 1000)
 
     p = QPainter()
     p.begin(img)
@@ -286,14 +190,13 @@ iter = vlayer.getFeatures()
 
     p.end()
 
-    img.save(os.path.join(<span class="string"><span class="delimiter">&quot;</span><span class="content">/tmp</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">bpav</span><span class="delimiter">&quot;</span></span> + <span class="predefined">str</span>(scale) + <span class="string"><span class="delimiter">&quot;</span><span class="content">_</span><span class="delimiter">&quot;</span></span> + <span class="predefined">str</span>(nummer) + <span class="predefined">str</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">.png</span><span class="delimiter">&quot;</span></span>)), <span class="string"><span class="delimiter">&quot;</span><span class="content">png</span><span class="delimiter">&quot;</span></span>)
+    img.save(os.path.join("/tmp", "bpav" + str(scale) + "_" + str(nummer) + str(".png")), "png")
 
-<span class="comment"># Layer mit Blatteinteilung löschen</span>
-<span class="keyword">del</span> vlayer
+# Layer mit Blatteinteilung löschen
+del vlayer
 
-<span class="comment"># QGIS schliessen</span>
-QgsApplication.exitQgis()</pre></td>
-</tr></table></code></pre>
+# QGIS schliessen
+QgsApplication.exitQgis()</code></pre>
 </div>
 </div>
 <div class="paragraph">
