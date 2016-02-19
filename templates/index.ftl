@@ -2,9 +2,6 @@
 
 	<#include "menu.ftl">
 
-
-
-<h1>${content.rootpath}</h1>
   <#assign i=0>
 	<#list posts as post>
   		<#if (post.status == "published")>

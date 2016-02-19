@@ -1,5 +1,4 @@
 /* syntax highlighting */ 
-
 .listingblock {
     margin-top: 25px;
     margin-bottom: 0px;
@@ -31,15 +30,14 @@ li code {
 li.L1, li.L3, li.L5, li.L7, li.L9 {
     background-color: #fff;
 }
-
 /* /syntax highlighting */ 
 
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
 }
 
 h1 {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
   font-weight: 700;
   color: rgba(0, 0, 0, 0.8);
   font-size: 32px;
@@ -87,19 +85,8 @@ li p {
     margin-bottom: 0px;
 }
 
-ul {
-    line-height: 1.8;
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-
-ol {
-    line-height: 1.8;
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-
-dl {
+ul, ol, dl {
+    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
     line-height: 1.8;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -107,8 +94,8 @@ dl {
 
 .navbar-default {
     background-color: #fff;
-    font-family: "Open Sans", sans-serif;
-    font-weight: 300;
+    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
+    /*font-weight: 300;*/
 }
 
 .navbar-default .navbar-brand {
@@ -132,8 +119,8 @@ dl {
 }
 
 .container p.credit {
-    font-family: "Open Sans", sans-serif;
-    font-weight: 300;
+    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
+    /*font-weight: 300;*/
     font-size: 14px;
 }
 
