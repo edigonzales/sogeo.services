@@ -11,7 +11,7 @@ Sandro Santilli hat eine https://github.com/strk/fineltra)[erste Version] der ht
 * Installieren der neuen Funktion
 * Importieren der Dreiecksvermaschung in die Datenbank
 
-Das Installieren der Funktion funktioniert unter Ubuntu 14.04 problemlos. Hat man sowieso bereits die üblichen "GIS-Tools" (PostgreSQL/Postgis, gdal/ogr etc.) installiert, fehlt anscheinend nur das dev-Paket von _liblwgeom_:
+Das Installieren der Funktion funktioniert unter Ubuntu 14.04 problemlos. Hat man sowieso bereits die üblichen &laquo;GIS-Tools&raquo; (PostgreSQL/Postgis, gdal/ogr etc.) installiert, fehlt anscheinend nur das dev-Paket von _liblwgeom_:
 
 [source,xml,linenums]
 ----
