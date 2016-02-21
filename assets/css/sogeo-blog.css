@@ -29,8 +29,17 @@ li code {
     word-wrap: normal;
 }
 
+li p code {
+    background-color: #f2f2f2;
+}
+
 li.L1, li.L3, li.L5, li.L7, li.L9 {
     background-color: #fff;
+}
+
+*:not(pre) > code {
+    font-size: 1em;
+    border-width: 0px;
 }
 /* /syntax highlighting */ 
 
