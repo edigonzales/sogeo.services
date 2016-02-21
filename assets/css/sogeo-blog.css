@@ -4,7 +4,6 @@
     margin-bottom: 0px;
 }
 
-
 pre.prettyprint {
     background-color: rgb(255,255,255);    
     border-width: 0px;
@@ -38,6 +37,7 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 }
 
 *:not(pre) > code {
+    font-family: 'Hack', monospace;
     font-size: 1em;
     border-width: 0px;
 }
