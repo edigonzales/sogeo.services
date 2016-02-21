@@ -66,7 +66,7 @@ image::../../../../../images/brw_st_fineltra_in_action/pgadmin_600_200.png[alt="
 
 Ok, das ist jetzt noch keine Wissenschaft. Aber es scheint zu funktionieren. Die erste Frage muss aber sein: &laquo;Stimmt die Transformation überhaupt?&raquo; Um dies zu beantworten, vergleichen wir die Resultate aus zwei unabhängigen Transformationen. Einmal transformieren wir einen Testdatensatz mit der neuen `ST_Fineltra`-Funktion und einmal mit einem http://www.swisstopo.admin.ch/internet/swisstopo/en/home/products/software/products/m2m/lv03tolv95.html[offiziellen Transformationsdienst] der Swisstopo.
 
-Diesen Vergleich können wir auch innerhalb der Datenbank machen. Dazu verwenden wir die https://github.com/pramsey/pgsql-http[PostgreSQL-Extension `http`]. Mit dieser Extension wird PostgreSQL zu einem HTTP-Client. Bevor man das jetzt produktiv wirklich nutzen will, sollte man unbedingt das https://github.com/pramsey/pgsql-http/blob/master/README.md#why-this-is-a-bad-idea[Kapitel "Why This is a Bad Idea"] im README lesen.
+Diesen Vergleich können wir auch innerhalb der Datenbank machen. Dazu verwenden wir die https://github.com/pramsey/pgsql-http[PostgreSQL-Extension `http`]. Mit dieser Extension wird PostgreSQL zu einem HTTP-Client. Bevor man das jetzt produktiv wirklich nutzen will, sollte man unbedingt das https://github.com/pramsey/pgsql-http/blob/master/README.md#why-this-is-a-bad-idea[Kapitel &laquo;Why This is a Bad Idea&raquo;] im README lesen.
 
 Die Installation ist simpel:
 
