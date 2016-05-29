@@ -25,7 +25,7 @@ SELECT num, nom, to_date(jahr_def::varchar, 'YYYY'), NULL::date AS jahr_elim,
 FROM av_chenyx06.chenyx06_triangles;
 ----
 
-Die UML-Datei gibt es https://blog.sogeo.services/data/interlis-leicht-gemacht-number-8/SO_CHENyx06_2016-05-27.uml[hier], das INTERLIS-Modell  https://blog.sogeo.services/data/interlis-leicht-gemacht-number-8/SO_CHENyx06_2016-05-27.ili[hier] und die exportierte INTERLIS-Transferdatei https://blog.sogeo.services/data/interlis-leicht-gemacht-number-8/SO_CHENyx06.xtf[hier]. Es wurde bewusst nur eine Tabelle mit zwei Geometriespalten modelliert, da ja genau diese Konstellation von der ST_Fineltra-Funktion erwartet wird.
+Die UML-Datei gibt es http://blog.sogeo.services/data/interlis-leicht-gemacht-number-8/SO_CHENyx06_2016-05-27.uml[hier], das INTERLIS-Modell  http://blog.sogeo.services/data/interlis-leicht-gemacht-number-8/SO_CHENyx06_2016-05-27.ili[hier] und die exportierte INTERLIS-Transferdatei http://blog.sogeo.services/data/interlis-leicht-gemacht-number-8/SO_CHENyx06.xtf[hier]. Es wurde bewusst nur eine Tabelle mit zwei Geometriespalten modelliert, da ja genau diese Konstellation von der ST_Fineltra-Funktion erwartet wird.
 
 Ohne gross zu überlegen, kann man jetzt mit http://www.eisenhutinformatik.ch/interlis/ili2pg/[_ili2pg_] die INTERLIS-Datei in die PostgreSQL-Datenbank importieren:
 
@@ -40,21 +40,21 @@ image::../../../../../images/interlis_leicht_gemacht_p8/pgadmin_01.png[alt="LV95
 
 Auch die einzelnen Geometrien selbst sind als LV03 codiert. Folgende Abfrage
 
-[source,sql]
+[source,sql,linenums]
 ----
 SELECT ST_AsEWK(geom_lv95) FROM av_chenyx06.chenyx06_chenyx06 LIMIT 1;
 ----
 
 ergibt:
 
-[source,sql]
+[source,sql,linenums]
 ----
 "SRID=21781;POLYGON((2619108.994 1266953.473,2624004.381 1265802.492,2619830.525 1263811.084,2619108.994 1266953.473))"
 ----
 
 _PostgreSQL/PostGIS_ wäre nicht _PostgreSQL/PostGIS_ wenn die Rettung nicht bloss ein Einzeiler wäre:
 
-[source,sql]
+[source,sql,linenums]
 ----
 ALTER TABLE av_chenyx06.chenyx06_chenyx06 
   ALTER COLUMN geom_lv95 TYPE geometry(Polygon, 2056) 
@@ -63,7 +63,7 @@ ALTER TABLE av_chenyx06.chenyx06_chenyx06
 
 Dieser Einzeiler setzt einerseits die korrekte SRID für die Tabelle als auch für jedes einzelne Feature ohne irgendetwas zu transformieren. Das Resultat der vorherigen Query ist:
 
-[source,sql]
+[source,sql,linenums]
 ----
 "SRID=2056;POLYGON((2619108.994 1266953.473,2624004.381 1265802.492,2619830.525 1263811.084,2619108.994 1266953.473))"
 ----
