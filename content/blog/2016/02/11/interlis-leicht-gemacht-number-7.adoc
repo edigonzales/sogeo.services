@@ -113,4 +113,4 @@ Einzig die Zeilen 17 und 18 stammen von mir, alles Andere sind Default-Einstellu
 
 Als letztes muss noch die `groovy-all-x.y.z.jar` in das `lib`-Verzeichnis von Apache Tomcat kopiert werden. Dieses Groovy-&laquo;Sorglos&raquo;-Paket liegt dem http://groovy-lang.org/download.html[Download] bei.
 
-Ein Live-Beispiel gibt es http://www.sogeo.services/groovy/ili2gpkg/ili2gpkg.groovy[hier] (mspublic / mspublic).
++++<del>Ein Live-Beispiel gibt es <a href=" http://www.sogeo.services/groovy/ili2gpkg/ili2gpkg.groovy">hier</a>(mspublic / mspublic).</del>+++ Ein erweitertes Beispiel findet sich http://sogeo.services/ili2gpkg[hier].
