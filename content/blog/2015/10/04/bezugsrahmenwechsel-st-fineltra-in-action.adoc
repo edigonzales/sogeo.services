@@ -37,7 +37,7 @@ Die Funktion ist eine PostgreSQL-Extension und kann für die gewünschte Datenba
 sudo -u postgres psql -d xanadu2 -c "CREATE EXTENSION fineltra;"
 ----
 
-Der zweite Schritt ist der Import der Dreiecksvermaschung. Eine Spatialite-Datei mit einer Tabelle mit sämtlichen Dreiecken in beiden Bezugsrahmen gibts https://www.dropbox.com/s/8mphf6c912ha1z1/chenyx06.sqlite?dl=0[hier]. Vor Jahren habe ich diese aus den Shapedateien von Swisstopo erstellt. Der Import in die Datenbank ist ein einfacher ogr2ogr-Befehl. Leider scheint das mit einer Version kleiner 2.0 nicht wirklich gut zu funktionieren, weil die Tabelle zwei Geometriespalten aufweist. Bei mir werden nur die Sachattribute importiert. Mit ogr2ogr >= 2.0 reicht aber folgender Befehl:
+Der zweite Schritt ist der Import der Dreiecksvermaschung. Eine Spatialite-Datei mit einer Tabelle mit sämtlichen Dreiecken in beiden Bezugsrahmen gibts https://drive.google.com/uc?export=download&id=0B6Qb5JteUzxLRUtwLVhWVkdpdDQ[hier]. Vor Jahren habe ich diese aus den Shapedateien von Swisstopo erstellt. Der Import in die Datenbank ist ein einfacher ogr2ogr-Befehl. Leider scheint das mit einer Version kleiner 2.0 nicht wirklich gut zu funktionieren, weil die Tabelle zwei Geometriespalten aufweist. Bei mir werden nur die Sachattribute importiert. Mit ogr2ogr >= 2.0 reicht aber folgender Befehl:
 
 [source,xml,linenums]
 ----
