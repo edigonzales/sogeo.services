@@ -1,11 +1,11 @@
-/* syntax highlighting */ 
+/* syntax highlighting */
 .listingblock {
     margin-top: 25px;
     margin-bottom: 0px;
 }
 
 pre.prettyprint {
-    background-color: rgb(255,255,255);    
+    background-color: rgb(255,255,255);
     border-width: 0px;
     overflow-x: auto;
     padding-bottom: initial;
@@ -13,16 +13,17 @@ pre.prettyprint {
 
 .listingblock ol.linenums {
     font-family: 'Hack', monospace;
-    font-size: 0.9em;        
+    /*font-size: 0.9em;*/
+    font-size: 1em;
     color: #ccc;
     margin-left: 10px;
-    line-height: 1.5;   
-    margin-bottom: 14px;      
+    line-height: 1.5;
+    margin-bottom: 14px;
 }
 
 li code {
     border-width: 0px;
-    background-color: #fff;   
+    background-color: #fff;
     white-space: pre;
     word-break: keep-all;
     word-wrap: normal;
@@ -38,10 +39,15 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
 
 *:not(pre) > code {
     font-family: 'Hack', monospace;
-    font-size: 1em;
+    font-size: 0.9em;
     border-width: 0px;
 }
-/* /syntax highlighting */ 
+
+pre code {
+    font-size: 0.9em;
+}
+
+/* /syntax highlighting */
 
 body {
   font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
