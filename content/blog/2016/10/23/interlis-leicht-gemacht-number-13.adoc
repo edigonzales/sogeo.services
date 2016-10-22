@@ -230,7 +230,7 @@ ELIN
 
 Eine Linie ohne Stützpunkte. Mit dem kann _ili2pg_ nicht umgehen und wirft daher eine `java.lang.NullPointerException`. Auch nach dem Löschen dieser leeren Linie hat der Import leider nicht funktioniert. Zu viele andere Modellfehler.
 
-Was ich mir wünsche::
+*Was ich mir wünsche*
 
 * Bessere Datenqualität
 * Bessere Fehlermeldungen und besserer Umgang mit Fehlern. Das heisst nicht, dass jeder Mumpitz importiert werden soll. Aber diese NullPointerException sind unschön.
