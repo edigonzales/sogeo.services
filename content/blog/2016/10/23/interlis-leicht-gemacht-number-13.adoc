@@ -10,7 +10,7 @@ Von den letzten Wochen sind mir zwei frustrierende INTERLIS-Erlebnisse in Erinne
 
 Wenn man versucht mit http://www.eisenhutinformatik.ch/interlis/ili2pg/[_ili2pg_] diese Daten in die Datenbank zu importieren, kommt es zu Fehlermeldungen. Schlimmstenfalls gibt es eine `java.lang.NullPointException`, was so nicht wirklich aussagekräftig ist und definitiv nicht der Weisheit letzter Schluss ist. Das Verhalten der Software in diesen Situationen resp. die Fehlermeldung werden in Zukunft sicher noch besser werden (müssen).
 
-Das Tüpfelchen auf dem Frustrations-i war aber die Aussage (wobei ich da Aussage voll und ganz nachvollziehen kann): 
+Das Tüpfelchen auf dem Frustrations-i war aber die Aussage (wobei ich die Aussage voll und ganz nachvollziehen kann): 
 
 _&laquo;I'm a bit puzzled...I spent quite some time on trying a new procedure to integrate cadastral data. I wanted to use interlis, but it seems not possible at the moment, what a pity.&raquo;_
 

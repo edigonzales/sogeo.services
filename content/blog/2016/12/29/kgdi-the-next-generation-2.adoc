@@ -1,0 +1,13 @@
+= KGDI - The next generation #2
+Stefan Ziegler
+2016-12-29
+:jbake-type: post
+:jbake-status: draft
+:jbake-tags: KGDI,GDI,Datenintegration,Datenumbau,REST,know your gdi
+:idprefix:
+
+Datenflüsse / Integration / REST / Umbau 
+Softwarehersteller müssen sich daran halten und nicht wir jedes mal eine neue Schnittstelle programmieren.
+REST (eventuell live-beispiel mit spring boot)
+
+REST: achtung geojson: keine SRID.... link auf spec.

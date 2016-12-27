@@ -1,0 +1,15 @@
+= KGDI - The next generation #3
+Stefan Ziegler
+2017-01-02
+:jbake-type: post
+:jbake-status: draft
+:jbake-tags: KGDI,GDI,Metamodell,know your gdi
+:idprefix:
+
+Model-driven-GDI... 
+
+modellieren beginnen (gedanken macht man sich hoffentlich sowieso)
+
+erfassung / publikation (daran denken, eventuell kompromisse)
+
+interlis-ökosystem vorhanden (z.B kommentare in ili - db - qgis)
