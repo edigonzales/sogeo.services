@@ -19,7 +19,7 @@ Vielleicht wurde dieser Grundsatz der zentralen Datenhaltung über die Jahre etw
 
 Schematisch sieht die Architektur somit so aus:
 
-image::../../../../../images/kgdi_the_next_generation_p2/sogis_alt.svg[alt="Ist-Architektur", align="center"]
+image::../../../../../images/kgdi_the_next_generation_p2/sogis_alt.png[alt="Ist-Architektur", align="center"]
 
 Die blauen Anwendungen sind unsere Kernkomponenten (Desktop- und WebGIS) und selber programmierte Tools. Diese Anwendungen haben wir im Griff und wir kennen die Anforderungen und Problemchen relativ gut. Die grünen Anwendungen sind die Fremdapplikationen, die ebenfalls _direkten_ Lese- und Schreibzugriff auf unsere einzige Datenbank haben. Der rote Kasten symbolisiert die exportierten Daten aus der Datenbank.
 
@@ -45,6 +45,6 @@ Die Idee eines solchen Werkzeuges scheint jedenfalls nicht super originär zu se
 
 In Zukunft dürfte es bei uns also circa so aussehen:
 
-image::../../../../../images/kgdi_the_next_generation_p2/sogis_neu.svg[alt="Soll-Architektur", align="center"]
+image::../../../../../images/kgdi_the_next_generation_p2/sogis_neu.png[alt="Soll-Architektur", align="center"]
 
 Das wahrscheinlich Wichtigste bei diesem Umkrempeln ist aber, dass wir die Softwarehersteller gut informieren, gut dokumentieren und eine gewisse Strenge an den Tag legen. Es bringt nichts, wenn wir bei jeder neuen Herausforderung gleich wieder in alte Verhaltensmuster zurückfallen und das Rad neu erfinden wollen, nur damit es kurzfristig schneller funktioniert.
