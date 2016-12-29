@@ -13,3 +13,5 @@ modellieren beginnen (gedanken macht man sich hoffentlich sowieso)
 erfassung / publikation (daran denken, eventuell kompromisse)
 
 interlis-ökosystem vorhanden (z.B kommentare in ili - db - qgis)
+
+nein: interlis löst das shapefile nicht ab. teilweise auch bewusst sehr einfach modellieren, wie z.B. modell beim ilivalidator "shapefile-niveau".
