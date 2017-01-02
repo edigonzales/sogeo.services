@@ -2,13 +2,37 @@
 Stefan Ziegler
 2017-01-02
 :jbake-type: post
-:jbake-status: draft
+:jbake-status: published
 :jbake-tags: KGDI,GDI,Metamodell,know your gdi
 :idprefix:
+
+&laquo;Model-driven GDI&raquo; klingt schon mal cool. Von wem genau der Begriff stammt, weiss ich leider nicht mehr. Es kann gut sein, dass er sich nach einem Vortrag von https://twitter.com/gl_geoportal[Peter Staub] bei uns herauskristallisiert hat oder vielleicht auch während des Vortrages mal gefallen ist. Was verstehe ich darunter?
+
+Grundsätzlich dazu gehört der modellbasierte Ansatz. Beschrieben wird er, wie auch die Vorzüge von Datenmodellen, im Dokument _Allgemeine Empfehlungen zur Methodik der Definition &laquo;minimaler Geodatenmodelle&raquo;_, das https://www.geo.admin.ch/de/geoinformation-schweiz/geobasisdaten/geodatenmodelle.html[hier] zu finden ist. Diese Gedanken sind ja nicht nur richtig wenn es um minimale Geodatenmodelle des Bundes geht, sondern sie passen auch wenn es ganz allgemein um Geodatenmodellierung geht. Dieser modellbasierte Ansatz soll dann integraler Bestandteil der GDI werden. Da müssen Prozesse und Technik sauber darauf abgestimmt werden. Vor allem braucht es auch ein Ökosystem, damit überhaupt damit gearbeit werden kann.
+
+Früher begann häufig ein Projekt oder ein Erfassung von Daten mit einem Anruf beim AGI mit der Bitte um die Erstellung von ein paar Datenbanktabellen. Gesagt getan. Es folgte anschliessend ein weiterer Anruf, weil dieses und jenes Attribut in den Tabellen fehlte. 
+
+Oftmals stand auch das Tool im Vordergrund. Es ging fast weniger um die Erfassung von Daten, als um die Entwicklung eines coolen neuen Tools (was für den Entwickler verständlicherweise spannender ist).
+
+Mit der &laquo;model-driven GDI&raquo; sollen jetzt wieder die Daten und die Datenerfassung ins Zentrum gerückt werden. Klar braucht es dazu auch Tools aber in den allermeisten Fällen geht es zuerst einmal um die Daten und die Strukturierung dieser Daten.
+
+Die Überlegungen wie die Daten strukturiert werden sollen, muss man sich ja sowieso machen. Auch wenn das vielleicht häufig nicht formalisiert stattfindet. Weil man sich die Arbeiten ja eben sowieso machen muss, kann man das daraus folgende Resultat gleich im http://www.umleditor.org/[UML/INTERLIS-Editor] erfassen. Hier ein Beispiel eines Datenmodelles für Nutzungsvereinbarungen im Amt für Raumplanung:
+
+image::../../../../../images/kgdi_the_next_generation_p3/dm_nutzungsvereinbarung.png[alt="Datenmodell Nutzungsvereinbarung", align="center"]
+
+Wichtig bereits bei diesem Schritt ist das Beschreiben der Attribute und Klassen:
+
+image::../../../../../images/kgdi_the_next_generation_p3/dm_nutzungsvereinbarung_description_umleditor.png[alt="Description Datenmodell Nutzungsvereinbarung UML/INTERLIS-Editor", align="center"]
+
 
 Model-driven-GDI... 
 
 modellieren beginnen (gedanken macht man sich hoffentlich sowieso)
+
+master data management (vergleich npl liegenschaften). wie stark verzahnen in gdi oder dann beim abgabemodell verwursteln
+
+
+datenumbau
 
 erfassung / publikation (daran denken, eventuell kompromisse)
 
