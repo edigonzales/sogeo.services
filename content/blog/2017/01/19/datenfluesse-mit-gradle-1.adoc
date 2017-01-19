@@ -51,7 +51,10 @@ include::../../../../../assets/data/datenfluesse-mit-gradle-1/build.gradle[]
 
 Das Beispiel ist natürlich nicht sonderlich sinnvoll, aber es zeigt ein paar Grundprinzipien ganz gut. Ausführen muss man den Build auf der Konsole mit `gradle validate`, um das ITF zuerst zu kopieren und anschliessend zu validieren. Will man nur validieren ohne vorgänging zu kopieren, kann man den copy-Task auch ausschliessen: `gradle validate -x copyFile`.
 
-Falls die INTERLIS-Datei fehlerfrei ist, wird der Build erfolgreich beendet: `BUILD SUCCESSFUL`. Falls sich Fehler in der INTERLIS-Datei eingeschlichen haben, wird der Build mit `BUILD FAILED` und weiteren Fehlermeldungen beendet.
+Falls die INTERLIS-Datei fehlerfrei ist, wird der Build erfolgreich beendet: `BUILD SUCCESSFUL`. Falls sich Fehler in der INTERLIS-Datei eingeschlichen haben, wird der Build mit `BUILD FAILED` und weiteren Fehlermeldungen beendet:
+
+image::../../../../../images/datenfluesse-mit-gradle-1/build_failed.png[alt="BUILD FAILED", align="center"]
+
 
 Die selber geschriebenen _Tasks_ (hier _IlivalidatorTask_) kann man natürlich noch auf verschiedene Weisen auslagern und so wiederverwenden. So würden dann auch noch ein Zeilen zu Beginn des Skripts wegfallen und es blieben die beiden _Tasks_ übrig (7 Zeilen).
 
