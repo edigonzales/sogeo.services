@@ -20,7 +20,7 @@ Als Beispieldatensatz verwende ich die Bienenstandorte des Kantons. Die Datenban
 
 image::../../../../../images/rest-service-mit-spring-boot/dm_bienenstandorte.png[alt="Datenmodell Bienenstandorte", align="center"]
 
-Für den Demodatensatz eigentlich ist das unnötig, aber wenn man das Ganze - auch nur aufgrund von Testzwecken - auf verschiedenen Systemen ein paar Mal aufsetzen will/muss, lernt man es zu schätzen, wenn man http://www.eisenhutinformatik.ch/interlis/ili2pg/[plattformunabhängige Werkzeuge] hat, die den Datenimport/-export immer gleich machen:
+Für den Demodatensatz ist das unnötig, aber wenn man das Ganze - auch nur aufgrund von Testzwecken - auf verschiedenen Systemen ein paar Mal aufsetzen will/muss, lernt man es zu schätzen, wenn man http://www.eisenhutinformatik.ch/interlis/ili2pg/[plattformunabhängige Werkzeuge] hat, die den Datenimport/-export immer gleich machen:
 
 [source,xml,linenums]
 ----

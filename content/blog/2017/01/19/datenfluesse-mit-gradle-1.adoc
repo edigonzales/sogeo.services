@@ -15,7 +15,7 @@ Schaut man sich unsere heutigen Anwendungsfälle an, sieht man viele Gemeinsamke
 * Umbauen der Daten mit einer SQL-Query in der Datenbank
 * Daten aus - juhee - einer Oracle-Datenbank in unsere PostgreSQL-Datenbank importieren.
 
-Das heisst, wir brauchen nicht die eigerlegende Wollmilchsau, sondern können uns beschränken auf:
+Das heisst, wir brauchen nicht die eierlegende Wollmilchsau, sondern können uns beschränken auf:
 
 * eine geringe Anzahl an zu unterstützenden Datenformaten. 
 * einen Datenumbau in der Datenbank (SQL to the rescue).
