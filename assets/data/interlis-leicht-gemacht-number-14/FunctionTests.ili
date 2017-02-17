@@ -50,7 +50,5 @@ CONTRACTED MODEL FunctionTests (en) AT "http://sogeo.services"
       END Control_point;
 
     END Control_points;
-
-
-
+  
   END FunctionTests.
