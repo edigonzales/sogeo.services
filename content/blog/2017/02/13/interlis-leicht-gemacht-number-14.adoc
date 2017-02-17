@@ -159,3 +159,5 @@ Mit der Möglichkeit eigener Validierungsfunktionen öffnen sich nun viele Türe
 Auf die Schnelle konnte ich zwei Dinge nicht umsetzen, die ich gerne wollte. Da ist der Vergleich eines Attributes mit einem Teil des Transferdateinamens. So wie ich den Code verstehe, ist der Transferdateiname unbekannt, da pro `IoxEvent` https://github.com/claeis/ilivalidator/blob/master/src/org/interlis2/validator/Validator.java#L130[geprüft] wird. Eventuell könnte man ihn in den Settings unterbringen. Die Settings stehen im `InterlisFunction`-Interface zur Verfügung. Vielleicht auch super unelegant...
 
 Das zweite Problem ist das Prüfen von LIST und BAG OF Geschichten. Da weiss ich sowieso noch nicht, ob ich die Syntax richtig verstanden habe und ich wünschte mir, dass man mit einem CONSTRAINT alle Elemente (in meinem Fall STRUCTURE) der BAG/LIST prüfen kann. 
+
+Eine Demo mit einer eigenen Funktion findet sich https://git.sogeo.services/stefan/ilivalidator-demo-2017-02-14[hier]. Das dazugehörige Java-Gefrickel gibt es https://git.sogeo.services/stefan/ilivalidator-extensions/src/master/src/ilivalidator-extensions[hier].
