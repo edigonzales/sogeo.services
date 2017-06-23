@@ -3,7 +3,7 @@ Stefan Ziegler
 2016-05-30
 :jbake-type: post
 :jbake-status: published
-:jbake-tags: INTERLIS,Java,Checker
+:jbake-tags: INTERLIS,Java,Checker,ilivalidator
 :idprefix:
 
 Wie oft haben wir uns bereits einen Open-Source-INTERLIS-Checker gewünscht? Jahre darüber diskutiert wie es doch schön wäre einen mehr oder weniger plattformunabhängigen Checker zu haben, der auch noch frei verfügbar ist. Reichen würde uns zuerst auch ein https://en.wikipedia.org/wiki/No_frills[&laquo;no-frills&raquo;] Checker. Also keine Mega-Super-Zusatzfunktionen, sondern in erster Priorität die Prüfung einer INTERLIS-Transferdatei (.xtf / .itf) gegenüber dem INTERLIS-Modell (.ili).
