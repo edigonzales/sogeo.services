@@ -6,13 +6,13 @@ Stefan Ziegler
 :jbake-tags: KGDI,GDI,AWS,QGIS,Terraform,Infrastructure as Code,Amazon
 :idprefix:
 
-Im Rahmen unseres Infrastrukturprojektes _SO!GIS 2.0_ bekommen wir einen neuen WebGIS Client. Das ist der passende Zeitpunkt sich um die in die Jahre gekommene https://www.so.ch/?id=9218[Hintergrundkarte] zu kümmern. Circa 10-jährig (gefühlte 50) hat sie eine Ablösung verdient. Entstanden ist sie damals mit dem Aufkommen von Google Maps und dem Umstand, dass das Publizieren der Landeskarten im Internet (zu) teuer war. Mit dem https://www.swisstopo.admin.ch/de/wissen-fakten/geoinformation/austausch-unter-behoerden.html[Vertrag &laquo;Geodatenaustausch unter Behörden&raquo;] ist das aber kein Thema mehr und wir müssen uns nicht selber eine Hintergrundkarte zusammenschustern, sondern können die schönen Landeskarten der swisstopo verwenden.
+Im Rahmen unseres Infrastrukturprojektes _SO!GIS 2.0_ bekommen wir einen neuen WebGIS Client. Das ist der passende Zeitpunkt sich um die in die Jahre gekommene https://www.so.ch/?id=9218[Hintergrundkarte] zu kümmern. Circa 10-jährig (gefühlte 50) hat sie eine Ablösung verdient. Entstanden ist sie damals mit dem Aufkommen von Google Maps und dem Umstand, dass das Publizieren der Landeskarten im Internet (uns zu) teuer war. Mit dem https://www.swisstopo.admin.ch/de/wissen-fakten/geoinformation/austausch-unter-behoerden.html[Vertrag &laquo;Geodatenaustausch unter Behörden&raquo;] ist das aber kein Thema mehr und wir müssen uns nicht selber eine neue landeskarten-lose Hintergrundkarte zusammenschustern, sondern können die schönen Landeskarten der swisstopo als Basis verwenden.
 
-Das ganze Vorhaben hat ja etwas von Rumspielen. Ich muss ein paar Varianten zusammenstellen und diese dann dem Publikum zeigen und Feedback abholen und teilweise wieder einfliessen lassen. Am einfachsten ist es, wenn die neuen Hintergrundkartenvariante nicht nur im Intranet zur Verfügung stehen, sondern gleich im Internet. Auch macht das die Entwicklung einfacher: einfach schnell etwas von zu Hause ändern ist nicht, wenn man sich noch zweimal einloggen muss und dann trotzdem alles nicht super schnell anfühlt durch das mehrfache tunneln etc. Zudem bin ich während des Entwickelns definitiv gerne mein eigener Herr und Meister und will nicht auf einen Root/Admin warten, damit ich eine neue Variante deployen kann. Für das alles gibt es ja &laquo;die Cloud&raquo;.
+Das ganze Vorhaben hat ja etwas von Rumspielen. Ich muss ein paar Varianten (in welcher Zoomstufe welche Landeskarte, wann kommt die amtliche Vermessung, was ist mit Maskierungen etc.) zusammenstellen und diese dann dem Publikum zeigen und Feedback abholen und teilweise wieder einfliessen lassen. Am einfachsten ist es, wenn die neuen Hintergrundkartenvarianten nicht nur im Intranet zur Verfügung stehen, sondern gleich im Internet. Auch macht das die Entwicklung einfacher: einfach schnell etwas von zu Hause ändern ist nicht, wenn man sich noch zweimal einloggen muss und sich dann trotzdem alles nicht super schnell anfühlt durch das mehrfache tunneln etc. Zudem bin ich während des Entwickelns definitiv gerne mein eigener Herr und Meister und will nicht auf einen Root/Admin warten, damit ich eine neue Variante deployen kann. Für das alles gibt es ja &laquo;die Cloud&raquo;.
 
-Ich brauche also etwas, wo ich ein paar Gigabyte Rasterdaten speichern kann und diese per WMS zur Verfügung stellen kann. Dh. jetzt ist also die Zeit gekommen gleich mal die nicht gerade wenigen Dienste von https://aws.amazon.com/[Amazon Web Services] kennen zu lernen. Viel brauche ich für meine Bedürfnisse zuerst einmal nicht: Plattenplatz und einen Server auf dem ich den WMS-Server (QGIS-Server in meinem Fall) installieren kann. Weil ich den Server nicht 24/7 laufen lassen will und mich sowieso nicht ständig durch das Webinterface von AWS klicken will, brauche ich etwas damit ich meine Server- und Storagedefinitionen maschinell verwalten kann. Dazu dient mir https://www.terraform.io/[Terraform: &laquo;Write, Plan, and Create Infrastructure as Code&raquo;].
+Ich brauche also etwas, wo ich ein paar Gigabyte Rasterdaten speichern kann und diese per WMS zur Verfügung stellen kann. Dh. es ist die Zeit gekommen, die nicht gerade wenigen Dienste von https://aws.amazon.com/[Amazon Web Services] kennen zu lernen. Viel brauche ich für meine Bedürfnisse zuerst einmal nicht: Plattenplatz und einen Server auf dem ich den WMS-Server (_QGIS-Server_ in meinem Fall) installieren kann. Weil ich den Server nicht 24/7 laufen lassen will und mich sowieso nicht ständig durch das Webinterface von AWS klicken will, brauche ich etwas damit ich meine Server- und Storagedefinitionen maschinell verwalten und ausführen kann. Aus Transparenz- und Dokumentationsgründen sowieso. Dazu dient mir https://www.terraform.io/[Terraform: &laquo;Write, Plan, and Create Infrastructure as Code&raquo;].
 
-Als erstes erstelle ich ein _Volume_, um darauf die Landeskarten zu speichern. Das _Volume_ soll dann bei Bedarf an meinen virtuellen Server angehängt werden, damit der WMS-Server Zugriff auf die Karten hat. Für _Terraform_ reicht es, wenn ich ein einzelnes `volume.tf` schreibe. _Terraform_ ist so gestrickt, dass es sämtliche `*.tf`-Dateien in einem Verzeichnis ausführt.
+Als erstes erstelle ich ein http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumes.html[_Volume_], um darauf die Landeskarten zu speichern. Das _Volume_ soll dann bei Bedarf in meinen virtuellen Server eingehängt werden, damit der WMS-Server Zugriff auf die Karten hat. Für _Terraform_ reicht es, wenn ich eine einzelne `volume.tf`-Datei schreibe. _Terraform_ ist so gestrickt, dass es sämtliche `*.tf`-Dateien in einem Verzeichnis ausführt.
 
 [source,bash,linenums]
 ----
@@ -30,13 +30,13 @@ resource "aws_ebs_volume" "lk" {
 }
 ----
 
-Die Authentifizerung findet via Access-Keys statt. Da genügt es beide Keys in einem File `credentials` im Ordner `$HOME/.aws/` zu speichern. Ein wichtiges Konzept von _Terraform_ sind die _Resourcen_. In meinem Fall möchte ich eine _Elastic Block Storage_-Resource in der Zone `eu-central-1a`. Das _Volume_ soll 50 GB gross und vom Typ `gp2` (08/15-SSD) sein. Mit _Terraform_ beschreibe ich was das Ziel sein soll und nicht wich ich an das Ziel gelange (also nicht eine Abfolge von Befehlen).
+Die Authentifizerung findet via Access-Keys statt. Da genügt es beide Keys in einem File `credentials` im Ordner `$HOME/.aws/` zu speichern. Ein wichtiges Konzept von _Terraform_ sind die _Resourcen_. In meinem Fall möchte ich eine _Elastic Block Storage_-Resource in der Zone `eu-central-1a`. Das _Volume_ soll 50 GB gross und vom Typ `gp2` (08/15-SSD) sein. Mit _Terraform_ beschreibe ich was das Ziel sein soll und nicht wie ich an das Ziel gelange (also nicht eine Abfolge von Befehlen).
 
 Mit einem einfachen `terraform apply` führt es alle notwendigen Befehle aus und das Resultat ist ein verfügbares _Volume_, das ich beliebigen virtuellen Servern anhängen kann.
 
-Als nächstes erstelle ich händisch (also im Webinterface) einmalig eine _EC2_-Instanz, um anschliessend das gerade vorher erstellte _Volume_ einzuhängen und die Landeskarten darauf zu speichern. Ist die _EC2_-Instanz gestartet kann ich ebenfalls im Webinterface das _Volume_ einhängen. Zusätzlich zum Einhängen muss ich aber einmalig ein Filesystem auf dem _Volume_ erstellen (`mkfs -t ext4 /dev/xvdg`) und es mounten (`mkdir /opt/geodata && mount -o noacl /dev/xvdg /opt/geodata`). Hat das alles funktioniert, kann ich alle benötigten Rasterdaten auf das _Volume_ kopieren. Zu guter Letzt wird das _Volume_ wieder &laquo;unmounted&raquo; und von der _EC2_-Instanz &laquo;detached&raquo; und diese terminiert.
+Als nächstes erstelle ich händisch (also im Webinterface) einmalig eine _EC2_-Instanz, um anschliessend das gerade vorher erstellte _Volume_ einzuhängen und die Landeskarten darauf zu speichern. Ist die _EC2_-Instanz gestartet, kann ich ebenfalls im Webinterface das _Volume_ einhängen. Zusätzlich zum Einhängen muss ich aber einmalig ein Filesystem auf dem _Volume_ erstellen (`mkfs -t ext4 /dev/xvdg`) und es mounten (`mkdir /opt/geodata && mount -o noacl /dev/xvdg /opt/geodata`). Hat das alles funktioniert, kann ich alle benötigten Rasterdaten auf das _Volume_ kopieren. Zu guter Letzt wird das _Volume_ wieder &laquo;unmounted&raquo; und von der _EC2_-Instanz &laquo;detached&raquo; und diese terminiert.
 
-Der nächste Schritt ist das automatische Hochfahren eines virtuellen Servers und das Installieren sämtlich benötigter Software, wie z.B _QGIS_ und _QGIS-Server_ aber auch https://wiki.x2go.org/doku.php[_x2go_-Server], um auf dem Server selber mit _QGIS_ arbeiten zu können und allenfalls anpassungen an der Definition der Hintergrundkarte vorzunehmen.
+Der nächste Schritt ist das automatische Hochfahren eines virtuellen Servers und das Installieren sämtlich benötigter Software, wie z.B _QGIS_ und _QGIS-Server_ aber auch https://wiki.x2go.org/doku.php[_x2go_-Server], um auf dem Server selber mit _QGIS_ arbeiten zu können und allenfalls Anpassungen an der Definition der Hintergrundkarte vorzunehmen.
 
 Das automatische Hochfahren mache ich natürlich wieder mit einer _Terraform_-Datei:
 
@@ -99,13 +99,13 @@ output "public_ip" {
 }
 ----
 
-Ich benötige drei Resourcen: eine zum Definieren einer _Security Group_, eine zum Einhängen des _Volumes_ und natürlich noch eine zum Definieren meiner _EC2_-Instanz.
+Ich benötige drei Resourcen: eine zum Definieren einer http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html[_Security Group_], eine zum Einhängen des _Volumes_ und natürlich noch eine zum Definieren meiner _EC2_-Instanz.
 
 Die _Security Group_ ist in meinem Fall sehr offen, da sie so ziemlich alles durchlässt (sowohl Ports wie auch IPs).
 
 Die Volume-Einhäng-Resource muss auf ein bestehendes _Volume_ verweisen. Hier mittels `volume_id`.
 
-Die _aws_instance_-Resource definiert mir meinen virtuellen Server. Erwähnenswert ist das Attribut `key_name`, welches das http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html[Key-Pair] definiert, das zum http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html[Einloggen via SSH] verwendet werden soll. Da die _Security Group_ ja ebenfalls erst erstellt wird, kann ich darauf mit einer Variablen zugreifen: `${aws_security_group.allow_all.id}`.
+Die _aws_instance_-Resource definiert mir meinen virtuellen Server. Wichtig ist das Attribut `key_name`, welches das http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html[Key-Pair] definiert, das zum http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html[Einloggen via SSH] verwendet werden soll. Da die _Security Group_ ja ebenfalls erst erstellt wird, kann ich darauf mit einer Variablen zugreifen: `${aws_security_group.allow_all.id}`.
 
 Die benötigte Software wird unter `user_data` installiert. Das kann entweder ein simples Shell-Skript sein oder ein https://cloud-init.io/[_cloud init_]-Skript:
 
@@ -154,11 +154,11 @@ runcmd:
  - 'echo /dev/xvdg  /opt/geodata ext4 defaults,nofail,rw,user,exec,umask=000 0 0 >> /etc/fstab'
 ----
 
-Wie man sieht ist es schlussendlich - oder so wie ich es verwende - auch nicht viel Anderes als ein abstrahiertes Shell-Skript. Viele der `runcmd`-Aufrufe waren notwendig, weil ich es nicht schaffte nicht-ppa-Repositories einfach hinzuzufügen.
+Wie man sieht, ist es schlussendlich - oder so wie ich es verwende - auch nicht gross etwas Anderes als ein abstrahiertes Shell-Skript. Viele der `runcmd`-Aufrufe waren notwendig, weil ich es nicht schaffte nicht-ppa-Repositories einfach hinzuzufügen.
 
-Diese _cloud init_-Skript wird jetzt einmalig beim Erstellen des virtuellen Servers ausgeführt. Weil ich den virtuellen Server nach getaner Arbeit immer terminiere, ist das ok. Wenn ich ihn aber nur herunterfahren würde, müsste man sicherstellen, dass das _Volume_ beim Hochfahren gemountet wird.
+Das _cloud init_-Skript wird jetzt einmalig beim Erstellen des virtuellen Servers ausgeführt. Weil ich den virtuellen Server nach getaner Arbeit immer terminiere, ist das ok. Wenn ich ihn aber nur herunterfahren würde, müsste man sicherstellen, dass das _Volume_ beim Hochfahren gemountet wird.
 
-In der Terraform-Datei kann mit `output` beliebige Outputs in der Konsole erzeugen. Für mich ist natürlich die IP interessant, da ich ja mit _x2go_ darauf zugreifen und arbeiten will.
+In der Terraform-Datei kann mit `output` ein beliebiger Output in der Konsole erzeugt werden. Für mich ist natürlich die IP interessant, da ich ja mit _x2go_ darauf zugreifen und arbeiten will.
 
 Mit `terraform plan` kann ich mir anzeigen lassen, was ein allfälliger `apply`-Befehl alles machen würde:
 
@@ -233,16 +233,16 @@ Mit `terraform plan` kann ich mir anzeigen lassen, was ein allfälliger `apply`-
     volume_id:    "vol-01a63e9115f061d94"
 ----
 
-Gefällt mir das, reicht ein `terraform apply` und nach ein paar Minuten habe ich meine WMS-Server mit den Hintergrundkartenvarianten. Will ich etwas anpassen, kann ich mich mittels _x2go_ auf Server einloggen und gleich dort mit _QGIS_ die Kartendefinitionen ändern. Sind alle Arbeiten erledigt, kann man alles mit einem `terraform destroy` terminieren. Damit das erfolgreich ist, muss ich aber vorher das _Volume_ unmounten, sonst erschienen Fehlermeldungen.
+Gefällt mir das, reicht ein `terraform apply` und nach ein paar Minuten habe ich meinen WMS-Server mit den Hintergrundkartenvarianten. Will ich etwas anpassen, kann ich mich mittels _x2go_ auf Server einloggen und gleich dort mit _QGIS_ die Kartendefinitionen ändern. Sind alle Arbeiten erledigt, kann man alles mit einem `terraform destroy` terminieren. Damit das erfolgreich ist, muss ich aber vorher das _Volume_ unmounten, sonst erschienen Fehlermeldungen.
 
-Damit nach all der trockenen Theorie noch etwas gezeigt wird, hier eine Variante mit Orthofoto (resp. Landsat) und grauer Hintergrundkarte (die Farben für die Maskierung der grauen Variante stammen von https://services.geo.zg.ch/qwc2[hier]):
+Damit nach all der trockenen Theorie noch etwas gezeigt wird, hier eine Variante mit Orthofoto (Landsat) und grauer Hintergrundkarte (die Farben für die Maskierung der grauen Variante stammen von https://services.geo.zg.ch/qwc2[hier]):
 
 image::../../../../../images/kgdi_the_next_generation_p4/ortho.png[alt="Orthofoto/Landsat", align="center"]
 
 image::../../../../../images/kgdi_the_next_generation_p4/lk-relief.png[alt="Landeskarte grau mit Relief", align="center"]
 
-Was hat Gorbatschow http://www.zeit.de/wissen/geschichte/2010-03/gorbatschow-sowjetunion[nicht] gesagt: &laquo;Wer zu spät kommt, den bestraft das Leben.&raquo; Ich wünschte mir im Umgang mit den ganzen _IaaS_-, _PaaS_-, _SaaS_- etc. pp. -Anbietern etwas mehr Mut und Unverkrampfheit. Es kann helfen effizient und sauber strukturiert Arbeiten zu erledigen. Spass macht es allemal. Mit einer totalen Verweigerungshaltung ist man halt irgendeinmal zu spät.
+Gorbatschow hat ja bekanntlich http://www.zeit.de/wissen/geschichte/2010-03/gorbatschow-sowjetunion[(nicht)] gesagt: &laquo;Wer zu spät kommt, den bestraft das Leben.&raquo; Ich wünschte mir im Umgang mit den ganzen _IaaS_-, _PaaS_-, _SaaS_- etc. pp. -Anbietern etwas mehr Mut und Unverkrampfheit. Es kann helfen effizient und sauber strukturiert Aufgaben zu erledigen. Spass macht es allemal. Mit einer totalen Verweigerungshaltung ist man halt irgendeinmal zu spät.
 
-Link Github mit allen Skripts: https://github.com/edigonzales/somap20-hintergrundkarte[somap20-hintergrundkarte].
+Github-Repo mit allen Skripts: https://github.com/edigonzales/somap20-hintergrundkarte[somap20-hintergrundkarte].
 
 
