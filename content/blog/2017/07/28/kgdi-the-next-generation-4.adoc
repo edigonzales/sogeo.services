@@ -2,7 +2,7 @@
 Stefan Ziegler
 2017-07-28
 :jbake-type: post
-:jbake-status: published
+:jbake-status: draft
 :jbake-tags: KGDI,GDI,Java,Gradle,Docker,know your gdi,INTERLIS
 :idprefix:
 
