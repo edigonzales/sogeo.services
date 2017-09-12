@@ -78,7 +78,7 @@ Das Kompilieren, Testen (`./gradlew clean build`) und Herstellen des Docker-Imag
 
 In der `post-build`-Phase lade das Docker-Image auf https://hub.docker.com/r/sogis/ilivalidator-web-service/[hub.docker.com] hoch. Interessanterweise hat es bei mir ohne Löschen des Dockerfiles nicht funktioniert (was aber noch nichts heissen muss). Zu guter Letzt muss man in dieser Phase die `Dockerrun.aws.json`-Datei so bearbeiten, dass der richtige Tag des Docker-Images drin steht, das man im nächsten Schritt der Codepipeline auf _AWS Elastic Beanstalk_ deployen will. Im meinem Fall ein simples `sed`-Kommando.
 
-Unter `artifacts` werden sämtliche Dateien wegkopiert. Als Bestandteil einer Codepipeline ist mir noch nicht ganz klar wohin das kopiert wird. Normalerweise irgendwo in einem S3-Bucket. Zum Zwischenlagern quasi.
+Unter `artifacts` werden sämtliche Dateien wegkopiert. Wenn CodeBuild Bestandteil einer Codepipeline ist, ist mir noch nicht ganz klar, wohin das kopiert wird. Normalerweise irgendwo in einen S3-Bucket. Zum Zwischenlagern quasi.
 
 image::../../../../../images/kgdi_the_next_generation_p5/aws-codebuild.png[alt="AWS CodeBuild", align="center"]
 
@@ -94,4 +94,6 @@ image::../../../../../images/kgdi_the_next_generation_p5/aws-beanstalk.png[alt="
 
 _AWS Elastic Beanstalk_ bietet noch viel mehr. So kann man z.B. auf Knopfdruck ein Load Balancing und Auto Scaling einrichten.
 
+
+CloudWatch -> email...
 asdfasfasfdasdfasdfad
