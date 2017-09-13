@@ -3,7 +3,7 @@ Stefan Ziegler
 2017-09-12
 :jbake-type: post
 :jbake-status: published
-:jbake-tags: KGDI,GDI,AWS,INTERLIS,CI,CD,Continous Integration, Continous Delivery,Infrastructure as Code,Amazon
+:jbake-tags: KGDI,GDI,AWS,INTERLIS,CI,CD,Continuous Integration, Continuous Delivery,Infrastructure as Code,Amazon
 :idprefix:
 
 Seit einiger Zeit habe https://interlis2.ch/ilivalidator[hier] einen INTERLIS-Checkservice auf Basis von https://github.com/claeis/ilivalidator[_ilivalidator_] am Laufen. Der Webservice-Teil ist mit https://projects.spring.io/spring-boot/[_Spring Boot_] umgesetzt. _Spring Boot_ macht das Entwickeln von Spring- und Webanwendungen sehr einfach. Insbesondere das Endprodukt ist ganz praktisch: eine einzige ausführbare JAR-Datei inkl. Servlet-Container. Den ganzen Service in einer einzigen Datei macht das Deployment natürlich auch einiges einfacher. Trotzdem muss ich die JAR-Datei zuerst herstellen, dann auf meinen Server hochladen und den Dienst neu starten. 
