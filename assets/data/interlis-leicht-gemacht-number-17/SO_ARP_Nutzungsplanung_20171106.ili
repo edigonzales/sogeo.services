@@ -3,7 +3,7 @@ INTERLIS 2.3;
 MODEL SO_ARP_Nutzungsplanung_20171106 (en)
 AT "http://www.agi.so.ch"
 VERSION "2017-11-06"  =
-  IMPORTS Nutzungsplanung_LV95_V1_1;
+  IMPORTS Nutzungsplanung_LV95_V1_1,GeometryCHLV95_V1;
 
   TOPIC Geobasisdaten
   EXTENDS Nutzungsplanung_LV95_V1_1.Geobasisdaten =
@@ -12,6 +12,7 @@ VERSION "2017-11-06"  =
       Ori : MANDATORY 0.0 .. 399.9;
       HAli : MANDATORY INTERLIS.HALIGNMENT;
       VAli : MANDATORY INTERLIS.VALIGNMENT;
+      Pos : MANDATORY GeometryCHLV95_V1.Coord2;
     END Grundnutzung_Zonenflaeche_Pos;
 
     CLASS Typ (EXTENDED) =
