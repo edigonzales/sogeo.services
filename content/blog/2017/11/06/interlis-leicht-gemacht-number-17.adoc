@@ -1,4 +1,4 @@
-= Interlis leicht gemacht #17
+= INTERLIS leicht gemacht #17: Polymorphes Schreiben
 Stefan Ziegler
 2017-11-06
 :jbake-type: post
