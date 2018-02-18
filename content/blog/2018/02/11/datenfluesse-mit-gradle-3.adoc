@@ -30,7 +30,7 @@ Zum jetzigen Zeitpunkt gibt es folgende zusätzlichen Tasks:
 * *CsvImport / CsvExport*: Import und Export von CSV-Dateien in resp. aus einer Datenbank. 
 * *ShpImport / ShpExport*: Import und Export von Shapedateien. (Traurig aber wahr: Sogar noch vor GeoPackage realisiert...)
 * *CsvValidator / ShpValidator*: Prüft den Inhalt der CSV- resp. Shapedateien gegenüber einer vorgegebenen Struktur. Die umgesetzte Lösung ist schlicht genial. Dazu in einem anderen Beitrag mehr.
-* *Ili2pg*: Für den Umgang mit INTERLIS wurde um _ili2pg_ verschieden Tasks gebaut (Import, Export, Replace, Schema-Import)
+* *Ili2pg*: Für den Umgang mit INTERLIS wurden mit _ili2pg_ verschiedene Tasks gebaut (Import, Export, Replace, Schema-Import)
 * *Ilivalidator*: Zum Prüfen für die INTERLIS-Transferdateien wurde ein ilivalidator-Task programmiert.
 
 Mit diesen funktional atomaren Tasks (und den in _Gradle_ vorhandenen Funktionalitäten) kommt man bereits jetzt ziemlich weit.
