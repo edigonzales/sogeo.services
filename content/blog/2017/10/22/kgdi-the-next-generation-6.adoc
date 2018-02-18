@@ -3,7 +3,7 @@ Stefan Ziegler
 2017-10-22
 :jbake-type: post
 :jbake-status: published
-:jbake-tags: KGDI,GDI,INTERLIS,ilivalidator,gradle,gretl,ili2pg
+:jbake-tags: KGDI,GDI,INTERLIS,ilivalidator,Gradle,GRETL,ili2pg
 :idprefix:
 
 Unser Projekt mit http://gradle.org[_Gradle_] http://blog.sogeo.services/blog/2017/01/19/datenfluesse-mit-gradle-1.html[Datenflüsse] http://blog.sogeo.services/blog/2017/02/08/datenfluesse-mit-gradle-2.html[durchzuführen], schreitet prächtig voran. Vieles bekommen wir mit _Gradle_ geschenkt, ein paar geo-spezifische Tasks programmieren wir selber resp. lassen wir programmieren. Diese sogenannten Custom Tasks lassen sich in einem Plugin bündeln: https://github.com/sogis/gretl[_GRETL_]. 

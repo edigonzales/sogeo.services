@@ -3,7 +3,7 @@ Stefan Ziegler
 2018-02-11
 :jbake-type: post
 :jbake-status: published
-:jbake-tags: KGDI,GDI,Gradle,Groovy,Java,INTERLIS,Datenintegration,GRETL
+:jbake-tags: KGDI,GDI,Gradle,Groovy,Java,INTERLIS,GRETL,Datenintegration
 :idprefix:
 
 Vor etwas mehr als http://blog.sogeo.services/blog/2017/01/19/datenfluesse-mit-gradle-1.html[einem] http://blog.sogeo.services/blog/2017/02/08/datenfluesse-mit-gradle-2.html[Jahr] habe in zwei Beiträgen erläutert, wie wir in Zukunft die Datenflüsse rund um unsere GDI gestalten wollen. Im vergangenen Jahr haben wir das nun mit http://www.eisenhutinformatik.ch/[externer Hilfe] umgesetzt resp. einen ersten Wurf mit den - für uns - wichtigsten Funktionalitäten. Der Name für unser neues Lieblingsspielzeug ist GRETL: Gradle ETL.

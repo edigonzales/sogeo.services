@@ -1,6 +1,6 @@
 = INTERLIS leicht gemacht #18 - Shapefiles validieren
 Stefan Ziegler
-2016-02-19
+2018-02-19
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: INTERLIS,Java,ilivalidator,GRETL,Gradle,Shapefiles
