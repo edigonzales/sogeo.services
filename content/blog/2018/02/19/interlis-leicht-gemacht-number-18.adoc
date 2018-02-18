@@ -192,4 +192,4 @@ Gesagt getan. Das gepimpte Modell gibt es als http://blog.sogeo.services/data/in
 
 Da wir uns ja im _ilivalidator_-Universum befinden, kann man das Modell mit Constraints erweitern oder die Prüfungen mittels weiterem Modell (und INTERLIS-Views) und/oder eigenen Java-Prüfmethoden erweitern. In diesem Fall ist das wohl nicht ganz so zwingend, da wir ja in den meisten Fällen das Shapedatei-Validierungsmodell selber schreiben.
 
-Ansonsten gibt es nicht mehr viel zu sagen. Das Modell kann selbstverständlich in eine INTERLIS-Modellablage kopiert werden und wird auch dort gefunden. Dokumentation ist schnell erledigt und dort wo sie hingehört, wenn man ein paar Kommentare ins Modell schreibt.
+Ansonsten gibt es nicht mehr viel zu sagen. Das Modell kann selbstverständlich in eine INTERLIS-Modellablage kopiert werden und wird auch dort gefunden. Dokumentation ist schnell erledigt und dort wo sie hingehört, wenn man ein paar Kommentare ins Modell schreibt. CSV-Dateien können dank des https://github.com/sogis/gretl/blob/master/docs/user/index.md#csvvalidator[CsvValidators] auf die gleiche Art und Weise geprüft werden.
