@@ -4,7 +4,7 @@
 
     <div id="footer">
       <div class="container">
-        <p class="muted credit">&copy; 2017 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake ${version}</a></p>
+        <p class="muted credit">&copy; 2018 Stefan Ziegler | Baked with <a href="http://jbake.org">JBake ${version}</a></p>
       </div>
     </div>
 
