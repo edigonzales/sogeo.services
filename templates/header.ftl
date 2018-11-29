@@ -20,10 +20,8 @@
     <link rel="stylesheet" href="<#if (content.rootpath)??>${content.rootpath}<#else></#if>css/zurich.css" type="text/css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.019/css/hack.min.css">
     <link href="https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed:400,400i,800,800i" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Bitter:400,400i,700" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,400i,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:200,300,400" rel="stylesheet">
 
     <!--[if lt IE 9]>
       <script src="<#if (content.rootpath)??>${content.rootpath}<#else></#if>js/html5shiv.min.js"></script>
