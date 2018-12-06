@@ -12,8 +12,8 @@ pre.prettyprint {
 }
 
 .listingblock ol.linenums {
-    font-family: 'IBM Plex Mono', 'Hack', monospace;
-    font-size: 0.9em;
+    font-family: 'Hack', monospace;
+    /*font-size: 0.9em;*/
     /*font-size: 1em;*/
     color: #ccc;
     margin-left: 10px;
@@ -35,10 +35,15 @@ li p code {
 
 li.L1, li.L3, li.L5, li.L7, li.L9 {
     background-color: #fff;
+    font-size: 16px;
+}
+
+li.L2, li.L4, li.L6, li.L8, li.L0 {
+    font-size: 16px;
 }
 
 *:not(pre) > code {
-    font-family: 'IBM Plex Mono', 'Hack', monospace;
+    font-family: 'Hack', monospace;
     font-size: 0.9em;
     border-width: 0px;
 }
@@ -50,7 +55,7 @@ pre code {
 /* /syntax highlighting */
 
 body {
-  font-family: 'Barlow Semi Condensed', 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
+  font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
 }
 
 h1 {
@@ -83,20 +88,22 @@ h1 a:hover {
 }
 
 .paragraph {
-  font-size: 20px;
+  /*font-size: 20px;*/
+  font-size: 18px;
   line-height: 1.8;
 }
 
 p.author {
   margin-top: 20px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 p {
     margin-top: 25px;
     margin-bottom: 0px;
     text-align: justify;
-    font-family: 'Barlow Semi Condensed', 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
+    /*font-family: 'Barlow Semi Condensed', 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;*/
+    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
 }
 
 li p {
@@ -105,8 +112,9 @@ li p {
 }
 
 ul, ol, dl {
-    font-family: 'Barlow Semi Condensed', 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
-    font-size: 20px;
+    /*font-family: 'Barlow Semi Condensed', 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;*/
+    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
+    font-size: 18px;
     line-height: 1.8;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -114,7 +122,7 @@ ul, ol, dl {
 
 .navbar-default {
     background-color: #fff;
-    font-family: 'Barlow Semi Condensed', 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
+    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
     /*font-weight: 300;*/
 }
 
@@ -134,14 +142,15 @@ ul, ol, dl {
 }
 
 .container {
-  font-size: 18px;
+  /*font-size: 18px;*/
+  font-size: 16px;
   max-width: 800px;
 }
 
 .container p.credit {
-    font-family: 'Barlow Semi Condensed', 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
+    font-family: 'ZurichBT', 'Zurich', 'Open Sans', sans-serif;
     /*font-weight: 300;*/
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .content img {
