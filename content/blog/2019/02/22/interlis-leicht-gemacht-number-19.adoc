@@ -68,6 +68,18 @@ task checkInterlisRepository(type: JavaExec) {
 
 Simpel. Der Task wirft korrekterweise eine Fehlermeldung, wenn die Prüfung der INTERLIS-Modellablage nicht erfolgreich ist. Damit werden auch die nachfolgenden Gradle-Tasks nicht ausgeführt (d.h. das Hochladen in die Docker-Registry).
 
+Zum Ausprobieren:
+[source,groovy,linenums]
+----
+docker run -p 8080:8080 sogis/sogis-interlis-repository
+----
+
+Im Browser:
+[source,groovy,linenums]
+----
+localhost:8080
+----
+
 Bonus: Was ich momentan gerne mache, ist das Erstellen einer `version.txt`-Datei, die als statische Datei von einem Webserver (wenn er eh schon vorhanden ist) bereitgestellt wird. Damit sehe ich, ohne Einblick in Openshift etc. zu haben, ob die automatischen Deployments wirklich auch funktioniert haben. Der Task dazu ist:
 
 [source,groovy,linenums]
